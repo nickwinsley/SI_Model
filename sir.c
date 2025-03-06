@@ -8,8 +8,8 @@ extern Node * nodes;
 
 // Bisection search for finding contacts after time of infection
 unsigned int search(double time, double * times, unsigned int start, unsigned int end) {
-    if (time > times) {
-
+    if (time >= times[end]) {
+        return end + 1;
     }
     if (end == start + 1) {
         return end;

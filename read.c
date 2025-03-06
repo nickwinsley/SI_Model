@@ -6,11 +6,14 @@
 
 extern Node * nodes;
 extern Node zero;
+extern GLOBALS g;
 
+// Check if node is uninitialized
 bool compare(Node * a, Node * b) {
     return a -> qr == b -> qr;
 }
 
+// Add contact time and increment number of contacts
 void addTime(Node * node1, Node * node2, unsigned int id1, unsigned int id2, double tcontact) {
     node1 -> t[id2][node1 -> nc[id2]] = tcontact;
 
@@ -20,22 +23,7 @@ void addTime(Node * node1, Node * node2, unsigned int id1, unsigned int id2, dou
     node2 -> nc[id1] += 1;
 }
 
-
-
-void addNeighbour(Node * node1, Node * node2, unsigned int id1, unsigned int id2) {
-    if (node1 -> nc[id2] > 0 || node2 -> nc[id1] > 0) {
-        return;
-    }
-
-    node1 -> nb[node1 -> deg] = id2;
-    node2 -> nb[node2 -> deg] = id1;
-
-    node1 -> deg += 1;
-    node2 -> deg += 1;
-}
-
 void addContact(Node * node1, Node * node2, int id1, int id2, double tcontact) {
-    addNeighbour(node1, node2, id1, id2);
     addTime(node1, node2, id1, id2, tcontact);
 }
 
@@ -48,40 +36,51 @@ void read_nodes(char * nfname) {
     char line[1024];
     fgets(line, 1024, fstream);
     while (fgets(line, 1024, fstream) != NULL) {
-        unsigned int id = atoi(strtok(line, ","));
-        unsigned int nid = atoi(strtok(NULL, ","));
-        unsigned int nb = atoi(strtok(NULL, ","));
-        unsigned int nnb = atoi(strtok(NULL, ","));
-        unsigned int nconn = atoi(strtok(NULL, ","));
-
+        unsigned int id = atoi(strtok(line, ",")); // QR Code of first node
+        unsigned int nid = atoi(strtok(NULL, ",")); // QR Code of second node
+        unsigned int nb = atoi(strtok(NULL, ",")); // Number of neighbours of first node
+        unsigned int nnb = atoi(strtok(NULL, ",")); // Number of neighbours of second node
+        unsigned int nconn = atoi(strtok(NULL, ",")); // Number of contacts between first node and second node
+        
+        // If first node is uninitialized
         if (compare(nodes + id, &zero)) {
             Node tmp = { .heap = 0, .qr = id, .deg = 0, .nb = (unsigned int *)malloc(nb * sizeof(unsigned int)), .nc = (unsigned int *)malloc(2103 * sizeof(unsigned int)), .t = (double **)malloc(2103 * sizeof(double *)), .t_inf = END};
-            double * time = (double *)malloc(nconn * sizeof(double));
-            memcpy(tmp.t + nid, &time, nconn * sizeof(double))
             memcpy(nodes + id, &tmp, sizeof(Node));
             printf("Added node: %d\n", id);
         }
 
+        // If second node is uninitialized
         if (compare(nodes + nid, &zero)) {
             Node tmp = { .heap = 0, .qr = nid, .deg = 0, .nb = (unsigned int *)malloc(nnb * sizeof(unsigned int)), .nc = (unsigned int *)malloc(2103 * sizeof(unsigned int)), .t = (double **)malloc(2103 * sizeof(double *)), .t_inf = END};
-            double * time = (double *)malloc(nconn * sizeof(double));
-            memcpy(tmp.t + id, &time, nconn * sizeof(double))
             memcpy(nodes + nid, &tmp, sizeof(Node));
             printf("Added node: %d\n", nid);
         }
 
+        // Initialize pointer array of contact times
+        double * time = (double *)malloc(nconn * sizeof(double));
+        memcpy((nodes + id) -> t + nid, &time, nconn * sizeof(double));
+        
+        // Initialize pointer array of contact times
+        double * time = (double *)malloc(nconn * sizeof(double));
+        memcpy((nodes + nid) -> t + id, &time, nconn * sizeof(double));
+
+        if (nconn > 0) {
+            (nodes + id) -> nb[(nodes + id) -> deg++] = nid;
+            (nodes + nid) -> nb[(nodes + nid) -> deg++] = id;
+        }
 
 
     }
 }
 
 void read_data(char * fname, char * nfname) {
-    printf("Hello.\n");
+    GLOBALS g = { .heap = (unsigned int *)malloc(336423*sizeof(unsigned int)), .nheap = 0, .n_inf = 0 };
     read_nodes(nfname);
     FILE* fstream = fopen(fname, "r");
     char line[1024];
     fgets(line, 1024, fstream);
-    printf("Hello #1\n");
+
+    // Read csv file and parse data
     while (fgets(line, 1024, fstream) != NULL) {
         strtok(line, ",");
         unsigned int id = atoi(strtok(NULL, ","));
