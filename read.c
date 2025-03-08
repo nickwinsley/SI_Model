@@ -17,9 +17,6 @@ void addTime(Node * node1, Node * node2, unsigned int id1, unsigned int id2, dou
     node1 -> t[id2][node1 -> nc[id2]] = tcontact;
 
     node2 -> t[id1][node2 -> nc[id1]] = tcontact;
-
-    node1 -> nc[id2] += 1;
-    node2 -> nc[id1] += 1;
 }
 
 void addContact(Node * node1, Node * node2, int id1, int id2, double tcontact) {
