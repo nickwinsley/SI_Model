@@ -25,8 +25,9 @@ typedef struct {
     unsigned int n_inf; // Reproductive number - number of infected individuals
 } GLOBALS;
 
-const Node zero = {.qr = 0};
+Node zero = {.qr = 0};
 Node * nodes;
+GLOBALS g;
 
 extern unsigned int search(double, double *, unsigned int, unsigned int);
 extern void add_node(unsigned int);

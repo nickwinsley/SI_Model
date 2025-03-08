@@ -5,7 +5,6 @@
 #include "sir.h"
 
 extern Node * nodes;
-extern Node zero;
 extern GLOBALS g;
 
 // Check if node is uninitialized
@@ -27,7 +26,39 @@ void addContact(Node * node1, Node * node2, int id1, int id2, double tcontact) {
     addTime(node1, node2, id1, id2, tcontact);
 }
 
-void read_nodes(char * nfname) {
+// Read number of contacts
+void read_conn(char * cfname) {
+    FILE * fstream = fopen(cfname, "r");
+
+    char line[1024];
+    fgets(line, 1024, fstream);
+
+    while (fgets(line, 1024, fstream) != NULL) {
+
+        strtok(line, ",");
+        unsigned int id = atoi(strtok(NULL, ",")); // QR Code of first node
+        unsigned int nid = atoi(strtok(NULL, ",")); // QR Code of second node
+        unsigned int nconn = atoi(strtok(NULL, ",")); // Number of connections
+
+        // Initialize pointer array of contact times
+        nodes[nid].t[id] = (double *)malloc(nconn * sizeof(double));
+        
+        // Initialize pointer array of contact times
+        nodes[id].t[nid] = (double *)malloc(nconn * sizeof(double));
+
+        nodes[id].nc[nid] = nconn;
+
+        nodes[nid].nc[id] = nconn;
+
+        if (nconn > 0) {
+            (nodes + id) -> nb[(nodes + id) -> deg++] = nid;
+            (nodes + nid) -> nb[(nodes + nid) -> deg++] = id;
+        }
+
+    }
+}
+
+void read_nodes(char * nfname, char * cfname) {
     FILE * fstream = fopen(nfname, "r");
     nodes = (Node *)malloc(2103 * sizeof(Node));
     for (int i = 0; i < 2103; i++) {
@@ -36,11 +67,9 @@ void read_nodes(char * nfname) {
     char line[1024];
     fgets(line, 1024, fstream);
     while (fgets(line, 1024, fstream) != NULL) {
-        unsigned int id = atoi(strtok(line, ",")); // QR Code of first node
-        unsigned int nid = atoi(strtok(NULL, ",")); // QR Code of second node
-        unsigned int nb = atoi(strtok(NULL, ",")); // Number of neighbours of first node
-        unsigned int nnb = atoi(strtok(NULL, ",")); // Number of neighbours of second node
-        unsigned int nconn = atoi(strtok(NULL, ",")); // Number of contacts between first node and second node
+        strtok(line, ",");
+        unsigned int id = atoi(strtok(NULL, ",")); // QR Code
+        unsigned int nb = atoi(strtok(NULL, ",")); // Number of neighbours
         
         // If first node is uninitialized
         if (compare(nodes + id, &zero)) {
@@ -49,33 +78,14 @@ void read_nodes(char * nfname) {
             printf("Added node: %d\n", id);
         }
 
-        // If second node is uninitialized
-        if (compare(nodes + nid, &zero)) {
-            Node tmp = { .heap = 0, .qr = nid, .deg = 0, .nb = (unsigned int *)malloc(nnb * sizeof(unsigned int)), .nc = (unsigned int *)malloc(2103 * sizeof(unsigned int)), .t = (double **)malloc(2103 * sizeof(double *)), .t_inf = END};
-            memcpy(nodes + nid, &tmp, sizeof(Node));
-            printf("Added node: %d\n", nid);
-        }
-
-        // Initialize pointer array of contact times
-        double * time = (double *)malloc(nconn * sizeof(double));
-        memcpy((nodes + id) -> t + nid, &time, nconn * sizeof(double));
-        
-        // Initialize pointer array of contact times
-        double * time = (double *)malloc(nconn * sizeof(double));
-        memcpy((nodes + nid) -> t + id, &time, nconn * sizeof(double));
-
-        if (nconn > 0) {
-            (nodes + id) -> nb[(nodes + id) -> deg++] = nid;
-            (nodes + nid) -> nb[(nodes + nid) -> deg++] = id;
-        }
-
-
+        read_conn(cfname);
     }
 }
 
-void read_data(char * fname, char * nfname) {
-    GLOBALS g = { .heap = (unsigned int *)malloc(336423*sizeof(unsigned int)), .nheap = 0, .n_inf = 0 };
-    read_nodes(nfname);
+void read_data(char * fname, char * nfname, char * cfname) {
+    GLOBALS g1 = { .heap = (unsigned int *)malloc(336423*sizeof(unsigned int)), .nheap = 0, .n_inf = 0 };
+    memcpy(&g, &g1, sizeof(GLOBALS));
+    read_nodes(nfname, cfname);
     FILE* fstream = fopen(fname, "r");
     char line[1024];
     fgets(line, 1024, fstream);
@@ -107,7 +117,7 @@ void read_data(char * fname, char * nfname) {
         }
 
         tcontact += (day - 1) * 24;
-        if (strcmp(time, "PM") == 0) {
+        if (strcasecmp(time, "PM") == 0) {
             tcontact += 12;
         }
         tcontact += hour;
@@ -118,5 +128,5 @@ void read_data(char * fname, char * nfname) {
 }
 
 int main() {
-    read_data("Card Data Raw.csv");
+    read_data("Card Data Cleaned.csv", "Neighbours.csv", "Contacts.csv");
 }
