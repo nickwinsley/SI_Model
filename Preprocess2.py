@@ -4,7 +4,7 @@ import pandas as pd
 # Create csv file with
 
 if (__name__ == '__main__'):
-    df = pd.read_csv("Card Data Cleaned.csv")
+    df = pd.read_csv("Example_Network.csv")
 
     qrs1 = np.unique(df['ObservedQRCode'].to_numpy())
     qrs2 = np.unique(df['ObservingQRCode'].to_numpy())
@@ -25,19 +25,19 @@ if (__name__ == '__main__'):
     conn = []
 
     for colname, col in nc.items():
-        # nodes.append(colname)
-        # nb.append((col > 0).sum())
+        nodes.append(colname)
+        nb.append((col > 0).sum())
         for i in nc.index:
             print(type(nc.loc[i, colname].item()))
             if (nc.loc[i, colname].item() > 0):
                 conn.append([i, colname, nc.loc[i, colname].item()])
 
-    # ans = pd.DataFrame({'QR Code' : nodes, 'Neighbours' : nb})
+    ans = pd.DataFrame({'QR Code' : nodes, 'Neighbours' : nb})
 
-    # ans.to_csv("Neighbours.csv")
+    ans.to_csv("Neighbours1.csv")
 
     res = pd.DataFrame(conn, columns = ['Node 1', 'Node 2', 'Num Contacts'])
 
-    res.to_csv("Contacts.csv")
+    res.to_csv("Contacts1.csv")
 
 

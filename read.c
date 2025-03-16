@@ -4,8 +4,11 @@
 #include <stdbool.h>
 #include "sir.h"
 
-extern Node * nodes;
-extern GLOBALS g;
+Node * nodes;
+GLOBALS g;
+Node zero = {.qr = 0};
+double beta = 0.1;
+
 
 // Check if node is uninitialized
 bool compare(Node * a, Node * b) {
@@ -96,15 +99,14 @@ void read_data(char * fname, char * nfname, char * cfname) {
         int rssi = atoi(strtok(NULL, ","));
 
         unsigned int month, day, year, hour, minute;
-        char time[2];
 
 
-        int res = sscanf(date, "%u/%u/%u %u:%u %s", &month, &day, &year, &hour, &minute, time);
-        if (res != 6) {
-            printf("Failed to read contact data. %u %u %u %u %u %s\n", month, day, year, hour, minute, time);
+        int res = sscanf(date, "%u/%u/%u %u:%u", &month, &day, &year, &hour, &minute);
+        if (res != 5) {
+            printf("Failed to read contact data. %u %u %u %u %u\n", month, day, year, hour, minute);
         }
 
-        double tcontact = 0;
+        unsigned int tcontact = 0;
 
         if (year = 20) {
             tcontact = (month - 11) * 730;
@@ -114,16 +116,58 @@ void read_data(char * fname, char * nfname, char * cfname) {
         }
 
         tcontact += (day - 1) * 24;
-        if (strcasecmp(time, "PM") == 0) {
-            tcontact += 12;
-        }
         tcontact += hour;
-        tcontact += ((double)minute)/60;
 
-        addContact(nodes + id, nodes + nid, id, nid, tcontact);
+        addContact(nodes + id, nodes + nid, id, nid, (double)tcontact);
     }
 }
 
-int main() {
-    read_data("Card Data Cleaned.csv", "Neighbours.csv", "Contacts.csv");
+int main(int argc, char * argv[]) {
+    if (argc < 2) {
+        printf("Incorrect number of command line arguments.");
+        return 0;
+    }
+    read_data("Example_Network.csv", "Neighbours1.csv", "Contacts1.csv");
+    srand(atoi(argv[0]));
+    unsigned int run = atoi(argv[1]);
+    unsigned int starting_node = (rand() % 5) + 1;
+    (nodes + starting_node) -> t_inf = 0;
+    add_node(starting_node);
+
+    bool accessable = true;
+
+    FILE * outstream;
+
+    if (!access("Results.csv", F_OK)) {
+        outstream = (FILE *)fopen("Results.csv", "w");
+        for (unsigned int i = 0; i < 2103; i++) {
+            if (!compare(nodes + i, &zero)) {
+                char buffer[4];
+                snprintf(buffer, sizeof(buffer), "%u", i);
+                fprintf(outstream, "%s,", buffer);
+            }
+        }
+        fputc('\n', outstream);
+    }
+
+    else {
+        outstream = (FILE *)fopen("Results.csv", "a");
+    }
+
+    
+    while (g.nheap > 0) {
+        unsigned int next = g.heap[1];
+        del_root();
+        transmit(nodes + next, (nodes + next) -> t_inf);
+    }
+
+    for (unsigned int i = 0; i < 2103; i++) {
+        if (!compare(nodes + i, &zero)) {
+            char buffer[20];
+            snprintf(buffer, sizeof(buffer), "%u", (unsigned int)(nodes + i) -> t_inf);
+            fprintf(outstream, "%s,", buffer);
+        }
+    }
+    fputc('\n', outstream);
+    return 1;
 }

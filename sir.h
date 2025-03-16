@@ -3,6 +3,7 @@
 #include <math.h>
 #include <time.h>
 #include <float.h>
+#include <unistd.h>
 
 #ifndef SIR_H
 #define SIR_H
@@ -25,11 +26,15 @@ typedef struct {
     unsigned int n_inf; // Reproductive number - number of infected individuals
 } GLOBALS;
 
-Node zero = {.qr = 0};
-Node * nodes;
-GLOBALS g;
+extern Node zero;
+extern Node * nodes;
+extern GLOBALS g;
+extern double beta;
 
 extern unsigned int search(double, double *, unsigned int, unsigned int);
 extern void add_node(unsigned int);
+extern void up_heap(unsigned int);
+extern void del_root();
+extern void transmit(Node *, double);
 
 #endif /* SIR_H */
