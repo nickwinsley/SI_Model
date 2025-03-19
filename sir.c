@@ -8,14 +8,17 @@ extern Node * nodes;
 
 // Bisection search for finding contacts after time of infection
 unsigned int search(double time, double * times, unsigned int start, unsigned int end) {
+    double fin = times[end];
     if (time >= times[end]) {
         return end + 1;
     }
-    if (end == start + 1) {
+    if (end <= start + 1) {
         return end;
     }
+
+    
     unsigned int mid = (end - start) / 2 + start;
-    if (times[mid] >= time) {
+    if (times[mid] > time) {
         return search(time, times, start, mid);
     }
     return search(time, times, mid, end);
@@ -50,9 +53,6 @@ void down_heap(unsigned int start) {
 
 // Add node to heap and increment the number of nodes infected
 void add_node(unsigned int qr) {
-    if (g.nheap >= sizeof(g.heap)/sizeof(unsigned int)) {
-        g.heap = (unsigned int *)realloc(g.heap, sizeof(g.heap) + 10 * sizeof(unsigned int));
-    }
     g.heap[++g.nheap] = qr;
     g.n_inf++;
     nodes[qr].heap = g.nheap;
@@ -80,6 +80,7 @@ void up_heap(unsigned int start) {
 
 // Delete the root node
 void del_root() {
+    nodes[g.heap[1]].heap = 0;
     g.heap[1] = g.heap[g.nheap];
     g.heap[g.nheap--] = 0;
 

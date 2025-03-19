@@ -28,6 +28,8 @@ if (__name__ == '__main__'):
         nodes.append(colname)
         nb.append((col > 0).sum())
         for i in nc.index:
+            if (colname <= i):
+                continue
             print(type(nc.loc[i, colname].item()))
             if (nc.loc[i, colname].item() > 0):
                 conn.append([i, colname, nc.loc[i, colname].item()])

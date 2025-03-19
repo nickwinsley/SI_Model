@@ -9,18 +9,28 @@ void infect(Node * src, Node * toInfect, double tcont) {
     if (toInfect -> t_inf <= tcont) {
         return;
     }
+
     toInfect -> t_inf = tcont;
+    if (toInfect -> heap == 0) {
+        add_node(toInfect -> qr);
+        return;
+    }
     up_heap(toInfect -> heap);
 }
 
 void transmit(Node * root, double tcont) {
-    unsigned int * nbh = root -> nb;
-    for (int i = 0; *(nbh + i) != 0; i++) {
+    for (int i = 0; i < root -> deg; i++) {
 
-        unsigned int begin = search(tcont, root -> t[*(nbh + i)], 0, root -> nc[*(nbh + i)]);
-        unsigned int length = root -> nc[*(nbh + i)] - begin;
+        unsigned int id = *((root -> nb) + i);
+
+        unsigned int begin = search(tcont, root -> t[id], 0, root -> nc[id] - 1);
+        int length = (root -> nc[id]) - begin;
+
+        unsigned int nconn = root -> nc[id];
 
         // If time of infection is greater than all other contacts
+
+
         if (length < 0) {
             continue;
         }
@@ -32,6 +42,6 @@ void transmit(Node * root, double tcont) {
             continue;
         }
 
-        infect(root, nodes + *(nbh + i), root -> t[*(nbh + i)][first_infection + begin]);
+        infect(root, nodes + id, root -> t[id][first_infection + begin - 1]);
     }
 }

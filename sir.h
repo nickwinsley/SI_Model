@@ -8,7 +8,7 @@
 #ifndef SIR_H
 #define SIR_H
 
-#define END DBL_MAX
+#define END 100000
 
 typedef struct {
     unsigned int qr; // QR Code
