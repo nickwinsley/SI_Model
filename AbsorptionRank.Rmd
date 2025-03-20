@@ -1,0 +1,115 @@
+---
+title: "AbsorptionRank"
+author: "Nicholas Winsley"
+date: "2025-03-19"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Introduction**
+
+Epidemiology is a subject of much contemporary relevance. Quarantine and case isolation have been shown to be effective policies to counteract pandemics (Auranen et al. 2023). Moreover, the successful trial of the "Covid-Card", for detecting potential transmission events, suggests that prophylactic identification and isolation of high-risk individuals could be practical in the future. The sociosphere of an individual can be modeled as a series of contact times, each paired with a measure of proximity. We abstractly represent each individual as a node, and each contact event by an undirected edge. This model is called a temporal network. The Susceptible-Infected model, abbreviated as SI, is an epidemiological model in which susceptible individuals can become infected due to a contact with an infectious individual. In the SI paradigm, we assume that infected individuals stay infected indefinitely. To date, research on the SI model has largely been focused on computational simulations of many epidemics on a temporal network. In this paper, I propose an alternative method for the determination of high-risk individuals in a network.
+
+**Methods**
+
+Without loss of generality, we will consider a temporal network consisting of a set of nodes, N, and positive integer contact times, $t = (1, 2, 3, \cdots, T)$. Let $p_{ijk}(t)$ denote the probability of transmission for the k'th contact between individual i and individual j, at time t. Let $n_{ij}(t)$ denote the number of contacts between i and j at time t. Define the transition probability matrix for each contact time as:
+
+$$\mathbf{B}_{ij}(t) = \left\{\begin{matrix}
+  1 & i = j, s_{i}(t) = 0 \\
+  0 & i \neq j, s_{ij}(t) = 0 \\
+  \prod_{m \in N, m \neq i}{\prod_{k = 1}^{n_{im}(t)}{(1 - p_{imk}(t))}} & i = j, s_{i}(t) > 0 \\
+  (1 - \mathbf{B}_{ii})(s_{ij}(t)/s_{i}(t)) & i \neq j, s_{ij}(t) \neq 0  \\
+\end{matrix}
+\right.$$
+
+where $s_{ij}(t)$ and $s_{i}(t)$ are defined as:
+
+$$s_{ij}(t) = 1 - \prod_{k = 1}^{n_{ij}(t)}{1 - p_{ijk}}$$
+$$s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}$$
+Denote by $\mathbf{B}_{i}(t)$ the transition matrix obtained by taking $\mathbf{B}(t)$, and setting all entries in the i'th row to zero, except the diagonal entry (which is necessarily one). The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the temporal absorption centrality for individual i, at time t.
+
+**Example**
+
+A simple example network of five nodes is shown in Example_Network.csv. For simplicity, a constant transmission probability of 0.3 was used for all contact events. In total, 500 simulations were run on this network. The absorption centrality and the number of times infected were calculated for the final contact time. Table 1 shows the correlation between the absorption centrality and the probability of infection by the end of the simulation.
+
+
+```{r, table.cap = "Pearson Correlation between temporal absorption centrality and proportion of times infected over 500 simulations", echo = FALSE}
+
+df = read.csv("Results.csv")
+df = df[, 1:5]
+
+colnames(df) = c("Node1", "Node2", "Node3", "Node4", "Node5")
+
+prop = c()
+
+for (col in colnames(df)) {
+  prop = c(prop, sum(df[,col] <= 254) / 500)
+}
+
+centrality = read.csv("AbsorptionCentrality.csv")
+
+colnames(centrality) = c("Node", "Centrality")
+
+res = rev(centrality$Centrality)
+
+corr = c()
+corr = c(corr, cor(x = prop, y = res, method = "pearson"))
+```
+
+```{r, table.cap = "Pearson Correlation between temporal absorption centrality and proportion of times infected over 500 simulations", echo = FALSE}
+
+df = read.csv("Results1.csv")
+df = df[, 1:5]
+
+colnames(df) = c("Node1", "Node2", "Node3", "Node4", "Node5")
+
+prop = c()
+
+for (col in colnames(df)) {
+  prop = c(prop, sum(df[,col] <= 254) / 500)
+}
+
+centrality = read.csv("AbsorptionCentrality1.csv")
+
+colnames(centrality) = c("Node", "Centrality")
+
+res = rev(centrality$Centrality)
+
+corr = c(corr, cor(x = prop, y = res, method = "pearson"))
+```
+
+```{r, table.cap = "Pearson Correlation between temporal absorption centrality and proportion of times infected over 500 simulations", echo = FALSE}
+
+df = read.csv("Results2.csv")
+df = df[, 1:5]
+
+colnames(df) = c("Node1", "Node2", "Node3", "Node4", "Node5")
+
+prop = c()
+
+for (col in colnames(df)) {
+  prop = c(prop, sum(df[,col] <= 254) / 500)
+}
+
+centrality = read.csv("AbsorptionCentrality2.csv")
+
+colnames(centrality) = c("Node", "Centrality")
+
+res = rev(centrality$Centrality)
+
+corr = c(corr, cor(x = prop, y = res, method = "pearson"))
+
+data = data.frame(Correlation = corr)
+
+rownames(data) = c("p = 0.3", "p = 0.2", "p = 0.1")
+```
+
+```{r, echo = FALSE}
+knitr::kable(data, caption = "Pearson correlation between temporal absorption centrality and infected proportion over 500 simulations")
+```
+
+
+

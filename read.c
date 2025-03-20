@@ -7,7 +7,7 @@
 Node * nodes;
 GLOBALS g;
 Node zero = {.qr = 0};
-double beta = 0.4;
+double beta = 0.1;
 
 
 // Check if node is uninitialized
@@ -139,14 +139,14 @@ int main(int argc, char * argv[]) {
         run = atoi(argv[1]);
     }
     read_data("Example_Network.csv", "Neighbours1.csv", "Contacts1.csv");
-    srand(time(NULL));
+    srand(time(NULL) + 10000 * seed);
     unsigned int starting_node = (rand() % 5) + 1;
     (nodes + starting_node) -> t_inf = 0;
     add_node(starting_node);
     FILE * outstream;
 
-    if (access("Results.csv", F_OK) != 0) {
-        outstream = (FILE *)fopen("Results.csv", "w");
+    if (access("Results2.csv", F_OK) != 0) {
+        outstream = (FILE *)fopen("Results2.csv", "w");
         printf("Hello\n");
         for (unsigned int i = 0; i < 2103; i++) {
             if (!compare(nodes + i, &zero)) {
@@ -164,7 +164,7 @@ int main(int argc, char * argv[]) {
     }
 
     else {
-        outstream = (FILE *)fopen("Results.csv", "a");
+        outstream = (FILE *)fopen("Results2.csv", "a");
     }
 
     

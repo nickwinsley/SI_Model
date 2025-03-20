@@ -4,7 +4,7 @@ import copy
 
 # Calculate Absorption centrality for a given network
 
-p = 0.05
+p = 0.1
 
 class Contact:
     def __init__(self, node1, node2, tcontact):
@@ -37,10 +37,12 @@ def compute_transition_matrix(identity, nc, absorbing_node):
         sum1 = sum(nc[y])
         if (sum1 == 0):
             continue
-
+        
+        sum2 = 0
         # Compute diagonal element
         for x in range(len(identity[0])):
-            identity[y][y] *= (1 - p) ** nc[y][x]
+           identity[y][y] *= (1 - p) ** nc[y][x]
+           sum2 += 1 - (1 - p) ** nc[y][x]
         ii = identity[y][y]
         print(ii)
 
@@ -48,7 +50,8 @@ def compute_transition_matrix(identity, nc, absorbing_node):
         for x in range(len(identity[0])):
             if (y == x):
                 continue
-            identity[y][x] = (1 - ii)*(nc[y][x]/sum1)
+            # identity[y][x] = 1 - (1 - p)**(nc[y][x])
+            identity[y][x] = (1 - ii)*((1 - (1 - p)**nc[y][x])/(sum2))
     return identity
 
 
@@ -95,5 +98,5 @@ if (__name__ == '__main__'):
         
         df = pd.concat([pd.DataFrame([[node + 1, round(prod_curr[node], 3)]], columns = df.columns), df], axis = 0)
     
-    df.to_csv("AbsorptionCentrality.csv", index = False)
+    df.to_csv("AbsorptionCentrality2.csv", index = False)
             
