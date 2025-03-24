@@ -1,5 +1,5 @@
 ---
-title: "AbsorptionRank"
+title: "TemporalPrestige"
 author: "Nicholas Winsley"
 date: "2025-03-19"
 output: pdf_document
@@ -30,7 +30,7 @@ $$P_{p}(\textit{u}_{i}) = \frac{I_{\textit{u}_{i}}/(g - 1)}{\sum_{\upsilon \in \
 where $\textit{N}$ is the influence domain of node $\textit{u}$ at time i. When the influence domain is empty, the temporal prestige is 0. Kim and Anderson [2011] proposed temporal closeness, a similar metric which considers all time intervals $[t, i], t \in [0, i - 1]$.
 
 $$C_{i,j} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\upsilon, \textit{u})}}}$$
-When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$ To turn this formula into a prestige measure, we simply reverse the direction of the paths to get:
+When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn this formula into a prestige measure, we simply reverse the direction of the paths to get:
 
 $$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\textit{u}, \upsilon)}}}$$
 We will call this the temporal prestige. The temporal prestige can be normalized by dividing by $(|\textit{V}| - 1)(j - i)$
