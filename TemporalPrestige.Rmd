@@ -17,23 +17,30 @@ Epidemiology is a subject of much contemporary relevance. Quarantine and case is
 
 Generalization of conventional centrality measures to temporal networks requires a high-granularity representation of the network as a graph. Kostakos et al. [2009] proposed a graph where it is assumed that two nodes are connected if they are reachable within n hops, however this model fails to account for differential rates of transmission. Kim and Anderson [2011] proposed a more general solution. Without loss of generality, consider a set of contact times, $\textit{t} = (1, 2, 3, \cdots, T)$. We can construct a time-ordered graph, $\textit{G}$, with vertices $\textit{V}$ and edges $\textit{E}$, where for all $\upsilon_{t}, \textit{u}_{k} \in V$, an edge $\textit{e}(\upsilon_{t}, \textit{u}_{k}) \in \textit{E}$ can only exist if k = t + 1. We can construct this graph for any temporal network without loss of information. In practice, computational constraints may mandate aggregation of contact times and thus loss of information. Rocha and Masuda [2014] proposed a centrality measure which considers the stationary distribution of a random walk at time t, however this measure does not generalize well to the Susceptible-Infected (SI) model, where infection is a permanent state. 
 
-Define the distance of the temporal shortest path over time interval [i, j], denoted by $d_{i,j}(\upsilon, \textit{u})$, as the smallest $d = k - i$, where $i \leq m \leq j$ and there is a path from $\upsilon_{i}$ to $\textit{u}_{k}$. We can now generalize conventional measures of prestige and centrality to temporal networks.
+Define the distance of the temporal shortest path over time interval [i, j], denoted by $d_{i,j}(\upsilon, \textit{u})$, as the smallest $d = m - n$, where $i \leq n \leq m \leq j$ and there is a path from $\upsilon_{n}$ to $\textit{u}_{m}$. We can now generalize conventional measures of prestige and centrality to temporal networks.
 
 **Temporal Prestige**
 
-In this study, I am primarily concerned with the likelihood of infection, which is closely related to the more general notion of prestige. In a directional network, a prestigious node is the object of many ties i.e. has many incoming connections. This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are ill-defined in directional graphs, owing to the fact that directional graphs are not necessarily strongly-connected. In light of this limitation, we generally only consider nodes in the influence domain of node i i.e. the set of all nodes from whom $n_{i}$ is reachable. Lin (1976) proposed the following measure of prestige for directional relations:
+In this study, I am primarily concerned with the likelihood of infection, which is closely related to the more general notion of prestige. In a directional network, a prestigious node is the object of many ties i.e. has many incoming connections. This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are ill-defined in directional graphs, owing to the fact that directional graphs are not necessarily strongly-connected. Due to this limitation, we usually only consider nodes in the influence domain of node i i.e. the set of all nodes from whom $n_{i}$ is reachable. Lin (1976) proposed the following measure of prestige for directional relations, called the proximity prestige:
 
-$$P_{p}(n_{i}) = \frac{I_{i}/(g - 1)}{\sum{d(n_{j}, n_{i})}/I_{i}}$$
+$$P_{p}(n_{i}) = \frac{I_{i}/(g - 1)}{\sum{d(n_{j}, n_{i})}/I_{i}} \tag{1.}$$
 where $I_{i}$ is the size of the influence domain of node i, and g is the total number of nodes in the network. For temporal networks, I propose a modified version
 
-$$P_{p}(\textit{u}_{i}) = \frac{I_{\textit{u}_{i}}/(g - 1)}{\sum_{\upsilon \in \textit{N}}{d_{0, i}(\upsilon, \textit{u}_{i})}/I_{\textit{u}_{i}}}$$
-where $\textit{N}$ is the influence domain of node $\textit{u}$ at time i. When the influence domain is empty, the temporal prestige is 0. Kim and Anderson [2011] proposed temporal closeness, a similar metric which considers all time intervals $[t, i], t \in [0, i - 1]$.
+$$P_{p}(\textit{u}_{i}) = \frac{I_{\textit{u}/(g - 1)}}{\sum_{\upsilon \in \textit{N}}{d_{0, i}(\upsilon, \textit{u})}/I_{\textit{u}}} \tag{2.}$$
+where $\textit{N}$ is the influence domain of node $\textit{u}$ at time i. Intuitively, this is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the temporal prestige is 0. Kim and Anderson [2011] proposed temporal closeness, a similar metric which considers all time intervals $[t, i], t \in [0, i - 1]$.
 
-$$C_{i,j} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\upsilon, \textit{u})}}}$$
-When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn this formula into a prestige measure, we simply reverse the direction of the paths to get:
+$$C_{i,j} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\upsilon, \textit{u})}}} \tag{3.}$$
+When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn (3.) into a prestige measure, we simply reverse the direction of the paths to get:
 
-$$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\textit{u}, \upsilon)}}}$$
-We will call this the temporal prestige. The temporal prestige can be normalized by dividing by $(|\textit{V}| - 1)(j - i)$
+$$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\textit{u}, \upsilon)}}} \tag{4.}$$
+We will call this the temporal prestige. The temporal prestige can be normalized by dividing by $(|\textit{V}| - 1)(j - i)$. 
+
+**Temporal Proximity Prestige**
+
+Kim and Anderson [2011] showed that by considering all time-intervals, temporal closeness improves the quality of estimates in some situations. By this same token, we can modify equation (2.) to obtain
+
+$$P_{p}(\textit{u}_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, \textit{u}}/(g - 1)}{\sum_{\upsilon \in \textit{N}}{d_{t, i}(\upsilon, \textit{u})}/I_{t, i, \textit{u}}} \tag{5.}$$
+where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity prestige. The temporal proximity prestige can be normalized by dividing by i.
 
 **Absorption Prestige**
 

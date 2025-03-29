@@ -1,0 +1,204 @@
+#include <map>
+#include <set>
+#include <string>
+#include <string.h>
+#include <vector>
+#include <utility>
+#include <bits/stdc++.h>
+#include <unistd.h>
+
+using namespace std;
+
+
+int getTime(char * datetime) {
+    unsigned int year, month, day, hour, minute;
+
+    int res = sscanf(datetime, "%u/%u/%u %2u:%2u:00", &day, &month, &year, &hour, &minute);
+
+    if (res != 5) {
+        return -1;
+    }
+
+    unsigned int tcontact = 0;
+
+    if (year == 20) {
+        tcontact = (month - 11) * 730;
+    }
+    else if (year == 21) {
+        tcontact = 730 * 2 + (month - 1)*730;
+    }
+
+    tcontact += (day - 1) * 24;
+    tcontact += hour;
+    return floor(tcontact);
+}
+
+void addContact(vector<pair<int, map<int, set<int>>>> &vec, int time, int id1, int id2, int start, int end) {
+    if (end == start + 1) {
+        map<int, set<int>> map;
+        map[id1] = {id2};
+        map[id2] = {id1};
+        vec.insert(vec.begin() + end, {time, map});
+        return;
+    }
+
+    int mid = (end - start)/2 + start;
+
+    int mid_time = vec[mid].first;
+
+    if (time == mid_time) {
+        vec[mid].second[id1].insert(id2);
+        vec[mid].second[id2].insert(id1);
+        return;
+    }
+    
+    else if (time < mid_time) {
+        addContact(vec, time, id1, id2, start, mid);
+    }
+    else if (time > mid_time) {
+        addContact(vec, time, id1, id2, mid, end);
+    }
+}
+
+int main(int argc, char * argv[]) {
+
+    vector<pair<int, map<int, set<int>>>> contacts;
+
+    FILE * instream = fopen("Card Data Cleaned.csv", "r");
+
+    char line[1024];
+    fgets(line, 1024, instream);
+    while (fgets(line, 1024, instream)) {
+        strtok(line, ",");
+
+        unsigned int id1 = atoi(strtok(NULL, ","));
+        unsigned int id2 = atoi(strtok(NULL, ","));
+
+        char * datetime = strtok(NULL, ",");
+
+        int time = getTime(datetime);
+
+        if (time < 0) {
+            continue;
+        }
+
+        if (contacts.size() == 0) {
+            map<int, set<int>> map;
+            map[id1] = {id2};
+            map[id2] = {id1};
+            contacts.push_back({time, map});
+            continue;
+        }
+
+        else if (time == contacts.front().first) {
+            contacts.front().second[id1].insert(id2);
+            contacts.front().second[id2].insert(id1);
+            continue;
+        }
+
+        addContact(contacts, time, id1, id2, 0, contacts.size());
+    }
+
+    fclose(instream);
+
+    int target = atoi(argv[0]);
+    set<int> reachable = {};
+    map<int, int> times = {};
+    int end_time = (--contacts.end()) -> first;
+
+    // Calculate shortest path distances
+    while (contacts.size() > 0) {
+        pair<int, map<int, set<int>>> pair = contacts.back();
+        contacts.pop_back();
+        int time = pair.first;
+        auto first = reachable.begin();
+        auto last = reachable.end();
+        while (first != last) {
+
+            int node = *first;
+            auto start = pair.second[node].begin();
+            auto end = pair.second[node].end();
+            while (start != end) {
+
+                int next = *start;
+                if (reachable.find(next) != reachable.end()) {
+                    start++;
+                    continue;
+                }
+                reachable.insert(next);
+
+                times[next] = end_time - time;
+                start++;
+            }
+            first++;
+        }
+    }
+
+    // Calculate temporal proximity prestige
+
+    double tpp; // Temporal Proximity Prestige
+
+    double tp; // Temporal Prestige
+
+    int ind = 0;
+
+    map<int, int> dist;
+
+    int prev;
+
+    // Iterate through sorted contact times, and calculate tpp for each starting point
+    for (auto start = contacts.begin(); start != contacts.end(); start++) {
+
+        if (start -> first == prev) {
+            continue;
+        }
+        else {
+            prev = start -> first;
+        }
+
+        ind++;
+        dist[start -> first] = ind;
+        int tot_dist = 0;
+        int n_influence = 0;
+
+        for (int i = 1; i < 752; i++) {
+
+            if (reachable.find(i) == reachable.end()) {
+                continue;
+            }
+
+            if (times[i] > (end_time - start -> first)) {
+                continue;
+            }
+
+            int distance = dist[times[i]];
+
+            tot_dist += distance;
+            tp += (double)1/(double)distance;
+        }
+
+        tpp += ((double)n_influence/(double)750)/((double)tot_dist/(double)n_influence);
+    }
+
+    FILE * outstream;
+
+    if (access("tpp.csv", F_OK) != 0) {
+        outstream = fopen("tpp.csv", "w");
+
+        char col1[] = "Node";
+        char col2[] = "TP";
+        char col3[] = "TPP";
+
+        fprintf(outstream, "%s,%s,%s\n", col1, col2, col3);
+    }
+
+    else {
+        outstream = fopen("tpp.csv", "a");
+    }
+
+    fprintf(outstream, "%d,%.2lf,%.2lf\n", target, tp, tpp);
+
+    fclose(outstream);
+
+    return 1;
+}

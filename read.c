@@ -103,8 +103,10 @@ void read_data(char * fname, char * nfname, char * cfname) {
 
         unsigned int month, day, year, hour, minute;
 
+        char time[2];
 
-        int res = sscanf(date, "%u/%u/%u %u:%u", &month, &day, &year, &hour, &minute);
+
+        int res = sscanf(date, "%u/%u/%u %u:%u:00 %s", &month, &day, &year, &hour, &minute, time);
         if (res != 5) {
             printf("Failed to read contact data. %u %u %u %u %u\n", month, day, year, hour, minute);
         }
