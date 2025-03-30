@@ -38,7 +38,12 @@ void addContact(vector<pair<int, map<int, set<int>>>> &vec, int time, int id1, i
         map<int, set<int>> map;
         map[id1] = {id2};
         map[id2] = {id1};
-        vec.insert(vec.begin() + end, {time, map});
+        if (time >= (vec.begin() + start) -> first) {
+            vec.insert(vec.begin() + end, {time, map});
+            return;
+        }
+
+        vec.insert(vec.begin() + start, {time, map});
         return;
     }
 
@@ -101,15 +106,18 @@ int main(int argc, char * argv[]) {
 
     fclose(instream);
 
-    int target = atoi(argv[0]);
-    set<int> reachable = {};
+    int target = 1; // atoi(argv[1]);
+    set<int> reachable = {target};
     map<int, int> times = {};
     int end_time = (--contacts.end()) -> first;
+    auto back = contacts.end();
+    back--;
 
     // Calculate shortest path distances
-    while (contacts.size() > 0) {
-        pair<int, map<int, set<int>>> pair = contacts.back();
-        contacts.pop_back();
+    while (back >= contacts.begin()) {
+        pair<int, map<int, set<int>>> pair = *back;
+        back--;
+
         int time = pair.first;
         auto first = reachable.begin();
         auto last = reachable.end();
@@ -136,9 +144,9 @@ int main(int argc, char * argv[]) {
 
     // Calculate temporal proximity prestige
 
-    double tpp; // Temporal Proximity Prestige
+    double tpp = 0; // Temporal Proximity Prestige
 
-    double tp; // Temporal Prestige
+    double tp = 0; // Temporal Prestige
 
     int ind = 0;
 
@@ -147,7 +155,7 @@ int main(int argc, char * argv[]) {
     int prev;
 
     // Iterate through sorted contact times, and calculate tpp for each starting point
-    for (auto start = contacts.begin(); start != contacts.end(); start++) {
+    for (auto start = contacts.end() - 1; start >= contacts.begin(); start--) {
 
         if (start -> first == prev) {
             continue;
@@ -157,11 +165,16 @@ int main(int argc, char * argv[]) {
         }
 
         ind++;
-        dist[start -> first] = ind;
+        dist[end_time - start -> first] = ind;
+        // printf("%d\n", end_time - start -> first);
         int tot_dist = 0;
         int n_influence = 0;
 
         for (int i = 1; i < 752; i++) {
+
+            if (i == target) {
+                continue;
+            }
 
             if (reachable.find(i) == reachable.end()) {
                 continue;
@@ -170,15 +183,29 @@ int main(int argc, char * argv[]) {
             if (times[i] > (end_time - start -> first)) {
                 continue;
             }
+            
+            n_influence++;
 
             int distance = dist[times[i]];
+
+            if (distance == 0) {
+                printf("%d, %d\n", i, times[i]);
+                continue;
+            }
 
             tot_dist += distance;
             tp += (double)1/(double)distance;
         }
 
+        if (tot_dist == 0 || n_influence == 0) {
+            continue;
+        }
+
         tpp += ((double)n_influence/(double)750)/((double)tot_dist/(double)n_influence);
     }
+
+    // tpp /= ind;
+    // tp /= ind*750;
 
     FILE * outstream;
 
