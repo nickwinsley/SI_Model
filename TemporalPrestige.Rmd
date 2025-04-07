@@ -3,18 +3,31 @@ title: "TemporalPrestige"
 author: "Nicholas Winsley"
 date: "2025-03-19"
 output: 
-  pdf_document: default
+  pdf_document:
+    toc: true
 bibliography: references.bib
 header-include:
   - \usepackage{tikz}
   - \usepackage{pgfplots}
 ---
 
-**Introduction**
+# Introduction
 
-Epidemiology is a subject of much contemporary relevance. Quarantine and case isolation have been shown to be effective policies to counteract pandemics (Auranen et al. 2023). Moreover, the successful trial of the "Covid-Card", for detecting potential transmission events, suggests that prophylactic identification and isolation of high-risk individuals could be practical in the future. The sociosphere of an individual can be modeled as a series of contact times, each paired with a measure of proximity. We abstractly represent each individual as a node, and each contact event by an undirected edge. This model is called a temporal network. The Susceptible-Infected model, abbreviated as SI, is an epidemiological model in which susceptible individuals can become infected due to a contact with an infectious individual. In the SI paradigm, we assume that infected individuals stay infected indefinitely. To date, research on the SI model has largely been focused on computational simulations of many epidemics on a temporal network. In this paper, I propose an alternative method for the determination of high-risk individuals in a social network, and I compare it to existing centrality measures.
+Epidemiology is a subject of much contemporary relevance. Quarantine and case isolation have been shown to be effective policies to counteract pandemics (Auranen et al. 2023). Moreover, the successful trial of the "Covid-Card", for detecting potential transmission events, suggests that prophylactic identification and isolation of high-risk individuals could be practical in the future. The sociosphere of an individual can be modeled as a series of contact times, each paired with a measure of proximity. We abstractly represent each individual as a node, and each contact event by an undirected edge. This model is called a temporal network. The Susceptible-Infected model, abbreviated as SI, is an epidemiological model in which susceptible individuals can become infected due to a contact with an infectious individual. In the SI paradigm, we assume that infected individuals stay infected indefinitely. Social Network Analysis (SNA) is the study of individuals and their relationships with others. SNA involves constructing a network to model a real-world situation of interest, and calculating metrics related to the network structure. These metrics can be broadly categorized into two types: Population-level measures and Individual-level measures. Centrality is a commonly-used individual-level measure, defined as the influence of a particular individual within a network. Prestige (sometimes called status or rank) is a similar individual-level measure for directional graphs, which only considers incoming dyads.
 
-**Temporal Centrality**
+To date, research on the SI model has largely been focused on computational simulations of many epidemics on a temporal network. In this paper, I propose several measures of prestige in temporal networks, and I apply them to the SI epidemiology framework.
+
+# Methods
+
+## Data Description
+
+The CovidCard is a bluetooth device developed for detecting close-contact events between carriers. Each card advertises it's presence and detects signals from other cards. Algorithms evaluate the radio signal strength indicator (RSSI) of close-contacts in real-time, and the signal strength is aggregated over 15 minute time intervals. Each interval was classified as either < 1 meter, < 2 meter and < 4 meter proximity, and the total number of intervals belonging to each class was summed over a two-hour period. The cards can hold up to 128 contact events in short-term cache memory at any given time, of which some are recorded in long-term flash memory. An interaction was recorded in flash memory if it was longer than 2 minutes in duration, and the RSSI exceeded -62dBm (roughly corresponding to a distance of less than 4 meters).
+
+## Data Preparation
+
+The last day of the trial period saw an anomalously high number of close-contacts, most likely because participants congregated at a single location to return the cards. For this reason, contact events which occurred on the last day of the trial were omitted. Data which could not be cross-verified by case investigation was removed, and duplicate contact events were omitted.
+
+## Temporal Centrality
 
 Generalization of conventional centrality measures to temporal networks requires a high-granularity representation of the network as a graph. @kempe2000connectivity proposed a graph where the edge weights are contact times, however this model fails to account for differential rates of transmission. @kim2012temporal proposed a more general solution. Without loss of generality, consider a set of contact times, $\textit{t} = (1, 2, 3, \cdots, T)$. We can construct a time-ordered graph, $\textit{G}$, with vertices $\textit{V}$ and edges $\textit{E}$, where for all $\upsilon_{t}, \textit{u}_{k} \in V$, an edge $\textit{e}(\upsilon_{t}, \textit{u}_{k}) \in \textit{E}$ can only exist if k = t + 1. We can construct this graph for any temporal network without loss of information. Figure 1 illustrates this idea for a simple temporal network. In practice, computational constraints may require aggregation of contact times and thus loss of information. @rocha2014random proposed a centrality measure which considers the stationary distribution of a random walk at time t, however this measure does not generalize well to the Susceptible-Infected (SI) model, where infection is a permanent state. 
 
@@ -58,7 +71,7 @@ Define the distance of the temporal shortest path length over time interval [i, 
 \end{tikzpicture}
 ```
 
-**Temporal Prestige**
+## Temporal Prestige
 
 In this study, I am primarily concerned with the likelihood of infection, which is closely related to the more general notion of prestige. In a directional network, a prestigious node is the object of many ties i.e. has many incoming connections. This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are ill-defined in directional graphs, owing to the fact that directional graphs are not necessarily strongly-connected. Due to this limitation, we usually only consider nodes in the influence domain of node i i.e. the set of all nodes from whom $n_{i}$ is reachable. @lin1976foundations proposed the following measure of prestige for directional relations, called the proximity prestige:
 
@@ -74,7 +87,7 @@ When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon,
 $$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\textit{u}, \upsilon)}}} \tag{4.}$$
 We will call this the temporal prestige. The temporal prestige can be normalized by dividing by $(|\textit{V}| - 1)(j - i)$. 
 
-**Temporal Proximity Prestige**
+## Temporal Proximity Prestige
 
 @kim2012temporal showed that by considering all time-intervals, temporal closeness improves the quality of estimates in some situations. By this same token, we can modify equation (2.) to obtain
 
@@ -127,7 +140,7 @@ $$e^{\sum_{w \in E}{log(w)}}$$
 To generalize conventional notions of centrality, we need to define distance in terms of probability. For this reason, I propose a new measure of distance, which I call the stochastic distance:
 
 $$d^{\mathbf{p}} = 1 - \sum_{w \in E}{log(w)}$$
-Note that the probabilistic distance ranges from 1 to $\infty$, therefore we can adjust equations (4.) and (5.) to get
+Note that the stohastic distance ranges from 1 to $\infty$, therefore we can adjust equations (4.) and (5.) to get
 
 $$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d^{\mathbf{P}}_{t,j}(\textit{u}, \upsilon)}}} \tag{4.}$$
 and
@@ -136,7 +149,7 @@ $$P_{p}(\textit{u}_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, \textit{u}}/(g - 1)
 where $d^{\mathbf{P}}_{t,i}(\upsilon, \textit{u})$ is the shortest stochastic path distance between $\upsilon$ and $\textit{u}$ over the time interval [t, i]. Note that the shortest stochastic path is not necessarily equal to the shortest temporal path, and thus we cannot use conventional algorithms for calculating geodesics. Nevertheless, it can be shown that all stochastic shortest paths to $\textit{u}_{i}$ can be calculated in $O(i|V|^{2})$ time using a modified version of the Reversed Evolution Network (abbreviated as REN) algorithm proposed by @hanke2017clone.
 
 
-**Absorption Prestige**
+## Absorption Prestige
 
 In this section, I propose an ad-hoc prestige measure for epidemiological study. Without loss of generality, we will consider a temporal network consisting of a set of nodes, N, and positive integer contact times, $t = (1, 2, 3, \cdots, T)$. Let $p_{ijk}(t)$ denote the probability of transmission for the k'th contact between individual i and individual j, at time t. Let $n_{ij}(t)$ denote the number of contacts between i and j at time t. Define the transition probability matrix for each contact time as:
 
@@ -154,7 +167,7 @@ $$s_{ij}(t) = 1 - \prod_{k = 1}^{n_{ij}(t)}{(1 - p_{ijk}(t))}$$
 $$s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}$$
 Denote by $\mathbf{B}_{i}(t)$ the transition matrix obtained by taking $\mathbf{B}(t)$, and setting all entries in the i'th row to zero, except the diagonal entry (which is necessarily one). The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the temporal absorption prestige for individual i, at time t.
 
-**Example**
+## Example
 
 A simple example network of five nodes is shown in Example_Network.csv. For simplicity, a constant transmission probability was used for all contact events. In total, 500 simulations were run on this network. The absorption centrality and the number of times infected were calculated for the final contact time. Table 1 shows the correlation between the absorption centrality and the probability of infection by the end of the simulation.
 
@@ -234,6 +247,6 @@ rownames(data) = c("p = 0.3", "p = 0.2", "p = 0.1")
 knitr::kable(data, caption = "Pearson correlation between temporal absorption centrality and infected proportion over 500 simulations")
 ```
 
-**References**
+## References
 
 
