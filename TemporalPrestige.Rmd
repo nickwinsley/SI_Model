@@ -13,7 +13,7 @@ header-include:
 
 # Introduction
 
-Epidemiology is a subject of much contemporary relevance. Quarantine and case isolation have been shown to be effective policies to counteract pandemics (Auranen et al. 2023). Moreover, the successful trial of the "Covid-Card", for detecting potential transmission events, suggests that prophylactic identification and isolation of high-risk individuals could be practical in the future. The sociosphere of an individual can be modeled as a series of contact times, each paired with a measure of proximity. We abstractly represent each individual as a node, and each contact event by an undirected edge. This model is called a temporal network. The Susceptible-Infected model, abbreviated as SI, is an epidemiological model in which susceptible individuals can become infected due to a contact with an infectious individual. In the SI paradigm, we assume that infected individuals stay infected indefinitely. Social Network Analysis (SNA) is the study of individuals and their relationships with others. SNA involves constructing a network to model a real-world situation of interest, and calculating metrics related to the network structure. These metrics can be broadly categorized into two types: Population-level measures and Individual-level measures. Centrality is a commonly-used individual-level measure, defined as the influence of a particular individual within a network. Prestige (sometimes called status or rank) is a similar individual-level measure for directional graphs, which only considers incoming dyads.
+Epidemiology is a subject of much contemporary relevance. Quarantine and case isolation have been shown to be effective policies to counteract pandemics (Auranen et al. 2023). Moreover, the successful trial of the "Covid-Card", for detecting potential transmission events, suggests that prophylactic identification and isolation of high-risk individuals could be practical in the future. The sociosphere of an individual can be modeled as a series of contact times, each paired with a measure of proximity. We abstractly represent each individual as a node, and each contact event by an undirected edge. This model is called a temporal network. The Susceptible-Infected model, abbreviated as SI, is an epidemiological model in which susceptible individuals can become infected due to a contact with an infectious individual. In the SI paradigm, we assume that infected individuals stay infected indefinitely. Social Network Analysis (SNA) is the study of individuals and their relationships with others. SNA involves constructing a network to model a real-world situation of interest, and calculating metrics related to the network structure. These metrics can be broadly categorized into two types: Population-level measures and Individual-level measures. This study is primarily concerned with individual-level measures. Centrality is a commonly-used individual-level measure which is defined as the influence of a particular individual within a network. Prestige (sometimes called status or rank) is a similar individual-level measure for directional graphs, which only considers incoming dyads.
 
 To date, research on the SI model has largely been focused on computational simulations of many epidemics on a temporal network. In this paper, I propose several measures of prestige in temporal networks, and I apply them to the SI epidemiology framework.
 
@@ -137,10 +137,10 @@ When each edge is associated with a probability of transmission, as is the case 
 In accordance with the specification of the Susceptible-Infected model, the probability of transmission from an individual to them self is assumed to be one, and hence the natural log becomes 0. This representation has several useful mathematical properties. Consider a path, P, starting at $\upsilon_{i}$ and ending at $\textit{u}_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P. With edge weights on the log scale, the probability of path P can be calculated by:
 
 $$e^{\sum_{w \in E}{log(w)}}$$
-To generalize conventional notions of centrality, we need to define distance in terms of probability. For this reason, I propose a new measure of distance, which I call the stochastic distance:
+To generalize conventional measures of centrality, we need to define distance in terms of probability. To this end, I propose a new measure of distance, which I call the stochastic distance:
 
 $$d^{\mathbf{p}} = 1 - \sum_{w \in E}{log(w)}$$
-Note that the stohastic distance ranges from 1 to $\infty$, therefore we can adjust equations (4.) and (5.) to get
+Note that the stochastic distance ranges from 1 to $\infty$, therefore we can adjust equations (4.) and (5.) to get
 
 $$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d^{\mathbf{P}}_{t,j}(\textit{u}, \upsilon)}}} \tag{4.}$$
 and
@@ -246,6 +246,7 @@ rownames(data) = c("p = 0.3", "p = 0.2", "p = 0.1")
 ```{r, echo = FALSE}
 knitr::kable(data, caption = "Pearson correlation between temporal absorption centrality and infected proportion over 500 simulations")
 ```
+
 
 ## References
 

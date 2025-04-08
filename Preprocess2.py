@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-# Create csv file with
+# Create csv file with information on neighbours and number of contacts with each neighbour
 
 if (__name__ == '__main__'):
     df = pd.read_csv("Card Data Cleaned.csv")

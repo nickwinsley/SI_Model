@@ -16,17 +16,19 @@ bool compare(Node * a, Node * b) {
 }
 
 // Add contact time and increment number of contacts
-void addTime(Node * node1, Node * node2, unsigned int id1, unsigned int id2, double tcontact) {
+void addTime(Node * node1, Node * node2, unsigned int id1, unsigned int id2, double tcontact, double prob) {
     node1 -> t[id2][node1 -> nc[id2]] = tcontact;
+    node1 -> prob[id2][node1 -> nc[id2]] = prob;
 
     node2 -> t[id1][node2 -> nc[id1]] = tcontact;
+    node2 -> prob[id1][node2 -> nc[id1]] = prob;
 
     node1 -> nc[id2] += 1;
     node2 -> nc[id1] += 1;
 }
 
-void addContact(Node * node1, Node * node2, int id1, int id2, double tcontact) {
-    addTime(node1, node2, id1, id2, tcontact);
+void addContact(Node * node1, Node * node2, int id1, int id2, double tcontact, double prob) {
+    addTime(node1, node2, id1, id2, tcontact, prob);
 }
 
 // Read number of contacts
@@ -45,9 +47,11 @@ void read_conn(char * cfname) {
 
         // Initialize pointer array of contact times
         nodes[nid].t[id] = (double *)malloc(nconn * sizeof(double));
+        nodes[nid].prob[id] = (double *)malloc(nconn * sizeof(double));
         
         // Initialize pointer array of contact times
         nodes[id].t[nid] = (double *)malloc(nconn * sizeof(double));
+        nodes[id].prob[nid] = (double *)malloc(nconn * sizeof(double));
 
         if (nconn > 0) {
             (nodes + id) -> nb[(nodes + id) -> deg++] = nid;
@@ -77,7 +81,6 @@ void read_nodes(char * nfname, char * cfname) {
             Node tmp = { .heap = 0, .qr = id, .deg = 0, .nb = (unsigned int *)malloc(nb * sizeof(unsigned int)), .nc = (unsigned int *)malloc(2103 * sizeof(unsigned int)), .t = (double **)malloc(2103 * sizeof(double *)), .t_inf = END};
             memset(tmp.nc, 0, 2103 * sizeof(unsigned int));
             memcpy(nodes + id, &tmp, sizeof(Node));
-            printf("Added node: %d\n", id);
         }
     }
 
@@ -95,11 +98,24 @@ void read_data(char * fname, char * nfname, char * cfname) {
 
     // Read csv file and parse data
     while (fgets(line, 1024, fstream) != NULL) {
+
+        // Read row
         strtok(line, ",");
         unsigned int id = atoi(strtok(NULL, ","));
         unsigned int nid = atoi(strtok(NULL, ","));
         char * date = strtok(NULL, ",");
         int rssi = atoi(strtok(NULL, ","));
+        strtok(NULL, ",");
+        strtok(NULL, ",");
+        unsigned int class0 = atoi(strtok(NULL, ","));
+        unsigned int class1 = atoi(strtok(NULL, ","));
+        unsigned int class2 = atoi(strtok(NULL, ","));
+
+        class2 = class2 - class1;
+        class1 = class1 - class0;
+
+        // Calculate probability of transmission and time of contact
+        double prob = logistic(class0, class1, class2);
 
         unsigned int month, day, year, hour, minute;
 
@@ -123,36 +139,45 @@ void read_data(char * fname, char * nfname, char * cfname) {
         tcontact += (day - 1) * 24;
         tcontact += hour;
 
-        addContact(nodes + id, nodes + nid, id, nid, (double)tcontact);
+        addContact(nodes + id, nodes + nid, id, nid, (double)tcontact, prob);
     }
     fclose(fstream);
+}
+
+// Logistic regression to get probability of transmission
+double logistic(int class0, int class1, int class2) {
+    double exponent = exp(-4.595 + class0 * 0.1 + class1 * 0.2 + class2 * 0.4);
+    return exponent/(1 + exponent);
 }
 
 int main(int argc, char * argv[]) {
     unsigned int run;
     unsigned int seed;
-    if (argc < 2) {
+
+    if (argc < 3) {
         seed = 1;
         run = 1;
         printf("Incorrect number of command line arguments.");
     }
     else {
-        seed = atoi(argv[0]);
-        run = atoi(argv[1]);
+        seed = atoi(argv[1]);
+        run = atoi(argv[2]);
     }
-    read_data("Example_Network.csv", "Neighbours1.csv", "Contacts1.csv");
-    srand(time(NULL) + 10000 * seed);
+
+    read_data("Card Data Cleaned.csv", "Neighbours.csv", "Contacts.csv");
+
+    // Set seed for the mersenne twister rng algorithm
+    
+    srand(10000 * seed);
     unsigned int starting_node = (rand() % 5) + 1;
     (nodes + starting_node) -> t_inf = 0;
     add_node(starting_node);
     FILE * outstream;
 
-    if (access("Results2.csv", F_OK) != 0) {
-        outstream = (FILE *)fopen("Results2.csv", "w");
-        printf("Hello\n");
+    if (access("Results.csv", F_OK) != 0) {
+        outstream = (FILE *)fopen("Results.csv", "w");
         for (unsigned int i = 0; i < 2103; i++) {
             if (!compare(nodes + i, &zero)) {
-                printf("Hello #2\n");
                 char buffer[4];
                 memset(buffer, 0, 4);
                 snprintf(buffer, sizeof(buffer), "%u", i);
@@ -166,15 +191,14 @@ int main(int argc, char * argv[]) {
     }
 
     else {
-        outstream = (FILE *)fopen("Results2.csv", "a");
+        outstream = (FILE *)fopen("Results.csv", "a");
     }
 
-    
+    // Run event-based algorithm
     while (g.nheap > 0) {
         unsigned int next = g.heap[1];
         del_root();
         transmit(nodes + next, (nodes + next) -> t_inf);
-
     }
 
     for (unsigned int i = 0; i < 2103; i++) {

@@ -67,7 +67,7 @@ void addContact(vector<pair<int, map<int, set<int>>>> &vec, int time, int id1, i
 
 int main(int argc, char * argv[]) {
 
-    vector<pair<int, map<int, set<int>>>> contacts;
+    vector<pair<pair<int, double>, map<int, set<int>>>> contacts;
 
     FILE * instream = fopen("Card Data Cleaned.csv", "r");
 
@@ -87,11 +87,15 @@ int main(int argc, char * argv[]) {
             continue;
         }
 
+        strtok(NULL, ",");
+        strtok(NULL, ",");
+        strtok(NULL, ",");
+
         if (contacts.size() == 0) {
             map<int, set<int>> map;
             map[id1] = {id2};
             map[id2] = {id1};
-            contacts.push_back({time, map});
+            contacts.push_back({{time, log(prob)}, map});
             continue;
         }
 

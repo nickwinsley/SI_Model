@@ -17,6 +17,7 @@ typedef struct {
     unsigned int heap; // Position of node in heap (zero if not in heap)
     unsigned int *nb; // entry i is the qr code of the ith neighbour
     double **t; // Array of pointer arrays. Entry i is the array of contact times for node with QR Code i.
+    double **prob // Entry i is the probabilities corresponding to contact times in t
     double t_inf; // Earliest time of infection
 }Node;
 
