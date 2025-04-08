@@ -134,7 +134,7 @@ When each edge is associated with a probability of transmission, as is the case 
 \end{tikzpicture}
 ```
 
-In accordance with the specification of the Susceptible-Infected model, the probability of transmission from an individual to them self is assumed to be one, and hence the natural log becomes 0. This representation has several useful mathematical properties. Consider a path, P, starting at $\upsilon_{i}$ and ending at $\textit{u}_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P. With edge weights on the log scale, the probability of path P can be calculated by:
+In accordance with the Susceptible-Infected (SI) framework, the probability of transmission from an individual to them self is assumed to be one, and hence the natural log becomes 0. This representation has several useful mathematical properties. Consider a path, P, starting at $\upsilon_{i}$ and ending at $\textit{u}_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P. With edge weights on the log scale, the probability of path P can be calculated by:
 
 $$e^{\sum_{w \in E}{log(w)}}$$
 To generalize conventional measures of centrality, we need to define distance in terms of probability. To this end, I propose a new measure of distance, which I call the stochastic distance:
@@ -217,7 +217,7 @@ res = rev(centrality$Centrality)
 corr = c(corr, cor(x = prop, y = res, method = "pearson"))
 ```
 
-```{r, table.cap = "Pearson Correlation between temporal absorption centrality and proportion of times infected over 500 simulations", echo = FALSE}
+```{r, table.cap = "Pearson Correlation between temporal absorption centrality and number of times infected over 500 simulations", echo = FALSE}
 
 df = read.csv("Results2.csv")
 df = df[, 1:5]
@@ -247,6 +247,16 @@ rownames(data) = c("p = 0.3", "p = 0.2", "p = 0.1")
 knitr::kable(data, caption = "Pearson correlation between temporal absorption centrality and infected proportion over 500 simulations")
 ```
 
+# Simulation
+
+Simulation is an effective way of ascertaining properties of a temporal network. Some classical models have been deterministic; the differential equation model of @kermack1927contribution is a notable example. However, deterministic models typically rely on simplifying assumptions, and thus do not capture the full granularity of the network. Stochastic simulations typically follow the standard Markovian framework, in which we assume transmission depends only on the current state of the network. The contact times can be thought of as discrete snapshots of the network, and it is assumed that during each snapshot, only one "hop" can occur. In other words, if we have two contacts (i, k, t) and (k, j, t), i cannot infect j (via k) at time t. The standard Markovian framework typically employs simplifying assumptions to ensure ease of implementation. The Susceptible-Infected-Recovered (SIR) model is a common implementation which assumes that all individuals are susceptible at the beginning, and once infected they remain infectious for a recovery period. Once recovered, individuals cannot be infected again. Other common implementations include the Susceptible-Infected (SI) model and the Susceptible-Infected-Susceptible (SIS) model.
+
+## Algorithms
+
+For simulation, we use the event-based algorithm first proposed by @kiss2017mathematics, and described in great detail by @holme2021fast. In this algorithm, contacts are conveniently stored an adjacency list format (each node is represented by a data structure with a list of neighbours). For each neighbour, a sorted list of contact times (and associated transmission probabilities) is stored. All infection events are stored in a min-heap ordered by infection time. At each step, the earliest infection is removed and processes. This continues until no infection events remain in the heap. When node i is infected, we iterate through the list of neighbours and add the earliest time of infection (if any) to the heap. If we assume a constant transmission probability, the index of the first infectious contact follows a geometric distribution. We can sample this index by
+
+$$\lceil \frac{log(1 - X)}{log(1 - \beta)} \rceil$$
+where $\beta$ is the fixed transmission probability and $X \sim Uniform(0, 1)$.
 
 ## References
 

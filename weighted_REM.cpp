@@ -34,11 +34,11 @@ int getTime(char * datetime) {
     return floor(tcontact * 10);
 }
 
-void addContact(vector<pair<int, map<int, set<int>>>> &vec, int time, double prob, int id1, int id2, int start, int end) {
+void addContact(vector<pair<int, map<int, set<pair<int, double>>>>> &vec, int time, double prob, int id1, int id2, int start, int end) {
     if (end == start + 1) {
         map<int, set<int>> map;
-        map[id1] = {id2};
-        map[id2] = {id1};
+        map[id1] = {{id2, log(prob)}};
+        map[id2] = {{id1, log(prob)}};
         if (time >= (vec.begin() + start) -> first) {
             vec.insert(vec.begin() + end, {time, map});
             return;
@@ -53,8 +53,8 @@ void addContact(vector<pair<int, map<int, set<int>>>> &vec, int time, double pro
     int mid_time = vec[mid].first;
 
     if (time == mid_time) {
-        vec[mid].second[id1].insert(id2);
-        vec[mid].second[id2].insert(id1);
+        vec[mid].second[id1].insert({id2, log(prob)});
+        vec[mid].second[id2].insert({id1, log(prob)});
         return;
     }
     
@@ -69,7 +69,7 @@ void addContact(vector<pair<int, map<int, set<int>>>> &vec, int time, double pro
 int main(int argc, char * argv[]) {
 
     // Each pair contains a time, and a map of contacts for each node
-    vector<pair<int, map<int, set<int>>>> contacts;
+    vector<pair<int, map<int, set<pair<int, double>>>>> contacts;
 
     FILE * instream = fopen("Card Data Cleaned.csv", "r");
 
@@ -100,16 +100,16 @@ int main(int argc, char * argv[]) {
         double prob = logistic(class0, class1, class2);
 
         if (contacts.size() == 0) {
-            map<int, set<int>> map;
-            map[id1] = {id2};
-            map[id2] = {id1};
+            map<int, set<pair<int, double>>> map;
+            map[id1] = {{id2, log(prob)}};
+            map[id2] = {{id1, log(prob)}};
             contacts.push_back({time, map});
             continue;
         }
 
         else if (time == contacts.front().first) {
-            contacts.front().second[id1].insert(id2);
-            contacts.front().second[id2].insert(id1);
+            contacts.front().second[id1].insert({id2, log(prob)});
+            contacts.front().second[id2].insert({id1, log(prob)});
             continue;
         }
 
@@ -120,39 +120,13 @@ int main(int argc, char * argv[]) {
 
     int target = 1; // atoi(argv[1]);
     set<int> reachable = {target};
-    map<int, int> times = {};
+
+    map<int, double> shortest_paths = {};
+
     int end_time = (--contacts.end()) -> first;
-    auto back = contacts.end();
+
+    auto back = contacts.end(); // Pointer for iterating backwards through contacts
     back--;
-
-    // Calculate shortest path distances
-    while (back >= contacts.begin()) {
-        pair<int, map<int, set<int>>> pair = *back;
-        back--;
-
-        int time = pair.first;
-        auto first = reachable.begin();
-        auto last = reachable.end();
-        while (first != last) {
-
-            int node = *first;
-            auto start = pair.second[node].begin();
-            auto end = pair.second[node].end();
-            while (start != end) {
-
-                int next = *start;
-                if (reachable.find(next) != reachable.end()) {
-                    start++;
-                    continue;
-                }
-                reachable.insert(next);
-
-                times[next] = end_time - time;
-                start++;
-            }
-            first++;
-        }
-    }
 
     // Calculate temporal proximity prestige
 
@@ -160,9 +134,38 @@ int main(int argc, char * argv[]) {
 
     double tp = 0; // Temporal Prestige
 
-    int ind = 0;
+    // Calculate shortest path distances
+    while (back >= contacts.begin()) {
+        pair<int, map<int, set<pair<int, double>>> pair = *back;
+        back--;
 
-    map<int, int> dist;
+        int time = pair.first;
+        auto first = reachable.begin();
+        auto last = reachable.end();
+        double tpp_sum = 0;
+        while (first != last) {
+
+            int node = *first;
+            auto start = pair.second[node].begin();
+            auto end = pair.second[node].end();
+            while (start != end) {
+                pair<int, double> next = *start;
+
+                if (reachable.find(next.first) == reachable.end()) {
+                    reachable.insert(next.first);
+                }
+
+                double length = shortest_paths[node] + next.second;
+
+                shortest_paths[next.first] = max(length, shortest_paths[next.first]);
+
+                start++;
+            }
+            first++;
+        }
+
+        tpp += ((double)reachable.size()/(double)750)/(tpp_sum/(double)reachable.size());
+    }
 
     int prev;
 
