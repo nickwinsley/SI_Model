@@ -9,6 +9,11 @@ GLOBALS g;
 Node zero = {.qr = 0};
 double beta = 0.1;
 
+// Logistic regression to get probability of transmission
+double logistic(int class0, int class1, int class2) {
+    double exponent = exp(-4 + class0 * 0.1 + class1 * 0.2 + class2 * 0.4);
+    return exponent/(1 + exponent);
+}
 
 // Check if node is uninitialized
 bool compare(Node * a, Node * b) {
@@ -25,6 +30,9 @@ void addTime(Node * node1, Node * node2, unsigned int id1, unsigned int id2, dou
 
     node1 -> nc[id2] += 1;
     node2 -> nc[id1] += 1;
+
+    node1 -> beta[id2] = ((node1 -> beta[id2]) * (node1 -> nc[id2] - 1) + prob)/(node1 -> nc[id2]);
+    node2 -> beta[id1] = ((node2 -> beta[id1]) * (node2 -> nc[id1] - 1) + prob)/(node2 -> nc[id1]);
 }
 
 void addContact(Node * node1, Node * node2, int id1, int id2, double tcontact, double prob) {
@@ -65,8 +73,8 @@ void read_conn(char * cfname) {
 
 void read_nodes(char * nfname, char * cfname) {
     FILE * fstream = fopen(nfname, "r");
-    nodes = (Node *)malloc(2103 * sizeof(Node));
-    for (int i = 0; i < 2103; i++) {
+    nodes = (Node *)malloc(752 * sizeof(Node));
+    for (int i = 0; i < 752; i++) {
         memcpy(nodes + i, &zero, sizeof(Node));
     }
     char line[1024];
@@ -78,8 +86,9 @@ void read_nodes(char * nfname, char * cfname) {
         
         // If first node is uninitialized
         if (compare(nodes + id, &zero)) {
-            Node tmp = { .heap = 0, .qr = id, .deg = 0, .nb = (unsigned int *)malloc(nb * sizeof(unsigned int)), .nc = (unsigned int *)malloc(2103 * sizeof(unsigned int)), .t = (double **)malloc(2103 * sizeof(double *)), .t_inf = END};
-            memset(tmp.nc, 0, 2103 * sizeof(unsigned int));
+            Node tmp = { .heap = 0, .qr = id, .deg = 0, .nb = (unsigned int *)malloc(nb * sizeof(unsigned int)), .nc = (unsigned int *)malloc(752 * sizeof(unsigned int)), .t = (double **)malloc(752 * sizeof(double *)), .t_inf = END, .prob = (double **)malloc(752 * sizeof(double *)), .beta = (double *)malloc(752 * sizeof(double))};
+            memset(tmp.beta, 0, 752 * sizeof(double));
+            memset(tmp.nc, 0, 752 * sizeof(unsigned int));
             memcpy(nodes + id, &tmp, sizeof(Node));
         }
     }
@@ -89,7 +98,7 @@ void read_nodes(char * nfname, char * cfname) {
 }
 
 void read_data(char * fname, char * nfname, char * cfname) {
-    GLOBALS g1 = { .heap = (unsigned int *)malloc(336423*sizeof(unsigned int)), .nheap = 0, .n_inf = 0 };
+    GLOBALS g1 = { .heap = (unsigned int *)malloc(30449*sizeof(unsigned int)), .nheap = 0, .n_inf = 0 };
     memcpy(&g, &g1, sizeof(GLOBALS));
     read_nodes(nfname, cfname);
     FILE* fstream = fopen(fname, "r");
@@ -122,9 +131,11 @@ void read_data(char * fname, char * nfname, char * cfname) {
         char time[2];
 
 
-        int res = sscanf(date, "%u/%u/%u %u:%u:00 %s", &month, &day, &year, &hour, &minute, time);
+        int res = sscanf(date, "%u/%u/%u %u:%u", &month, &day, &year, &hour, &minute);
         if (res != 5) {
-            printf("Failed to read contact data. %u %u %u %u %u\n", month, day, year, hour, minute);
+            //printf("Failed to read contact data. %u %u %u %u %u\n", month, day, year, hour, minute);
+            hour = 0;
+            minute = 0;
         }
 
         unsigned int tcontact = 0;
@@ -142,12 +153,6 @@ void read_data(char * fname, char * nfname, char * cfname) {
         addContact(nodes + id, nodes + nid, id, nid, (double)tcontact, prob);
     }
     fclose(fstream);
-}
-
-// Logistic regression to get probability of transmission
-double logistic(int class0, int class1, int class2) {
-    double exponent = exp(-4.595 + class0 * 0.1 + class1 * 0.2 + class2 * 0.4);
-    return exponent/(1 + exponent);
 }
 
 int main(int argc, char * argv[]) {
@@ -168,15 +173,33 @@ int main(int argc, char * argv[]) {
 
     // Set seed for the mersenne twister rng algorithm
     
-    srand(10000 * seed);
-    unsigned int starting_node = (rand() % 5) + 1;
+    srand(9995 * seed);
+
+    // Randomize starting nodes
+    unsigned int starting_node = (rand() % 751) + 1;
     (nodes + starting_node) -> t_inf = 0;
     add_node(starting_node);
+
+    unsigned int starting_node2 = (rand() % 751) + 1;
+    while (starting_node2 == starting_node) {
+        starting_node2 = (rand() % 751) + 1;
+    }
+    (nodes + starting_node2) -> t_inf = 0;
+    add_node(starting_node2);
+
+    unsigned int starting_node3 = (rand() % 751) + 1;
+    while (starting_node3 == starting_node || starting_node3 == starting_node2) {
+        starting_node3 = (rand() % 751) + 1;
+    }
+    (nodes + starting_node3) -> t_inf = 0;
+    add_node(starting_node3);
+
+
     FILE * outstream;
 
-    if (access("Results.csv", F_OK) != 0) {
-        outstream = (FILE *)fopen("Results.csv", "w");
-        for (unsigned int i = 0; i < 2103; i++) {
+    if (access("Fixed_Probability_Results.csv", F_OK) != 0) {
+        outstream = (FILE *)fopen("Fixed_Probability_Results.csv", "w");
+        for (unsigned int i = 0; i < 752; i++) {
             if (!compare(nodes + i, &zero)) {
                 char buffer[4];
                 memset(buffer, 0, 4);
@@ -191,8 +214,10 @@ int main(int argc, char * argv[]) {
     }
 
     else {
-        outstream = (FILE *)fopen("Results.csv", "a");
+        outstream = (FILE *)fopen("Fixed_Probability_Results.csv", "a");
     }
+
+    printf("Started simulation.\n");
 
     // Run event-based algorithm
     while (g.nheap > 0) {
@@ -201,17 +226,23 @@ int main(int argc, char * argv[]) {
         transmit(nodes + next, (nodes + next) -> t_inf);
     }
 
-    for (unsigned int i = 0; i < 2103; i++) {
-        if (!compare(nodes + i, &zero)) {
-            char buffer[20];
-            memset(buffer, 0, 20);
-            snprintf(buffer, sizeof(buffer), "%.3lf", (nodes + i) -> t_inf);
-            fprintf(outstream, "%s,", buffer);
+    printf("Finished simulation.\n");
 
+    for (unsigned int i = 0; i < 752; i++) {
+        if (!compare(nodes + i, &zero)) {
+            //char buffer[20];
+            //memset(buffer, 0, 20);
+            //snprintf(buffer, sizeof(buffer), "%.3lf", (nodes + i) -> t_inf);
+            if ((nodes + i) -> t_inf == END) {
+                fprintf(outstream, "%d,", 0);
+                continue;
+            }
+            fprintf(outstream, "%d,", 1);
         }
     }
 
     fputc('\n', outstream);
     fclose(outstream);
+    printf("%d\n", run);
     return 1;
 }

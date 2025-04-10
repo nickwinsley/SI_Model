@@ -9,7 +9,7 @@
       "stopAtEntry": false,
       "externalConsole": true,
       "cwd": "c:/Users/nickw/Downloads/SI_Model",
-      "program": "c:/Users/nickw/Downloads/SI_Model/tpp.exe",
+      "program": "c:/Users/nickw/Downloads/SI_Model/read.exe",
       "MIMode": "gdb",
       "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",
       "setupCommands": [

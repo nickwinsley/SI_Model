@@ -34,22 +34,24 @@ void transmit(Node * root, double tcont) {
             continue;
         }
 
-        // Generate first time of infection
-        // double uniform = (double)rand() / (double)RAND_MAX;
-        // unsigned int first_infection = (unsigned int)ceil(log(1 - uniform)/log(1 - beta));
-        // if (first_infection > length) {
-           // continue;
-        //}
+        double p = root -> beta[id];
 
-        for (int a = begin; a < nconn; a++) {
-            double prob = root -> prob[id][a];
-            double uniform = (double)rand() / (double)RAND_MAX;
-            if (uniform < prob) {
-                infect(root, nodes + id, root -> t[id][a]);
-                break;
-            }
+        // Generate first time of infection
+        double uniform = (double)rand() / (double)RAND_MAX;
+        unsigned int first_infection = (unsigned int)ceil(log(1 - uniform)/log(1 - p));
+        if (first_infection > length) {
+            continue;
         }
 
-        //infect(root, nodes + id, root -> t[id][first_infection + begin - 1]);
+        // for (int a = begin; a < nconn; a++) {
+        //     double prob = root -> prob[id][a];
+        //     double uniform = (double)rand() / (double)RAND_MAX;
+        //     if (uniform < prob) {
+        //         infect(root, nodes + id, root -> t[id][a]);
+        //         break;
+        //     }
+        // }
+
+        infect(root, nodes + id, root -> t[id][first_infection + begin - 1]);
     }
 }
