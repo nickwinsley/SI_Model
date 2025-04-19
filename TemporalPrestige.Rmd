@@ -239,7 +239,12 @@ Return tcp\;
 
 ## Absorption Prestige
 
-@rocha2014random proposed TempoRank, an extension of the illustrious Google PageRank algorithm to temporal networks. TempoRank considers the stationary distribution of a random walk through the temporal network. However, TempoRank does not generalize well to epidemiology modelling, where infection may be a permanent state. Intuitively, some sort of aggregation over all previous contacts would seem to be a preferable option. In this section, I propose an ad-hoc prestige measure for epidemiological study. Without loss of generality, we will consider a temporal network consisting of a set of nodes, N, and positive integer contact times, $t = (1, 2, 3, \cdots, T)$. Let $p_{ijk}(t)$ denote the probability of transmission for the k'th contact between individual i and individual j, at time t. Let $n_{ij}(t)$ denote the number of contacts between i and j at time t. Define the transition probability matrix for each contact time as:
+@rocha2014random proposed TempoRank, an extension of the illustrious Google PageRank algorithm to temporal networks. TempoRank considers the stationary distribution of a random walk through the temporal network. However, TempoRank does not generalize well to epidemiology modelling, where infection may be a permanent state. Intuitively, some sort of aggregation over all previous contacts would seem to be a preferable option. In general, I propose two broad categories of temporal centrality:
+
+   * Centrality of an individual at a particular point in time
+   * Centrality of an individual aggregated over all time points
+
+Temporal proximity prestige and temporal closeness prestige belong to the latter category. For the former category, I recommend TempoRank or the more general in-weight rank (which will be discussed later). In this section, I propose an aggregate metric for temporal networks. Without loss of generality, we will consider a temporal network consisting of a set of nodes, N, and positive integer contact times, $t = (1, 2, 3, \cdots, T)$. Let $p_{ijk}(t)$ denote the probability of transmission for the k'th contact between individual i and individual j, at time t. Let $n_{ij}(t)$ denote the number of contacts between i and j at time t. Define the transition probability matrix for each contact time as:
 
 $$\mathbf{B}_{ij}(t) = \left\{\begin{matrix}
   1 & i = j, s_{i}(t) = 0 \\
@@ -336,9 +341,10 @@ For the transition matrix $\mathbf{B}(t)$, the second condition necessarily hold
   * Aggregate transition matrices (by matrix multiplication) until the condition holds.
   * Use the stationary distribution of the entire temporal network as the initial rank.
   * Arbitrarily choose a solution to equation 7.
-  * If the state of the network is known at time 0, set the rank to 1 for infected individuals, and 0 for healthy individuals.
+  * If the state of the network is known at time 0, set the rank to 1 for infected
+  individuals, and 0 for healthy individuals.
   
-In general, the initial rank may be estimable from exogenous prior information (e.g. disease tests, qualitative case investigation etc). It should be noted that the rank can only be meaningfully compared between nodes in the same network, at the same time point. For cross-comparison between networks and/or time points, the ranks must be scaled accordingly. 
+In general, the initial rank may be estimable from exogenous prior information (e.g. disease tests, qualitative case investigation etc). It should be noted that the rank can only be meaningfully compared between nodes in the same network, at the same time point. For cross-comparison between networks and/or time points, the ranks must be scaled accordingly. If the initial rank is chosen to be the stationary distribution of the T-step transition matrix (where T is the final time of the temporal network), then the formula reduces and the in-weight rank is identical to the TempoRank.
 
 
 
