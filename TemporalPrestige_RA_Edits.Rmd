@@ -105,7 +105,7 @@ Generalization of conventional centrality measures to temporal networks requires
 
 To illustrate how this works, suppose an undirected network consists of five nodes with a total of four contact events occurring over two time periods, as shown in Table XX.
 
-\begin{table}[!h]
+\begin{table}[!ht]
   \begin{tabular}{|c|c|c|}
   \hline
     First Individual & Second Individual & Time of contact \\ \hline
@@ -116,10 +116,10 @@ To illustrate how this works, suppose an undirected network consists of five nod
   \end{tabular}
 \end{table}
 
-Figure 1 shows the corresponding representation as a directed graph.  **(It is important to explain how this graph is constructed.  You seem to want to immediately jump to the representation as a digraph without explaining how that comes about from two different networks at two time points.  Also, your figure has three time points but your table only has two.)**
+Figure \ref{fig:temporal-network} shows the corresponding representation as a directed graph.  **(It is important to explain how this graph is constructed.  You seem to want to immediately jump to the representation as a digraph without explaining how that comes about from two different networks at two time points.  Also, your figure has three time points but your table only has two.)**
 
 
-```{r, engine = "tikz", echo = FALSE, fig.cap = "A simple temporal network represented as a digraph. The temporal shortest path from a to b is shown in red."}
+```{r temporal-network, engine = "tikz", echo = FALSE, fig.cap = "A simple temporal network represented as a digraph. The temporal shortest path from a to b is shown in red."}
 \begin{tikzpicture}
 
 \tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
@@ -205,9 +205,14 @@ We will call this the temporal prestige.  **(Probably better to refer to this as
 @kim2012temporal showed that by considering all time intervals, temporal closeness improves the quality of estimates in some situations.  **(What is meant by "improves the quality of estimates", and in which situations?  What is the reasoning behind why this would lead to a better estimate of centrality/prestige?)** By this same token, we can modify equation (2) to obtain
 
 $$P_{p}(u_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, u}/(g - 1)}{\sum_{\upsilon \in \textit{N}}{d_{t, i}(\upsilon, u)}/I_{t, i, u}} \tag{5}$$
-where $I_{t,i,u}$ is the influence domain of $u$ over the time interval [t, i]. We will call this the temporal proximity prestige. The temporal proximity prestige can be normalized by dividing by $i$.  
 
-When each edge is associated with a probability of transmission, as is the case with epidemiology models, the probability of a path may be of greater interest than the temporal length. In this case, we can generalize existing methods by considering a digraph where the edge weights are the natural log of the probability. Figure 2 shows a graph of this kind.
+**(I might suggest representing time by a superscript.)**
+
+where $I_{t,i,u}$ is the influence domain of $u$ over the time interval $[t, i]$. We will call this the temporal proximity prestige. The temporal proximity prestige can be normalized by dividing by $i$, the total number of time points considered.  
+
+## Incorporating Edge Weights
+
+When each edge is associated with a probability of transmission, as is the case with epidemiology models, the probability of a path may be of greater interest than the temporal length. In this case, we can generalize existing methods by considering a digraph where the edge weights are the natural log of the probability.  **(You will want to brief explanation why it is preferable to use log probability rather than simply the probability as the edge weight.  Helpful to show how the probability of a path is calculated, which is given by a product of probabilities, and the log is order-preserving and makes things additive.)** Figure 2 shows a graph of this kind.
 
 ```{r, engine = "tikz", echo = FALSE, fig.cap = "A simple temporal network represented as a digraph"}
 \begin{tikzpicture}
@@ -247,19 +252,21 @@ When each edge is associated with a probability of transmission, as is the case 
 \end{tikzpicture}
 ```
 
-In accordance with the Susceptible-Infected (SI) framework, the probability of transmission from an individual to them self is assumed to be one, and hence the natural log becomes 0. This representation has several useful mathematical properties. Consider a path, P, starting at $\upsilon_{i}$ and ending at $u_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P. The probability of path P can be calculated by:
+In accordance with the Susceptible-Infected (SI) framework, the probability of transmission from an individual to them self is assumed to be 1 **(You can probably more clearly state why this makes sense. This is really a transmission from one time point to the next, so if they have the disease at one time point, then necessarily they will remain infected at the next time point, so the probability of transmission of the disease to themself at this later time point must be 1.)**, and hence the natural log becomes 0. 
+
+This representation has several useful mathematical properties. Consider a path, P, starting at $\upsilon_{i}$ and ending at $u_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P.  **(Might recomend that you set up Figure 2 as a two-panel figure with probabilities in the left panel and the right panel in line with the current Figure 2.  Then you can present the representation of path probabilities under each construction.)**  Then it  The probability of path P can be calculated by:
 
 $$e^{\sum_{w \in E}{log(w)}}$$
-In order to generalize conventional measures of centrality, we need to define distance in terms of probability. To this end, I propose a new measure of distance, which I call the stochastic distance:
+In order to generalize to conventional measures of centrality, we need to define distance in terms of probability.  **(If you talk about probability as being multiplicative up until now, then here is where it makes sense to talk about traditional measures of centrality largely using additive measures of distance, and considering probabilities on a log scale allows us to treat these edge weights in a similar manner.)** To this end, we propose a new measure of distance, which we call the stochastic distance:
 
 $$d^{\mathbf{p}} = 1 - \sum_{w \in E}{log(w)}$$
-Note that the stochastic distance ranges from 1 to $\infty$, therefore we can adjust equations (4.) and (5.) to get
+Note that the stochastic distance ranges from 1 to $\infty$ with values closer to 1 corresponding to higher probability paths.  Using this representation, we can adjust equations (4) and (5) to produce
 
 $$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{u \in \textit{V}}{\frac{1}{d^{\mathbf{P}}_{t,j}(u, \upsilon)}}} \tag{4.}$$
 and
 
 $$P_{p}(u_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, u}/(g - 1)}{\sum_{\upsilon \in \textit{N}}{d^{\mathbf{P}}_{t, i}(\upsilon, u)}/I_{t, i, u}} \tag{5.}$$
-where $d^{\mathbf{P}}_{t,i}(\upsilon, u)$ is the shortest stochastic path distance between $\upsilon$ and $u$ over the time interval [t, i]. Note that the shortest stochastic path is not necessarily equal to the shortest temporal path, and thus we cannot use conventional algorithms for calculating geodesics. Nevertheless, it can be shown that for the representation in Figure 2, all stochastic shortest paths to $u_{i}$ can be calculated in $O(i|V|^{2})$ time using a modified version of the Reversed Evolution Network (abbreviated as REN) algorithm proposed by @hanke2017clone. Algorithm 1 shows the psuedocode for this algorithm.
+where $d^{\mathbf{P}}_{t,i}(\upsilon, u)$ is the shortest stochastic path distance between $\upsilon$ and $u$ over the time interval $[t, i]$. Note that the shortest stochastic path is not necessarily equal to the shortest temporal path, and thus we cannot use conventional algorithms for calculating geodesics. **(Can you explain this a bit further?  How are these typically efficiently calculated, and why does introduction of edge weights complicate this?)**  Nevertheless, it can be shown that for the representation in Figure 2, all stochastic shortest paths to $u_{i}$ can be calculated in $O(i|V|^{2})$ time using a modified version of the @hanke2017clone reversed evolution network (REN) algorithm. Algorithm 1 shows psuedocode for this algorithm.
 
 
 \begin{algorithm}
@@ -304,12 +311,12 @@ Return tcp\;
 
 ## Absorption Prestige
 
-@rocha2014random proposed TempoRank, an extension of the illustrious Google PageRank algorithm to temporal networks. TempoRank considers the stationary distribution of a random walk through the temporal network. However, TempoRank does not generalize well to epidemiology modelling, where infection may be a permanent state. Intuitively, some sort of aggregation over all previous contacts would seem to be a preferable option. In general, I propose two broad categories of temporal centrality:
+@rocha2014random proposed TempoRank, an extension of the Google PageRank algorithm to temporal networks.  **(Should probably include a citation for PageRank as well.)** TempoRank considers the stationary distribution of a random walk through a temporal network. However, TempoRank does not generalize well to epidemiology modelling, where infection may be a permanent state.  **(Why not?  Might make sense to first talk about how TempoRank works before talking about limitations/difficulties and how you might address those.)** Intuitively, some sort of aggregation over all previous contacts would seem to be a preferable option. In general, I propose two broad categories of temporal centrality:
 
    * Centrality of an individual at a particular point in time
    * Centrality of an individual aggregated over all time points
 
-Temporal proximity prestige and temporal closeness prestige belong to the latter category. For the former category, I recommend TempoRank or the more general in-weight rank (which will be discussed later). In this section, I propose an aggregate metric for temporal networks. Without loss of generality, we will consider a temporal network consisting of a set of nodes, N, and positive integer contact times, $t = (1, 2, 3, \cdots, T)$. Let $p_{ijk}(t)$ denote the probability of transmission for the k'th contact between individual i and individual j, at time t. Let $n_{ij}(t)$ denote the number of contacts between i and j at time t. Define the transition probability matrix for each contact time as:
+Temporal proximity prestige and temporal closeness prestige belong to the latter category. For the former category, I recommend TempoRank or the more general in-weight rank (which will be discussed later). In this section, I propose an aggregate metric for temporal networks. Without loss of generality, we will consider a temporal network consisting of a set of nodes, N, and positive integer contact times, $t = (1, 2, 3, \cdots, T)$. Let $p_{ijk}(t)$ denote the probability of transmission for the $k^{\text{th}}$ contact between node $i$ and node $j$, at time $t$. Let $n_{ij}(t)$ denote the number of contacts **(Number? Cumulative number at time $t$? Duration?)** between i and j at time t. Define the transition probability matrix for each contact time **(Time point?)** as:
 
 $$\mathbf{B}_{ij}(t) = \left\{\begin{matrix}
   1 & i = j, s_{i}(t) = 0 \\
@@ -323,7 +330,9 @@ where $s_{ij}(t)$ and $s_{i}(t)$ are defined as:
 
 $$s_{ij}(t) = 1 - \prod_{k = 1}^{n_{ij}(t)}{(1 - p_{ijk}(t))}$$
 $$s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}$$
-Denote by $\mathbf{B}_{i}(t)$ the transition matrix obtained by taking $\mathbf{B}(t)$, and setting all entries in the i'th row to zero, except the diagonal entry (which is necessarily one). The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the temporal absorption prestige for individual i, at time t.
+**(Might make sense to explain $s_{ij}(t)$ and $s_{i}(t)$ first?  Then present $\mathbf{B}$ in matrix form?)**
+
+Denote by $\mathbf{B}_{i}(t)$ the transition matrix obtained by taking $\mathbf{B}(t)$, and setting all entries in the $i^{\text{th}}$ row to zero, except the diagonal entry (which is necessarily one). The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the temporal absorption prestige for individual i, at time t.
 
 ## Example
 
