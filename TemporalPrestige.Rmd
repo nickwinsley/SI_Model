@@ -24,12 +24,11 @@ Social networks can be modeled as a number of close personal contacts, each pair
 
 Contact tracing is a methodology for combating the spread of infectious diseases transmitted by close personal contacts. By uncovering close contact events, contact tracing can be used to identify people at high risk of infection, and foresee future growth or contraction of the epidemic. This information can inform further interventions (e.g. quarantining, disease tests, vaccination). Traditional contact tracing involved the reporting of confirmed cases to authorities. When a new case is reported, a health official asks the patient to recall all recent contacts. Although this method has been shown to be effective (@fetzer2021measuring), it is labor-intensive and heavily reliant on human memory. Recently, digital contact tracing has emerged as a cost-effective (albeit unreliable) alternative to conventional contact tracing methods. Digital contact tracing uses portable bluetooth devices which detect close contacts between carriers of the device. In addition, digital contact tracing can provide indicators of proximity between the interacting individuals. Statistical methods are often used (in combination with contact tracing) to identify high-risk individuals in a social network. This study investigates two common methods for the analysis of contact tracing data: Simulation and Social Network Analysis (SNA).
 
+Simulation is an effective method for ascertaining properties of a temporal network. Some classical models have been deterministic: the differential equation model of @kermack1927contribution is a notable example. However, deterministic models typically rely on simplifying assumptions, and thus do not capture the full granularity of the network. The Susceptible-Infected model, abbreviated as SI, is an epidemiological framework in which susceptible individuals can become infected due to a contact with an infectious individual. In the SI paradigm, we assume that infected individuals stay infected indefinitely. The SI model may be useful for modelling the growth of diseases which are incurable (e.g. HIV, Hepatitis B). Other commonly-used assumptions include the Susceptible-Infected-Recovered (SIR) model and the Susceptible-Infected-Susceptible (SIS) model. Key metrics are averaged over many simulations to approximate a true underlying distribution. A plethora of summary metrics have been applied to simulated epidemics. @macdonald1952analysis introduced the reproductive number, which is defined as the number of cases resulting from a single infection. @holme2018objective used the time for the disease to go extinct (i.e. no new cases can occur).
 
-Simulation is an effective method for ascertaining properties of a temporal network. Some classical models have been deterministic: the differential equation model of @kermack1927contribution is a notable example. However, deterministic models typically rely on simplifying assumptions, and thus do not capture the full granularity of the network. The Susceptible-Infected model, abbreviated as SI, is an epidemiological framework in which susceptible individuals can become infected due to a contact with an infectious individual. In the SI paradigm, we assume that infected individuals stay infected indefinitely. The SI model may be used to simulate epidemics for diseases which are incurable (e.g. HIV, Hepatitis B). Other commonly-used assumptions include the Susceptible-Infected-Recovered (SIR) model and the Susceptible-Infected-Susceptible (SIS) model.
+Social Network Analysis (SNA) is an interdisciplinary approach for the study of entities and their relationships with each other. SNA involves constructing a network to model a real-world situation of interest, and calculating metrics related to the network structure. These metrics can be broadly categorized into two types: Population-level measures and Individual-level measures. This study is primarily concerned with individual-level measures. Centrality is a commonly-used individual-level measure which is defined as the influence of a particular individual within a network. Prestige (sometimes called status or rank) is a similar individual-level measure for directional graphs, which only considers incoming dyads. Although SNA has been in use since the 1930s, it's value in epidemiology only became apparent in 1985, when @klovdahl1985social applied SNA to AIDS data.
 
-Social Network Analysis (SNA) is the study of individuals and their relationships with each other. SNA involves constructing a network to model a real-world situation of interest, and calculating metrics related to the network structure. These metrics can be broadly categorized into two types: Population-level measures and Individual-level measures. This study is primarily concerned with individual-level measures. Centrality is a commonly-used individual-level measure which is defined as the influence of a particular individual within a network. Prestige (sometimes called status or rank) is a similar individual-level measure for directional graphs, which only considers incoming dyads.
-
-To date, research on the SI model has largely been focused on computational simulations of many epidemics on a temporal network. In this paper, I propose several measures of prestige in temporal networks, and I apply them to the SI epidemiology framework.
+To date, research on the SI model has largely been focused on computational simulations of many epidemics on a temporal network. In this paper, I propose several novel measures of prestige for temporal networks, and I apply them to the SI epidemiology framework.
 
 # Methods
 
@@ -60,7 +59,28 @@ Centrality is roughly defined as the influence of a given node in a graph. The e
 For undirected graphs, @bavelas1950communication proposed closeness centrality
 
 $$C_{c}(\textit{u}) = \frac{N - 1}{\sum_{\upsilon \neq \textit{u}}d(\textit{u}, \upsilon)}$$
-where N is the number of nodes and $d(\textit{u}, \upsilon)$ is the distance of the shortest path between $\upsilon$ and $\textit{u}$.
+where N is the number of nodes and $d(\textit{u}, \upsilon)$ is the distance of the shortest path between $\upsilon$ and $\textit{u}$. Thus, referring to Figure 1, the closeness centrality of node E is $\frac{4}{1 + 1 + 2 + 3} = \frac{4}{7}$.
+
+```{r, engine = "tikz", fig.cap = "A simple undirected graph", echo = FALSE}
+\begin{tikzpicture}
+
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
+\tikzset{edge/.style = {->,> = latex}}
+
+\node[vertex] (a1) at (0,-1) {$A$};
+\node[vertex] (b1) at (0.5,1) {$B$};
+\node[vertex] (c1) at (3,3) {$C$};
+\node[vertex] (d1) at (-1,5) {$D$};
+\node[vertex] (e1) at (3,7) {$E$};
+
+\draw[thick] (a1) -- (b1);
+\draw[thick] (a1) -- (c1);
+\draw[thick] (a1) -- (d1);
+\draw[thick] (e1) -- (c1);
+\draw[thick] (d1) -- (e1);
+
+\end{tikzpicture}
+```
 
 ## Time-Ordered Networks
 
