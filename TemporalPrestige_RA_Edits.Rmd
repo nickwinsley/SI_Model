@@ -1,0 +1,454 @@
+---
+title: "TemporalPrestige"
+author: "Nicholas Winsley"
+date: "2025-03-19"
+output: 
+  pdf_document:
+    toc: true
+bibliography: references.bib
+linestretch: 1.5
+fontsize: 12pt
+header-includes:
+  - \usepackage{tikz}
+  - \usepackage{pgfplots}
+  - \usepackage{algorithm2e}
+  - \pgfplotsset{compat=1.18}
+---
+
+**Ryan general comments:**
+
+**I would recommend a structure along the lines of**
+
+1. **Introduction**
+2. **Data Description**
+3. **Methods**
+4. **Results**
+5. **Discussion**
+6. **References**
+7. **Appendices**
+
+**General comments related to individual sections:**
+
+1. **Introduction**
+    * Motivation for the research considered.
+    * Lit review that covers:
+        * A broad overview of the use of contact tracing in combating infectious diseases.
+            * Can include the different ways that contact tracing was carried out (manual, automatic) and types of contact tracing carried out (person-to-person, person-to-place).
+        * Approaches for the identification of "high-risk" individuals".
+            * What it means to be "high-risk" and how that can be measured for a temporal network.
+            * Network-based approaches vs. compartmental models.
+            * Temporal vs. static networks.
+            * Network measures that have been considered (centrality, prestige, other network statistics).
+            * Incorporation of edge weights?
+        * Correlating network measures to results from disease transmission simulations.
+            * Simulation approaches.
+            * Constant vs. variable probability of transmission.
+                * Incorporation of edge weights?
+    * Description of research aims and what is novel and/or noteworthy.
+2. **Data description**
+    * Clear description of data to be used in the research.
+        * CovidCard data
+        * Other relevant temporal network data data?  (Could possibly demonstrate use in other applications than contact tracing.)
+    * CovidCard data
+        * Sampling frame (who sampled, time period, etc.), variables measured and how, etc.
+        * Data cleaning: decisions about cards and/or observations to remove/ignore and why.
+        * Treat as directed or undirected network data?  How to rectify conflicting reports of duration and distance of contact for two cards involved in a particular interaction?  (Not so much of an issue when considering directed network.)
+        * Validation of recorded values by CovidCard?  (Internal validation by looking at consistency of measures obtained by cards involved in a contact event, external validation using case investigation data.  Can make use of previously reported results produced in Admiraal, Millen, ... paper.)
+        * Key descriptive statistics relevant to the research being carried out.
+3. **Methods**
+    * Representing network data as a series of networks at different time points or as a temporal network (network structure and nodes incorporate the different time points).  Relative advantages and disadvantages of each approach.
+    * Network statistics (centrality, prestige, other network statistics, including any novel statistics) to be considered, how measured for weighted and/or unweighted networks, what they attempt to capture and why that may be of epidemiological relevance.
+        * Time interval considered?
+    * Simulation method employed, including any relevant algorithmic aspects (including simplifying assumptions, novel approaches).
+    * Measures of risk from simulations.
+    * Correlating measures of risk from simulations with network measures to identify most effective network measures in identifying risk for the risk measures considered.
+4. **Results**
+    * How important is the time interval considered to the network measure(s) that are most effective in identifying high risk individuals?
+    * Is there a clear (simple?) explanation for why certain measures network measures are more effective than others?
+    
+**As another comment, it is good to have consistent conventions for your notation.  For instance, if you use the variable $t$, then throughout that will always correspond to a time point, $i$ will correspond to a sender, $j$ will correspond to a receiver, etc.  Same for how you define measures of centrality and measures of prestige.  You might use $C_{<letter>}$ to denote measures of centrality and $P_{<letter>}$ to denote measures of prestige.**
+
+# Introduction
+
+Epidemiology is a subject of much contemporary relevance. Quarantine and case isolation **(It's probably best not to strictly emphasise quarantining/isolation.  There are other less socially restrictive measures that can be taken, whether targeted/prioritised vaccination, tailored educational campaigns or notification, etc.)** have been shown to be effective policies to counteract pandemics (Auranen et al. 2023). **(Not included in works cited**).    With the emergence of reliable **("automated" or "electronic"?  Whether any form of contact tracing is "reliable" is debatable)** contact tracing technology, targeted prophylactic distribution or quarantining of high-risk individuals could be practical in the future. This study investigates methods for the identification of high-risk individuals in a temporal network.
+
+We will begin by defining what is meant by "high-risk" in this context. Governments wish to isolate individuals **(think about wording here.  I don't think any government would say that they want to isolate individuals)** who are most instrumental in the spread of a disease **(also those who have higher likelihood of contracting the disease and/or to suffer more significant health effects?)**. Therefore, risk is a combination of the likelihood of a particular individual becoming contagious due to prior contacts, and the likelihood of the individual spreading the illness via future contacts. In practice, future contacts are not known, therefore this study will assume perfect contact information up to the current time, and no future contact information. **(Not sure that this is something we technically need to "assume".  You could make the argument that, with time series data like we have, you could use, say, the first 4 days of contact tracing data for some form of training and then use the remaining data as a holdout set for testing.)**
+
+The sociosphere of an individual can be modeled as a series of contacts, each paired with a measure of proximity. Each contact event can be expressed as the triple $(i, j, t)$, where $i$ and $j$ are the interacting individuals **(depends on whether you are talking about an undirected or a directed network.  In a directed network, you probably need to talk about "sender" and "receiver")** and $t$ is the time of the interaction. Note that $(i, j, t)$ is semantically no different from $(j, i, t)$ **(only try for an undirected network)**. We abstractly represent each individual as a node, and each contact event by an undirected edge  **(something that you will need to discuss/motivate)**. This representation is called a temporal network. 
+
+**(Need to talk about mathematical/statistical modelling of infectious diseases in general before getting to specifics.  The SIR model is most commonly employed, but other approaches?  When would an SI model be most appropriate?)** The susceptible-infected (SI) model is an epidemiological framework in which susceptible individuals can become infected due to a contact with an infectious individual. In the SI paradigm, we assume that infected individuals stay infected indefinitely. 
+
+Social network analysis (SNA) involves the study of a set of entities, or nodes, and their relationships, or edges/ties. It can involve tasks such as constructing a network to model a real-world situation of interest or calculating metrics that capture key aspects of the network structure. These metrics can be broadly categorized into two types: population-level measures and individual-level measures. We focus on individual-level measures, including measures of centrality and, in the case of directed networks, prestige. Measures of centrality and prestige are commonly used to capture the influence of nodes within a network. In the context of undirected networks, measures of centrality for a given node consider edges originating from (or sent from) that nodes, whereas measures of prestige consider edges directed to that node.
+
+
+**Ryan comment: The introduction seems to quite rapidly jump from one topic to another.  You need to focus on building a cohesive background to the topic of interest.  This includes a thorough lit review and placing your proposed research in this body of previous work.  What does your research contribute to this topic?**
+
+# Data Description
+
+The New Zealand Ministry of Health (MoH) comissioned a pilot study of the CovidCard **(When?  Why?)**, a portable device which used bluetooth technology to record contacts between carriers of the device. 
+
+The CovidCard pilot study was carried out in Ngontotahā, a small settlement situated in the Rotorua district. Ngontotahā was chosen because it met several key criteria, namely compactness, geographical isolation, small population size and high sociodemographic diversity.
+
+Adults 19 years of age or older who lived in Ngontotahā West and East were recruited to participate in a seven-day study. Additionally, people who lived outside these boundaries but worked within the Ngontotahā Village were also permitted to take part in the trial. In total, 1,191 people participated in the study. At the end of the trial period, a subset of 158 participants from the main trial were contacted by MoH case investigators to establish contacts that they had over the trial period using a modified version of the MoH case investigation protocol. The data collected through these investigations was important, as it was meant to provide a "ground truth" against which the CovidCard data could be validated.
+
+The CovidCard is a bluetooth device developed for detecting contact events between carriers. Each card advertises its presence and detects signals from other cards.  The card records radio signal strength indicator (RSSI) of up to 128 contact events to short-term memory in real time.  The signal strength data for a given contact event is aggregated over 15 minute time intervals. Each interval was classified as either < 1 meter, < 2 meter and < 4 meter proximity **(How so?  How to move from RSSI to distance?)**, and the total number of intervals belonging to each class was summed over a two-hour period. The cards can hold up to 128 contact events in short-term cache memory at any given time, of which some are recorded in long-term flash memory. An interaction was recorded in flash memory if it was longer than 2 minutes in duration, and the RSSI exceeded -62dBm (roughly corresponding to a distance of less than 4 meters).
+
+The last day of the trial period saw an anomalously high number of close-contacts, most likely because participants congregated at a single location to return the cards **(or cards being put into boxes in close proximity after collection)**. For this reason, contact events which occurred on the last day of the trial were omitted.  **(I believe we did something similar for the first day of the trial.)** Data which could not be cross-verified by case investigation was removed **(What do you mean by this?  I'm not sure this is correct.)**, and duplicate contact events were omitted.
+
+# Methods
+
+**Provide details of estimation of risk/probability of transmission using proximity class data.**
+
+## Time-Ordered Networks
+
+Generalization of conventional centrality measures to temporal networks requires a high-granularity representation of the network as a graph. @kempe2000connectivity proposed a graph where the edge weights are contact times **(How is this a temporal network per se?  It seems that it is simply representing a temporal network as a single static network with edge weights given by total contact time.)**.  However, this model fails to account for differential rates of transmission.  **(Bigger issues than this, as it does not seem to really have any way of accounting for the sequencing of contact events.)** @kim2012temporal proposed a more general solution using a time-ordered graph. Consider a network of $M$ nodes for which $N$ edges are observed over $T$ time points. We can construct a time-ordered graph $\textit{G}$ with vertices $\textit{V}$ and edges $\textit{E}$ over time points $t = \{1, 2, \ldots, T\}$, where for all $\upsilon_{t}, u_{k} \in V$, an edge $\textit{e}(\upsilon_{t}, u_{k}) \in \textit{E}$ can only exist if k = t + 1. We can construct this graph for any temporal network without loss of information. In practice, computational constraints may require aggregation of contact times and thus loss of information.
+
+To illustrate how this works, suppose an undirected network consists of five nodes with a total of four contact events occurring over two time periods, as shown in Table XX.
+
+\begin{table}[!ht]
+  \begin{tabular}{|c|c|c|}
+  \hline
+    First Individual & Second Individual & Time of contact \\ \hline
+    a & b & 1 \\ \hline
+    b & d & 2 \\ \hline
+    a & c & 2 \\ \hline
+    d & e & 1 \\ \hline
+  \end{tabular}
+\end{table}
+
+Figure \ref{fig:temporal-network} shows the corresponding representation as a directed graph.  **(It is important to explain how this graph is constructed.  You seem to want to immediately jump to the representation as a digraph without explaining how that comes about from two different networks at two time points.  Also, your figure has three time points but your table only has two.)**
+
+
+```{r temporal-network, engine = "tikz", echo = FALSE, fig.cap = "A simple temporal network represented as a digraph. The temporal shortest path from a to b is shown in red."}
+\begin{tikzpicture}
+
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
+\tikzset{edge/.style = {->,> = latex}}
+
+\node[vertex] (a1) at (0,-1) {$a_{1}$};
+\node[vertex] (b1) at (0,1) {$b_{1}$};
+\node[vertex] (c1) at (0,3) {$c_{1}$};
+\node[vertex] (d1) at (0,5) {$d_{1}$};
+\node[vertex] (e1) at (0,7) {$e_{1}$};
+
+\draw[dashed] (1,-2)--(1,8);
+
+\node[vertex] (a2) at (2,-1) {$a_{2}$};
+\node[vertex] (b2) at (2,1) {$b_{2}$};
+\node[vertex] (c2) at (2,3) {$c_{2}$};
+\node[vertex] (d2) at (2,5) {$d_{2}$};
+\node[vertex] (e2) at (2,7) {$e_{2}$};
+
+\draw[dashed] (3,-2)--(3,8);
+
+\node[vertex] (a3) at (4,-1) {$a_{3}$};
+\node[vertex] (b3) at (4,1) {$b_{3}$};
+\node[vertex] (c3) at (4,3) {$c_{3}$};
+\node[vertex] (d3) at (4,5) {$d_{3}$};
+\node[vertex] (e3) at (4,7) {$e_{3}$};
+
+\draw[edge] (a1) to (a2);
+\draw[edge] (a2) to (a3);
+\draw[edge] (b1) to (b2);
+\draw[edge] (b2) to (b3) [red];
+\draw[edge] (b1) to (a2);
+\draw[edge] (a2) to (c3);
+\draw[edge] (c1) to (c2);
+\draw[edge] (c2) to (c3);
+\draw[edge] (a1) to (b2) [red];
+\draw[edge] (c2) to (a3);
+\draw[edge] (d1) to (d2);
+\draw[edge] (d2) to (d3);
+\draw[edge] (e1) to (e2);
+\draw[edge] (e2) to (e3);
+\draw[edge] (d1) to (e2);
+\draw[edge] (e1) to (d2);
+\draw[edge] (d2) to (b3);
+\draw[edge] (b2) to (d3);
+
+\node at (0,-2) {$t = 1$};
+\node at (2,-2) {$t = 2$};
+\node at (4,-2) {$t = 3$};
+
+\end{tikzpicture}
+```
+
+**(Not sure I would talk about distance already at this point.  First explain how the temporal network is formed.  Then, when you have a measure of centrality or prestige that is based on shortest distance, you can explain how that would be found.)**
+
+Define the distance of the temporal shortest path length over time interval [i, j], denoted by $d_{i,j}(\upsilon, u)$, as the smallest $d = j - n$, where $i \leq n \leq j$ and there is a path from $\upsilon_{n}$ to $u_{j}$.  **(You will need to tighten up notation here.  You would need to be clear that $\upsilon$ and $u$ are representing unique nodes, and subscripts are then used to represent those nodes at diferent time point.)** Thus, in Figure 1, the shortest path distance $d_{1,3}(a, b)$ is two, with the temporal shortest path being $a_{1}$-$b_{2}$-$b_{3}$. By representing a temporal network as a high-granularity digraph, we can now generalize conventional measures of prestige and centrality to temporal networks.
+
+**(Talk about assumptions of the temporal path.  What happens if time intervals are not uniform?  Any issues with modified traditional measures of centrality when the graph representation technically has the same nodes included multiple times, once for each edge they have over time?  How do things change when trying to incorporate edge weights?)**
+
+## Temporal Closeness and Proximity Prestige
+
+We are primarily concerned with the likelihood of infection **(Why?  It would be helpful to motivate this.  Also, given that the way that centrality and prestige are similarly measured for digraphs, I think it would make sense to talk about things in terms of centrality and then just note that prestige is measuring a similar phenomenon but focussing on in-ties rather than out-ties.)**, which is closely related to the more general notion of prestige. In a directed network, a prestigious node is the object of many ties (i.e. has many incoming connections). This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are ill-defined in directional graphs, owing to the fact that directional graphs are not necessarily strongly-connected. Due to this limitation, we usually only consider nodes in the influence domain of a node (i.e. the set of all nodes from which the node is reachable). @lin1976foundations proposed the following measure of prestige for directional relations, called the proximity prestige **(Would make sense to talk about closeness centrality/prestige to begin with, as this is really just a modification of closeness centrality for networks that are not strongly connected.)**:
+
+**(Recommend that you use `\begin{equation}` $\cdots$ `\end{equation}` and `\label{}` for an equation label that can be referred to for equations that you want to reference in the text.)**
+
+$$P_{p}(u) = \frac{\left|I_{u}\right|/(g - 1)}{\sum_{\upsilon \neq u, \upsilon \in I_{u}}{d(\upsilon, u)} / \left|I_{u}\right|} \tag{1}$$
+where $I_{u}$ is the influence domain of node $u$, $\left|\phantom{a}\right|$ denotes cardinality, and $g$ is the network size (i.e., number of nodes in the network). For temporal networks, we propose a modified version
+
+$$P_{p}^{(i)}(u) = \frac{\left|I_{u}^{(i)}\right|/(g - 1)}{\sum_{\upsilon \neq u, \upsilon \in I_{u}^{(i)}}{d_{0, i}(\upsilon, u)} / \left|I_{u}^{(i)}\right|} \tag{2}$$
+where $I_{u}^{(i)}$ is the influence domain of node $u$ at time $i$. **(influence domain of node $u$ for the temporal network up to time $i$?)**. Intuitively, this is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity prestige is defined to be 0. 
+
+Kim and Anderson [2012] **(Not included in works cited.)** proposed temporal closeness, a similar metric which considers all time intervals $[t, i], t \in [0, i - 1]$.
+
+$$C_{c}^{(i)}(u) = \sum_{i \leq t < j}{\sum_{u \in \textit{V}}{\frac{1}{d_{t,j}(\upsilon, u)}}} \tag{3}$$
+
+**(You need to reexamine this definition.  It is not consistent with your definition for $t$.  Also, you will want to provide some intuition into how this measure works.)**
+
+When $u$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, u) := \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, u)$ is not equivalent to $d_{t,j}(u, \upsilon)$. To turn (3) into a prestige measure, we simply reverse the direction of the paths to get:
+
+$$P_{c}^{(i)}(u) = \sum_{i \leq t < j}{\sum_{u \in \textit{V}}{\frac{1}{d_{t,j}(u, \upsilon)}}} \tag{4}$$
+We will call this the temporal prestige.  **(Probably better to refer to this as "temporal closeness prestige"; "temporal prestige" is too general.)** The temporal prestige can be normalized by dividing by $(|\textit{V}| - 1)(j - i)$. 
+
+@kim2012temporal showed that by considering all time intervals, temporal closeness improves the quality of estimates in some situations.  **(What is meant by "improves the quality of estimates", and in which situations?  What is the reasoning behind why this would lead to a better estimate of centrality/prestige?)** By this same token, we can modify equation (2) to obtain
+
+$$P_{p}(u_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, u}/(g - 1)}{\sum_{\upsilon \in \textit{N}}{d_{t, i}(\upsilon, u)}/I_{t, i, u}} \tag{5}$$
+
+**(I might suggest representing time by a superscript.)**
+
+where $I_{t,i,u}$ is the influence domain of $u$ over the time interval $[t, i]$. We will call this the temporal proximity prestige. The temporal proximity prestige can be normalized by dividing by $i$, the total number of time points considered.  
+
+## Incorporating Edge Weights
+
+When each edge is associated with a probability of transmission, as is the case with epidemiology models, the probability of a path may be of greater interest than the temporal length. In this case, we can generalize existing methods by considering a digraph where the edge weights are the natural log of the probability.  **(You will want to brief explanation why it is preferable to use log probability rather than simply the probability as the edge weight.  Helpful to show how the probability of a path is calculated, which is given by a product of probabilities, and the log is order-preserving and makes things additive.)** Figure 2 shows a graph of this kind.
+
+```{r, engine = "tikz", echo = FALSE, fig.cap = "A simple temporal network represented as a digraph"}
+\begin{tikzpicture}
+
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
+\tikzset{edge/.style = {->,> = latex}}
+
+\node[vertex] (a1) at (0,-1) {$a_{1}$};
+\node[vertex] (b1) at (0,1) {$b_{1}$};
+\node[vertex] (c1) at (0,3) {$c_{1}$};
+
+\draw[dashed] (1,-2)--(1,4);
+
+\node[vertex] (a2) at (2,-1) {$a_{2}$};
+\node[vertex] (b2) at (2, 1) {$b_{2}$};
+\node[vertex] (c2) at (2, 3) {$c_{2}$};
+
+\draw[dashed] (3,-2)--(3,4);
+
+\node[vertex] (a3) at (4,-1) {$a_{3}$};
+\node[vertex] (b3) at (4,1) {$b_{3}$};
+\node[vertex] (c3) at (4,3) {$c_{3}$};
+
+\draw[->, thick] (a1) -> node[near start, below] {0} (a2);
+\draw[->, thick] (a2) -> node[near start, below] {0} (a3);
+\draw[->, thick] (b1) -> node[near start, below] {0} (b2);
+\draw[->, thick] (b2) -> node[near start, below] {0} (b3);
+\draw[->, thick] (c1) -> node[near start, below] {0} (c2);
+\draw[->, thick] (c2) -> node[near start, below] {0} (c3);
+\draw[->, thick] (a1) -> node[near start, below] {3} (b2);
+\draw[->, thick] (c2) -> node[near start, below] {2} (a3);
+
+\node at (0,-2) {t = 1};
+\node at (2,-2) {t = 2};
+\node at (4,-2) {t = 3};
+
+\end{tikzpicture}
+```
+
+In accordance with the Susceptible-Infected (SI) framework, the probability of transmission from an individual to them self is assumed to be 1 **(You can probably more clearly state why this makes sense. This is really a transmission from one time point to the next, so if they have the disease at one time point, then necessarily they will remain infected at the next time point, so the probability of transmission of the disease to themself at this later time point must be 1.)**, and hence the natural log becomes 0. 
+
+This representation has several useful mathematical properties. Consider a path, P, starting at $\upsilon_{i}$ and ending at $u_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P.  **(Might recomend that you set up Figure 2 as a two-panel figure with probabilities in the left panel and the right panel in line with the current Figure 2.  Then you can present the representation of path probabilities under each construction.)**  Then it  The probability of path P can be calculated by:
+
+$$e^{\sum_{w \in E}{log(w)}}$$
+In order to generalize to conventional measures of centrality, we need to define distance in terms of probability.  **(If you talk about probability as being multiplicative up until now, then here is where it makes sense to talk about traditional measures of centrality largely using additive measures of distance, and considering probabilities on a log scale allows us to treat these edge weights in a similar manner.)** To this end, we propose a new measure of distance, which we call the stochastic distance:
+
+$$d^{\mathbf{p}} = 1 - \sum_{w \in E}{log(w)}$$
+Note that the stochastic distance ranges from 1 to $\infty$ with values closer to 1 corresponding to higher probability paths.  Using this representation, we can adjust equations (4) and (5) to produce
+
+$$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{u \in \textit{V}}{\frac{1}{d^{\mathbf{P}}_{t,j}(u, \upsilon)}}} \tag{4.}$$
+and
+
+$$P_{p}(u_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, u}/(g - 1)}{\sum_{\upsilon \in \textit{N}}{d^{\mathbf{P}}_{t, i}(\upsilon, u)}/I_{t, i, u}} \tag{5.}$$
+where $d^{\mathbf{P}}_{t,i}(\upsilon, u)$ is the shortest stochastic path distance between $\upsilon$ and $u$ over the time interval $[t, i]$. Note that the shortest stochastic path is not necessarily equal to the shortest temporal path, and thus we cannot use conventional algorithms for calculating geodesics. **(Can you explain this a bit further?  How are these typically efficiently calculated, and why does introduction of edge weights complicate this?)**  Nevertheless, it can be shown that for the representation in Figure 2, all stochastic shortest paths to $u_{i}$ can be calculated in $O(i|V|^{2})$ time using a modified version of the @hanke2017clone reversed evolution network (REN) algorithm. Algorithm 1 shows psuedocode for this algorithm.
+
+
+\begin{algorithm}
+\DontPrintSemicolon
+\SetAlgoLined
+\KwResult{Temporal Closeness Prestige}
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+\Input{Data file with each row representing a contact and a probability of transmission}
+\Output{Temporal Prestige for a given node}
+\BlankLine
+contacts <- List of contact times sorted in increasing order. Each contact time is a data structure with a map of nodes to out-neighbours.\;
+\While{Data file has next line}{
+  Read line\;
+  Add line to contacts using bisection search\;
+}
+tcp <- Temporal closeness prestige\;
+reachable <- Set of reachable nodes\;
+Add target node to reachable\;
+sums <- Map of node id to log of the highest probability path (obtained by summing edge weights)\;
+back <- Pointer to final contact time in contacts list\;
+\While{back is not null}{
+  temp <- Map of updated path lengths for this iteration\;
+  \ForEach{node in reachable}{
+      out-neighbours <- back.out-neighbours[node]\;
+      \ForEach{neighbour in out-neighbours}{
+          Add neighbour to reachable set\;
+          weight <- Edge weight of connection between node and neighbour\;
+          temp[neighbour] = Max(temp[neighbour], sums[node] + weight)\;
+      }
+  }
+  \ForEach{node in reachable}{
+    sums[node] = Max(temp[node], sums[node])\;
+    tcp += $\frac{1}{1 - sums[node]}$\;
+  }
+  Decrement back pointer\;
+}
+Return tcp\;
+\caption{Modified version of the REN algorithm.}
+\end{algorithm}
+
+
+
+## Absorption Prestige
+
+@rocha2014random proposed TempoRank, an extension of the Google PageRank algorithm to temporal networks.  **(Should probably include a citation for PageRank as well.)** TempoRank considers the stationary distribution of a random walk through a temporal network. However, TempoRank does not generalize well to epidemiology modelling, where infection may be a permanent state.  **(Why not?  Might make sense to first talk about how TempoRank works before talking about limitations/difficulties and how you might address those.)** Intuitively, some sort of aggregation over all previous contacts would seem to be a preferable option. In general, I propose two broad categories of temporal centrality:
+
+   * Centrality of an individual at a particular point in time
+   * Centrality of an individual aggregated over all time points
+
+Temporal proximity prestige and temporal closeness prestige belong to the latter category. For the former category, I recommend TempoRank or the more general in-weight rank (which will be discussed later). In this section, I propose an aggregate metric for temporal networks. Without loss of generality, we will consider a temporal network consisting of a set of nodes, N, and positive integer contact times, $t = (1, 2, 3, \cdots, T)$. Let $p_{ijk}(t)$ denote the probability of transmission for the $k^{\text{th}}$ contact between node $i$ and node $j$, at time $t$. Let $n_{ij}(t)$ denote the number of contacts **(Number? Cumulative number at time $t$? Duration?)** between i and j at time t. Define the transition probability matrix for each contact time **(Time point?)** as:
+
+$$\mathbf{B}_{ij}(t) = \left\{\begin{matrix}
+  1 & i = j, s_{i}(t) = 0 \\
+  0 & i \neq j, s_{ij}(t) = 0 \\
+  \prod_{m \in N, m \neq i}{\prod_{k = 1}^{n_{im}(t)}{(1 - p_{imk}(t))}} & i = j, s_{i}(t) > 0 \\
+  (1 - \mathbf{B}_{ii})(s_{ij}(t)/s_{i}(t)) & i \neq j, s_{ij}(t) > 0  \\
+\end{matrix}
+\right. \tag{6.}$$
+
+where $s_{ij}(t)$ and $s_{i}(t)$ are defined as:
+
+$$s_{ij}(t) = 1 - \prod_{k = 1}^{n_{ij}(t)}{(1 - p_{ijk}(t))}$$
+$$s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}$$
+**(Might make sense to explain $s_{ij}(t)$ and $s_{i}(t)$ first?  Then present $\mathbf{B}$ in matrix form?)**
+
+Denote by $\mathbf{B}_{i}(t)$ the transition matrix obtained by taking $\mathbf{B}(t)$, and setting all entries in the $i^{\text{th}}$ row to zero, except the diagonal entry (which is necessarily one). The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the temporal absorption prestige for individual i, at time t.
+
+## Example
+
+A simple example network of five nodes is shown in Example_Network.csv. For simplicity, a constant transmission probability was used for all contact events. In total, 500 simulations were run on this network. The absorption centrality and the number of times infected were calculated for the final contact time. Table 1 shows the correlation between the absorption centrality and the probability of infection by the end of the simulation.
+
+
+```{r, table.cap = "Pearson Correlation between temporal absorption centrality and proportion of times infected over 500 simulations", echo = FALSE}
+corr = c()
+
+df = read.csv("Results1.csv")
+df = df[, 1:5]
+
+colnames(df) = c("Node1", "Node2", "Node3", "Node4", "Node5")
+
+prop = c()
+
+for (col in colnames(df)) {
+  prop = c(prop, sum(df[,col] <= 254) / 500)
+}
+
+centrality = read.csv("AbsorptionCentrality1.csv")
+
+colnames(centrality) = c("Node", "Centrality")
+
+res = rev(centrality$Centrality)
+
+corr = c(corr, cor(x = prop, y = res, method = "pearson"))
+```
+
+```{r, table.cap = "Pearson Correlation between temporal absorption centrality and number of times infected over 500 simulations", echo = FALSE}
+
+df = read.csv("Results2.csv")
+df = df[, 1:5]
+
+colnames(df) = c("Node1", "Node2", "Node3", "Node4", "Node5")
+
+prop = c()
+
+for (col in colnames(df)) {
+  prop = c(prop, sum(df[,col] <= 254) / 500)
+}
+
+centrality = read.csv("AbsorptionCentrality2.csv")
+
+colnames(centrality) = c("Node", "Centrality")
+
+res = rev(centrality$Centrality)
+
+corr = c(corr, cor(x = prop, y = res, method = "pearson"))
+
+data = data.frame(Correlation = corr)
+
+rownames(data) = c("p = 0.2", "p = 0.1")
+```
+
+```{r, echo = FALSE}
+knitr::kable(data, caption = "Pearson correlation between temporal absorption centrality and infected proportion over 500 simulations")
+```
+
+## In-weight Rank
+
+@rocha2014random proposed the use of in-weights as a measure of prestige. However, the in-weights fail to account for the prestige of the sender. To address this limitation, I propose a novel approach, which I will call in-weight rank. Recall the transition matrix, $\mathbf{B}(t)$, from equation 6. Denote by $P(t)$ the prestige vector at time t. I propose a recursive formula for the prestige at time t
+
+$$P(t) = P(t - 1)\mathbf{B}(t)$$
+In other words, the prestige of node i at time t is
+
+$$P_{i}(t) = \sum_{j = 1}^{N}{P_{j}(t - 1)B_{ij}(t)}$$
+
+Define the initial prestige at time 1 as the solution to the equation
+
+$$P(1)^{T} = \mathbf{B}(1)^{T}P(1)^{T} \tag {7.}$$
+This is similar to the method proposed by @seeley1949net. Using this method, the initial rank vector is the eigenvector corresponding to an eigenvalue of 1. Since $\mathbf{B}$ is a transition matrix, the columns of $\mathbf{B}^{T}$ all sum to 1, and thus the matrix has an eigenvalue of 1. Note, however, that this does not demonstrate uniqueness of the initial rank vector. By taking the transpose on both sides, it is easy to see that the initial rank vector is the stationary distribution of the transition matrix. A unique stationary distribution does not exist in general. For uniqueness, the following conditions are sufficient:
+
+  * For any two nodes i and j, i is reachable from j and vice-versa
+  * At least one diagonal element is > 0
+  
+For the transition matrix $\mathbf{B}(t)$, the second condition necessarily holds. For sparse networks, the first condition is unlikely to hold, in which case I propose several rudimentary solutions:
+
+  * Use a known prior distribution for the starting ranks.
+  * Aggregate transition matrices (by matrix multiplication) until the condition holds.
+  * Use the stationary distribution of the entire temporal network as the initial rank.
+  * Arbitrarily choose a solution to equation 7.
+  * If the state of the network is known at time 0, set the rank to 1 for infected
+  individuals, and 0 for healthy individuals.
+  
+In general, the initial rank may be estimable from exogenous prior information (e.g. disease tests, qualitative case investigation etc). It should be noted that the rank can only be meaningfully compared between nodes in the same network, at the same time point. For cross-comparison between networks and/or time points, the ranks must be scaled accordingly. If the initial rank is chosen to be the stationary distribution of the T-step transition matrix (where T is the final time of the temporal network), then the formula reduces and the in-weight rank is identical to the TempoRank.
+
+
+
+## Simulation
+
+Simulation is an effective method for ascertaining properties of a temporal network. Some classical models have been deterministic; the differential equation model of @kermack1927contribution is a notable example. However, deterministic models typically rely on simplifying assumptions, and thus do not capture the full granularity of the network. Stochastic simulations typically follow the standard Markovian framework, in which we assume transmission depends only on the current state of the network. The contact times can be thought of as discrete snapshots of the network, and it is assumed that during each snapshot, only one "hop" can occur. In other words, if we have two contacts (i, k, t) and (k, j, t), i cannot infect j (via k) at time t. The standard Markovian framework typically employs simplifying assumptions to ensure ease of implementation. The Susceptible-Infected-Recovered (SIR) model is a common implementation which assumes that all individuals are susceptible at the beginning, and once infected they remain infectious for a recovery period. Once recovered, individuals cannot be infected again. Other common implementations include the Susceptible-Infected (SI) model and the Susceptible-Infected-Susceptible (SIS) model.
+
+### Algorithms
+
+For simulation, we use the event-based algorithm first proposed by @kiss2017mathematics, and described in great detail by @holme2021fast. In this algorithm, contacts are conveniently stored an adjacency list format (each node is represented by a data structure with a list of neighbours). For each neighbour, a sorted list of contact times (and associated transmission probabilities) is stored. All infection events are stored in a min-heap ordered by infection time. At each step, the earliest infection is removed and processes. This continues until no infection events remain in the heap. When node i is infected, we iterate through the list of neighbours and add the earliest time of infection (if any) to the heap. If we assume a constant transmission probability, the index of the first infectious contact follows a geometric distribution. We can sample this index by
+
+$$\lceil \frac{log(1 - X)}{log(1 - \beta)} \rceil$$
+where $\beta$ is the fixed transmission probability and $X \sim Uniform(0, 1)$.
+
+### Constant Transmission Probability
+
+The constant transmission probability assumption is commonplace in the literature, most likely because it greatly speeds up the simulation algorithm. To test this assumption, we compare the observed probability of infection for 751 individuals for two different algorithms (run on the same temporal network). Probabilities were calculated using an arbitrarily defined logistic regression model. In the first algorithm, the probability of transmission is calculated separately for every contact. In contrast, the second algorithm assumes that all contacts between any pair of nodes (i, j) have the same probability (taken to be the average over all contacts between i and j). In total, 1000 simulations were run for each algorithm. For each run, the indicator variable, $I_{i}$, is 1 if node i was infected, and 0 otherwise. The observed probability of infection for node i is the average of $I_{i}$ over all 1000 runs.
+
+Denote by $\hat{P^{\mathbf{1}}}$ the vector of observed probabilities for algorithm 1 (and likewise for algorithm 2). Thus, $\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}$ is the observed difference between the two algorithms for node i. We wish to test whether this difference is equal to 0. The test statistic is
+
+$$Z = \frac{\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}}{\hat{P_{i}}(1 - \hat{P_{i}})(\frac{1}{1000} + \frac{1}{1000})}$$
+where $\hat{P_{i}}$ is the pooled proportion under the null hypothesis ($P_{i}^{\mathbf{1}} = P_{i}^{\mathbf{2}}$). This is a well-known test statistic which follows a standard normal distribution if the proportions are equal.  In order to test for equality of the vectors $P^{\mathbf{1}}$ and $P^{\mathbf{2}}$, we must adjust the significance level of each individual test to correct for multiple comparisons. The Bonferroni correction, proposed by @dunn1961multiple, is an adjustment which controls the family-wise Type I error rate. For a given significance level $\alpha$, the Bonferroni correction guarantees a family-wise Type I error rate which is $\leq \alpha$. It does this by setting the test-wise significance level to $\frac{\alpha}{N}$, where N is the number of tests. The Bonferroni correction is ideal for this experiment because it makes no assumptions about independence between the individual tests. Note that the Bonferroni correction is conservative, meaning it lacks power for rejecting the null hypothesis.
+
+Holm's method, proposed by @holm1979simple, is a more powerful alternative to the Bonferroni correction. Holm's method tests the hypotheses iteratively, updating the p-value at each step. First, we sort the list of p-values in increasing order, and we begin the sequential significance tests from the lowest p-value. The algorithm starts with a significance level of $\frac{\alpha}{N}$. If the first result is non-significant, we test the second result with a significance level of $\frac{\alpha}{N - 1}$. In general, the i'th test statistic is tested with a significance level of $\frac{\alpha}{N - i + 1}$. Holm's method also guarantees a family-wise Type I error rate of $\leq \alpha$, however it offers greater power than the Bonferroni correction.
+
+The Šidák correction, proposed by @vsidak1967rectangular, is a slightly less conservative alternative to the Bonferroni correction in which we set the test-wise significance level to $1 - (1 - \alpha)^{\frac{1}{N}}$. This is the exact solution when tests are independent, conservative when tests are positively correlated and liberal when tests are negatively correlated.
+
+
+
+
+## References
+
+
