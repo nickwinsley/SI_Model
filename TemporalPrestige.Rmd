@@ -54,12 +54,41 @@ The last day of the trial period saw an anomalously high number of close-contact
 
 Centrality is roughly defined as the influence of a given node in a graph. The exact definition of a "central" node varies depending on the context.
 
+## Degree Centrality
+
+Degree centrality is a simple metric for static networks where we only consider the number of neighbors of a given node. Let A be the adjacency matrix for a static network i.e. $A_{ij}$ = 1 if i and j are neighbours and 0 otherwise. The degree centrality is defined as:
+
+$$C_{D}(i) = \sum_{j = 1}^{N}{A_{ij}}$$
+Degree centrality is simple and easily calculable, however it does not incorporate knowledge of the entire network structure. Improving this point is the motivation for our next centrality measure.
+
 ## Closeness Centrality
 
 For undirected graphs, @bavelas1950communication proposed closeness centrality
 
 $$C_{c}(\textit{u}) = \frac{N - 1}{\sum_{\upsilon \neq \textit{u}}d(\textit{u}, \upsilon)}$$
-where N is the number of nodes and $d(\textit{u}, \upsilon)$ is the distance of the shortest path between $\upsilon$ and $\textit{u}$. Thus, referring to Figure 1, the closeness centrality of node E is $\frac{4}{1 + 1 + 2 + 3} = \frac{4}{7}$.
+where N is the number of nodes and $d(\textit{u}, \upsilon)$ is the distance of the shortest path between $\upsilon$ and $\textit{u}$. Thus, referring to Figure 1, the closeness centrality of node E is $\frac{4}{1 + 1 + 2 + 3} = \frac{4}{7}$. Closeness centrality can be interpreted as the efficiency with which a node can access all other nodes in a network.
+
+## Betweenness Centrality
+
+In some situations, the effect that removing a node has on transmission through a network may be highly important (for instance, when quarantining individuals during an epidemic). This is the primary motivation behind Betweenness Centrality (@freeman1977set), which is defined as
+
+$$C_{B}(\upsilon) = \frac{1}{(N - 1)(N - 2)}\sum_{s \neq v \neq r}\frac{\sigma_{s, r}(\upsilon)}{\sigma_{s, r}}$$
+where $\sigma_{s, r}$ is the number of shortest paths (geodesics) between s and r, and $\sigma_{s, r}(\upsilon)$ is the number of such paths that pass through $\upsilon$. The denominator term, $(N - 1)(N - 2)$, ensures that the value is normalized between 0 and 1.
+
+## Percolation Centrality
+
+In practice, additional information around the percolation state of nodes may be known. For instance, in epidemiology we may know that certain individuals are infected. To incorporate knowledge of percolation state into centrality metrics, @piraveenan2013percolation proposed percolation centrality:
+
+$$C_{P}^{t}(\upsilon) = \frac{1}{(N - 1)(N - 2)}\sum_{s \neq v \neq r}\frac{\sigma_{s, r}(\upsilon)}{\sigma_{s, r}}\frac{x_{s}^{t}}{[\sum{x_{i}^{t}}] - x_{\upsilon}^{t}}$$
+where $x_{i}^{t}$ is the percolation state of node i at time t. The percolation state ranges from 0 to 1, where 1 means the individual is certainly infected, and 0 means the individual is healthy. A decimal value (say 0.6) could, for instance, represent a probability of infection or a proportion of a township which is infected.
+
+## Adjusted Percolation Centrality
+
+I propose a novel variant of percolation centrality, which I will call Adjusted Percolation Centrality. Adjusted Percolation Centrality only considers paths which do not pass through any percolated nodes. By doing this, it ensures that redundant paths are not considered. I will define an unpercolated path as a path where no incident nodes are percolated, except for the start and end nodes, which may have any percolation state. The mathematical definition is
+
+$$C_{P}^{t}(\upsilon) = \frac{1}{M_{P}}\sum_{s \neq v \neq r}\frac{\sigma_{s, r}^{P}(\upsilon)}{\sigma_{s, r}^{P}}\frac{x_{s}^{t}}{[\sum{x_{i}^{t}}] - x_{\upsilon}^{t}}$$
+where $M_{P}$ is the number of pairs (i, j) where there is an unpercolated path between i and j, and $\sigma_{s, r}^{P}$ is the number of shortest unpercolated paths between s and r.
+
 
 ```{r, engine = "tikz", fig.cap = "A simple undirected graph", echo = FALSE}
 \begin{tikzpicture}
