@@ -68,6 +68,27 @@ For undirected graphs, @bavelas1950communication proposed closeness centrality
 $$C_{c}(\textit{u}) = \frac{N - 1}{\sum_{\upsilon \neq \textit{u}}d(\textit{u}, \upsilon)}$$
 where N is the number of nodes and $d(\textit{u}, \upsilon)$ is the distance of the shortest path between $\upsilon$ and $\textit{u}$. Thus, referring to Figure 1, the closeness centrality of node E is $\frac{4}{1 + 1 + 2 + 3} = \frac{4}{7}$. Closeness centrality can be interpreted as the efficiency with which a node can access all other nodes in a network.
 
+```{r, engine = "tikz", fig.cap = "A simple undirected graph", echo = FALSE}
+\begin{tikzpicture}
+
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
+\tikzset{edge/.style = {->,> = latex}}
+
+\node[vertex] (a1) at (0,-1) {$A$};
+\node[vertex] (b1) at (0.5,1) {$B$};
+\node[vertex] (c1) at (3,3) {$C$};
+\node[vertex] (d1) at (-1,5) {$D$};
+\node[vertex] (e1) at (3,7) {$E$};
+
+\draw[thick] (a1) -- (b1);
+\draw[thick] (a1) -- (c1);
+\draw[thick] (a1) -- (d1);
+\draw[thick] (e1) -- (c1);
+\draw[thick] (d1) -- (e1);
+
+\end{tikzpicture}
+```
+
 ## Betweenness Centrality
 
 In some situations, the effect that removing a node has on transmission through a network may be highly important (for instance, when quarantining individuals during an epidemic). This is the primary motivation behind Betweenness Centrality (@freeman1977set), which is defined as
@@ -89,27 +110,46 @@ I propose a novel variant of percolation centrality, which I will call Adjusted 
 $$C_{P}^{t}(\upsilon) = \frac{1}{M_{P}}\sum_{s \neq v \neq r}\frac{\sigma_{s, r}^{P}(\upsilon)}{\sigma_{s, r}^{P}}\frac{x_{s}^{t}}{[\sum{x_{i}^{t}}] - x_{\upsilon}^{t}}$$
 where $M_{P}$ is the number of pairs (i, j) where there is an unpercolated path between i and j, and $\sigma_{s, r}^{P}$ is the number of shortest unpercolated paths between s and r.
 
+## Epidemic Simulations for Static Networks
 
-```{r, engine = "tikz", fig.cap = "A simple undirected graph", echo = FALSE}
+This section describes a novel approach to epidemic modelling using static networks, and I use it as a "ground truth" to validate Adjusted Percolation Centrality. A social network is modeled by a static graph, where each node represents an individual, and each edge represents an ongoing, time-independent relationship between two individuals. It is assumed that contacts between any two individuals i and j follows a Poisson Process with a rate parameter of $\lambda_{ij}$, and each contact has a constant probability, $\beta$, of being infectious. The sojourn times (period between contacts) of contacts between i and j follow an exponential distribution with a rate of $\lambda$.
+
+**Lemma 1: Let Y follow a Poisson Process with rate $\lambda$, and X be the Markov process where for each arrival in Y, X includes the  arrival with probability p. Then X is a Poisson Process with a rate parameter of $p\lambda$.**
+
+The proof of Lemma 1 is a well-known result which is not discussed here. Lemma 1 implies that the sojourn times of infectious contacts between i and j follow independent exponential distributions with a fixed rate parameter of $\beta\lambda_{ij}$. Due to the memorylessness property of the exponential distribution, the time until the next infectious contact, from any starting time, follows the same distribution. By these assumptions, epidemics can be efficiently simulated in the most general case, without prior knowledge of contacts. Consider a simulation ending at time T, which starts with a set of infected nodes. We iterate through all neighbours of each infected node, and sample a time until the next infectious contact, adding it to a sorted list of infection times as we go. At each subsequent step, the smallest infection time is selected from the list. If this time is greater than T, the simulation stops. Otherwise we sample an infection time for each neighbour of the infected node. If the sampled infection time for a given node is greater than it's current infection time, it is ignored. Figure 2 shows a static graph representing a small social network, where the edge weights correspond to the rate parameter, $\beta\lambda_{ij}$. Consider a simulation on this graph which terminates at the time T = 100. Initially, only A is infected. We sample t = 60, 40, 50 for neighbours C, B and D respectively. In the next step, the infection time of C (t = 40) is removed from the list, and the time 70 is sampled for node E. Thus, the infection time for E is 40 + 70 = 110. Then, the infection time of node D (t = 50) is removed from the list, and each neighbour is considered in turn. Suppose we sample a sojourn time of 70 for E, hence the new infection time is 50 + 70 = 120 which is greater than 110, thus it is ignored. Likewise, suppose the time 40 is sampled for the infection process between D and B. The new infection time for B is 50 + 40 = 90 which is greater than 60, thus it is ignored.
+
+```{r, engine = "tikz", echo = FALSE, fig.cap = "A simple social network represented as a static graph"}
 \begin{tikzpicture}
 
 \tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
 \tikzset{edge/.style = {->,> = latex}}
 
-\node[vertex] (a1) at (0,-1) {$A$};
-\node[vertex] (b1) at (0.5,1) {$B$};
-\node[vertex] (c1) at (3,3) {$C$};
-\node[vertex] (d1) at (-1,5) {$D$};
-\node[vertex] (e1) at (3,7) {$E$};
+\node[vertex, label = below:{t = 0}] (a1) at (0,-1) {$A$};
+\node[vertex, label = right:{t = 60}] (b1) at (1,3) {$B$};
+\node[vertex, label = right:{t = 40}] (c1) at (3,3) {$C$};
+\node[vertex, label = left:{t = 50}] (d1) at (-1,5) {$D$};
+\node[vertex, label = right:{t = 110}] (e1) at (3,7) {$E$};
 
-\draw[thick] (a1) -- (b1);
-\draw[thick] (a1) -- (c1);
-\draw[thick] (a1) -- (d1);
-\draw[thick] (e1) -- (c1);
-\draw[thick] (d1) -- (e1);
+\draw[thick] (a1) -- node[near start, right] {2} (b1);
+\draw[thick] (a1) -- node[near start, right] {3} (c1);
+\draw[thick] (a1) -- node[near start, right] {4} (d1);
+\draw[thick] (e1) -- node[near start, right] {2} (c1);
+\draw[thick] (d1) -- node[near start, below] {1} (e1);
+\draw[thick] (d1) -- node[near start, below] {3} (b1);
 
 \end{tikzpicture}
 ```
+
+In general, contact rate parameters may be estimable from contact tracing data or theoretical values. It should be clear that this method is not a replacement for simulations on contact tracing data, and should only be used as a crude alternative when the dataset extremely large.
+
+The importance of a given node was tested empirically by calculating the difference in average reproductive number (over 100 simulations) between graphs which include and exclude the node in question. A high difference in reproductive numbers indicates that the node is instrumental in the spread of the disease.
+
+The Erdos-Renyi model (@erdos1960evolution) was used to generate random graphs of 40 nodes (four of which are initially infected), and the connectedness property (an underlying assumption of betweenness centrality) was verified for each graph. We start with an edge between every vertex, and each edge is included with a constant probability, p. Figure 3 shows the results for various edge inclusion probabilities. Both variants of percolation centrality showed substantial correlations with the empirical measure of importance.
+
+```{r, echo = FALSE, fig.cap = "Correlation between the difference of reproductive numbers and the two variants of percolation centrality for different edge inclusion probabilities"}
+knitr::include_graphics("AdjCentrality.png")
+```
+
 
 ## Time-Ordered Networks
 
@@ -249,7 +289,9 @@ We will call this the temporal prestige. The temporal prestige can be normalized
 $$P_{p}(\textit{u}_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, \textit{u}}/(g - 1)}{\sum_{\upsilon \in \textit{N}}{d_{t, i}(\upsilon, \textit{u})}/I_{t, i, \textit{u}}} \tag{5.}$$
 where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity prestige. The temporal proximity prestige can be normalized by dividing by i.
 
-When each edge is associated with a probability of transmission, as is the case with epidemiology models, the probability of a path may be of greater interest than the temporal length. In this case, we can generalize existing methods by considering a digraph where the edge weights are the natural log of the probability. Figure 2 shows a graph of this kind.
+## Multiplicative Temporal Closeness Rank
+
+When each edge is associated with a probability of transmission, as may be the case in epidemiology models, the probability of a path may be of greater interest than the temporal length. In this case, we can generalize existing methods by considering a digraph where the edge weights are the natural log of the probability. Figure 2 shows a graph of this kind.
 
 ```{r, engine = "tikz", echo = FALSE, fig.cap = "A simple temporal network represented as a digraph"}
 \begin{tikzpicture}
@@ -292,22 +334,13 @@ When each edge is associated with a probability of transmission, as is the case 
 In accordance with the Susceptible-Infected (SI) framework, the probability of transmission from an individual to them self is assumed to be one, and hence the natural log becomes 0. This representation has several useful mathematical properties. Consider a path, P, starting at $\upsilon_{i}$ and ending at $\textit{u}_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P. The probability of path P can be calculated by:
 
 $$e^{\sum_{w \in E}{log(w)}}$$
-In order to generalize conventional measures of centrality, we need to define distance in terms of probability. To this end, I propose a new measure of distance, which I call the stochastic distance:
-
-$$d^{\mathbf{p}} = 1 - \sum_{w \in E}{log(w)}$$
-Note that the stochastic distance ranges from 1 to $\infty$, therefore we can adjust equations (4.) and (5.) to get
-
-$$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d^{\mathbf{P}}_{t,j}(\textit{u}, \upsilon)}}} \tag{4.}$$
-and
-
-$$P_{p}(\textit{u}_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, \textit{u}}/(g - 1)}{\sum_{\upsilon \in \textit{N}}{d^{\mathbf{P}}_{t, i}(\upsilon, \textit{u})}/I_{t, i, \textit{u}}} \tag{5.}$$
-where $d^{\mathbf{P}}_{t,i}(\upsilon, \textit{u})$ is the shortest stochastic path distance between $\upsilon$ and $\textit{u}$ over the time interval [t, i]. Note that the shortest stochastic path is not necessarily equal to the shortest temporal path, and thus we cannot use conventional algorithms for calculating geodesics. Nevertheless, it can be shown that for the representation in Figure 2, all stochastic shortest paths to $\textit{u}_{i}$ can be calculated in $O(i|V|^{2})$ time using a modified version of the Reversed Evolution Network (abbreviated as REN) algorithm proposed by @hanke2017clone. Algorithm 1 shows the psuedocode for this algorithm.
+It can be shown that for the representation in Figure 2, all highest-probability paths to $\textit{u}_{i}$ can be calculated in $O(i|V|^{2})$ time using a modified version of the Reversed Evolution Network (abbreviated as REN) algorithm proposed by @hanke2017clone. Algorithm 1 shows the psuedocode for this algorithm.
 
 
 \begin{algorithm}
 \DontPrintSemicolon
 \SetAlgoLined
-\KwResult{Temporal Closeness Prestige}
+\KwResult{Multiplicative Closeness Rank}
 \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
 \Input{Data file with each row representing a contact and a probability of transmission}
 \Output{Temporal Prestige for a given node}
@@ -334,7 +367,7 @@ back <- Pointer to final contact time in contacts list\;
   }
   \ForEach{node in reachable}{
     sums[node] = Max(temp[node], sums[node])\;
-    tcp += $\frac{1}{1 - sums[node]}$\;
+    mcr += $exp{sums[node]}$\;
   }
   Decrement back pointer\;
 }
@@ -424,36 +457,6 @@ rownames(data) = c("p = 0.2", "p = 0.1")
 ```{r, echo = FALSE}
 knitr::kable(data, caption = "Pearson correlation between temporal absorption centrality and infected proportion over 500 simulations")
 ```
-
-## In-weight Rank
-
-@rocha2014random proposed the use of in-weights as a measure of prestige. However, the in-weights fail to account for the prestige of the sender. To address this limitation, I propose a novel approach, which I will call in-weight rank. Recall the transition matrix, $\mathbf{B}(t)$, from equation 6. Denote by $P(t)$ the prestige vector at time t. I propose a recursive formula for the prestige at time t
-
-$$P(t) = P(t - 1)\mathbf{B}(t)$$
-In other words, the prestige of node i at time t is
-
-$$P_{i}(t) = \sum_{j = 1}^{N}{P_{j}(t - 1)B_{ij}(t)}$$
-
-Define the initial prestige at time 1 as the solution to the equation
-
-$$P(1)^{T} = \mathbf{B}(1)^{T}P(1)^{T} \tag {7.}$$
-This is similar to the method proposed by @seeley1949net. Using this method, the initial rank vector is the eigenvector corresponding to an eigenvalue of 1. Since $\mathbf{B}$ is a transition matrix, the columns of $\mathbf{B}^{T}$ all sum to 1, and thus the matrix has an eigenvalue of 1. Note, however, that this does not demonstrate uniqueness of the initial rank vector. By taking the transpose on both sides, it is easy to see that the initial rank vector is the stationary distribution of the transition matrix. A unique stationary distribution does not exist in general. For uniqueness, the following conditions are sufficient:
-
-  * For any two nodes i and j, i is reachable from j and vice-versa
-  * At least one diagonal element is > 0
-  
-For the transition matrix $\mathbf{B}(t)$, the second condition necessarily holds. For sparse networks, the first condition is unlikely to hold, in which case I propose several rudimentary solutions:
-
-  * Use a known prior distribution for the starting ranks.
-  * Aggregate transition matrices (by matrix multiplication) until the condition holds.
-  * Use the stationary distribution of the entire temporal network as the initial rank.
-  * Arbitrarily choose a solution to equation 7.
-  * If the state of the network is known at time 0, set the rank to 1 for infected
-  individuals, and 0 for healthy individuals.
-  
-In general, the initial rank may be estimable from exogenous prior information (e.g. disease tests, qualitative case investigation etc). It should be noted that the rank can only be meaningfully compared between nodes in the same network, at the same time point. For cross-comparison between networks and/or time points, the ranks must be scaled accordingly. If the initial rank is chosen to be the stationary distribution of the T-step transition matrix (where T is the final time of the temporal network), then the formula reduces and the in-weight rank is identical to the TempoRank.
-
-
 
 ## Simulation
 
