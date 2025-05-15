@@ -8,6 +8,7 @@ Node * nodes;
 GLOBALS g;
 Node zero = {.qr = 0};
 double beta = 0.1;
+int* res;
 
 // Logistic regression to get probability of transmission
 double logistic(int class0, int class1, int class2) {
@@ -40,7 +41,7 @@ void addContact(Node * node1, Node * node2, int id1, int id2, double tcontact, d
 }
 
 // Read number of contacts
-void read_conn(char * cfname) {
+void read_conn(const char * cfname) {
     FILE * fstream = fopen(cfname, "r");
 
     char line[1024];
@@ -71,9 +72,13 @@ void read_conn(char * cfname) {
     fclose(fstream);
 }
 
-void read_nodes(char * nfname, char * cfname) {
+void read_nodes(const char * nfname, const char * cfname) {
     FILE * fstream = fopen(nfname, "r");
     nodes = (Node *)malloc(752 * sizeof(Node));
+    if (nodes == NULL) {
+        printf("Failed to allocate memory.");
+        exit(1);
+    }
     for (int i = 0; i < 752; i++) {
         memcpy(nodes + i, &zero, sizeof(Node));
     }
@@ -86,7 +91,7 @@ void read_nodes(char * nfname, char * cfname) {
         
         // If first node is uninitialized
         if (compare(nodes + id, &zero)) {
-            Node tmp = { .heap = 0, .qr = id, .deg = 0, .nb = (unsigned int *)malloc(nb * sizeof(unsigned int)), .nc = (unsigned int *)malloc(752 * sizeof(unsigned int)), .t = (double **)malloc(752 * sizeof(double *)), .t_inf = END, .prob = (double **)malloc(752 * sizeof(double *)), .beta = (double *)malloc(752 * sizeof(double))};
+            Node tmp = { .qr = id, .deg = 0, .nc = (unsigned int *)malloc(752 * sizeof(unsigned int)), .heap = 0, .nb = (unsigned int *)malloc(nb * sizeof(unsigned int)), .t = (double **)malloc(752 * sizeof(double *)), .prob = (double **)malloc(752 * sizeof(double *)), .t_inf = END, .beta = (double *)malloc(752 * sizeof(double)) };
             memset(tmp.beta, 0, 752 * sizeof(double));
             memset(tmp.nc, 0, 752 * sizeof(unsigned int));
             memcpy(nodes + id, &tmp, sizeof(Node));
@@ -97,7 +102,7 @@ void read_nodes(char * nfname, char * cfname) {
     read_conn(cfname);
 }
 
-void read_data(char * fname, char * nfname, char * cfname) {
+void read_data(const char * fname, const char * nfname, const char * cfname) {
     GLOBALS g1 = { .heap = (unsigned int *)malloc(30449*sizeof(unsigned int)), .nheap = 0, .n_inf = 0 };
     memcpy(&g, &g1, sizeof(GLOBALS));
     read_nodes(nfname, cfname);
@@ -155,67 +160,14 @@ void read_data(char * fname, char * nfname, char * cfname) {
     fclose(fstream);
 }
 
-int main(int argc, char * argv[]) {
-    unsigned int run;
-    unsigned int seed;
+int mainFunc(int argc, char * argv[], unsigned int start_node) {
 
-    if (argc < 3) {
-        seed = 1;
-        run = 1;
-        printf("Incorrect number of command line arguments.");
-    }
-    else {
-        seed = atoi(argv[1]);
-        run = atoi(argv[2]);
-    }
+    res = malloc(sizeof(int) * 751);
+    memset(res, 0, sizeof(int) * 751);
 
-    read_data("Card Data Cleaned.csv", "Neighbours.csv", "Contacts.csv");
-
-    // Set seed for the mersenne twister rng algorithm
-    
-    srand(9995 * seed);
-
-    // Randomize starting nodes
-    unsigned int starting_node = (rand() % 751) + 1;
+    unsigned int starting_node = start_node;
     (nodes + starting_node) -> t_inf = 0;
     add_node(starting_node);
-
-    unsigned int starting_node2 = (rand() % 751) + 1;
-    while (starting_node2 == starting_node) {
-        starting_node2 = (rand() % 751) + 1;
-    }
-    (nodes + starting_node2) -> t_inf = 0;
-    add_node(starting_node2);
-
-    unsigned int starting_node3 = (rand() % 751) + 1;
-    while (starting_node3 == starting_node || starting_node3 == starting_node2) {
-        starting_node3 = (rand() % 751) + 1;
-    }
-    (nodes + starting_node3) -> t_inf = 0;
-    add_node(starting_node3);
-
-
-    FILE * outstream;
-
-    if (access("Fixed_Probability_Results.csv", F_OK) != 0) {
-        outstream = (FILE *)fopen("Fixed_Probability_Results.csv", "w");
-        for (unsigned int i = 0; i < 752; i++) {
-            if (!compare(nodes + i, &zero)) {
-                char buffer[4];
-                memset(buffer, 0, 4);
-                snprintf(buffer, sizeof(buffer), "%u", i);
-
-                if (fprintf(outstream, "%s,", buffer) < 0) {
-                    printf("Error\n");
-                }
-            }
-        }
-        fputc('\n', outstream);
-    }
-
-    else {
-        outstream = (FILE *)fopen("Fixed_Probability_Results.csv", "a");
-    }
 
     printf("Started simulation.\n");
 
@@ -228,21 +180,80 @@ int main(int argc, char * argv[]) {
 
     printf("Finished simulation.\n");
 
-    for (unsigned int i = 0; i < 752; i++) {
-        if (!compare(nodes + i, &zero)) {
+    for (unsigned int i = 0; i < 751; i++) {
+        if (!compare(nodes + i + 1, &zero)) {
             //char buffer[20];
             //memset(buffer, 0, 20);
             //snprintf(buffer, sizeof(buffer), "%.3lf", (nodes + i) -> t_inf);
-            if ((nodes + i) -> t_inf == END) {
-                fprintf(outstream, "%d,", 0);
+            if ((nodes + i + 1) -> t_inf == END) {
                 continue;
             }
-            fprintf(outstream, "%d,", 1);
+            
+            res[i] = 1;
         }
     }
 
-    fputc('\n', outstream);
+    return 1;
+}
+
+int reset_sim(void) {
+    memset(g.heap, 0, sizeof(g.heap));
+    for (int i = 1; i < 752; i++) {
+        (nodes + i) -> t_inf = END;
+        (nodes + i) -> heap = 0;
+    }
+    free(res);
+}
+
+int main(int argc, char * argv[]) {
+    unsigned int run;
+    unsigned int seed;
+
+    if (argc < 3) {
+        seed = 1;
+        run = 1;
+        printf("Incorrect number of command line arguments.\n");
+    }
+    else {
+        seed = atoi(argv[1]);
+        run = atoi(argv[2]);
+    }
+
+    read_data("Card Data Cleaned.csv", "Neighbours.csv", "Contacts.csv");
+
+    // Set seed for the mersenne twister rng algorithm
+    
+    srand(9995);
+
+    int** num_inf = malloc(sizeof(int*) * 751);
+
+    for (int i = 0; i < 752; i++) {
+        num_inf[i] = malloc(751 * sizeof(int));
+        memset(num_inf[i], 0, sizeof(num_inf[i]));
+    }
+
+    // Run 1000 simulations for each starting node
+    for (int start_node = 1; start_node < 752; start_node++) {
+        for (int i = 0; i < 1000; i++) {
+            mainFunc(argc, argv, start_node);
+            for (int k = 0; k < 751; k++) {
+                num_inf[start_node - 1][k] += res[k];
+            }
+            reset_sim();
+        }
+    }
+
+    FILE * outstream;
+
+    outstream = (FILE *)fopen("Results.csv", "w");
+    for (unsigned int i = 0; i < 752; i++) {
+        for (unsigned int j = 0; j < 752; j++) {
+            fprintf(outstream, "%d,", num_inf[i][j]);
+        }
+        fputc('\n', outstream);
+    }
+
     fclose(outstream);
-    printf("%d\n", run);
+
     return 1;
 }

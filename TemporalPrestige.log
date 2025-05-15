@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  6 MAY 2025 09:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  15 MAY 2025 13:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1109,13 +1109,13 @@ w/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}]
 [5{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.en
 c}{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C
 :/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc}]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf, id=76, 134.3158pt x
+<TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf, id=77, 134.3158pt x
  247.72751pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.
-pdf  used on input line 302.
+pdf  used on input line 321.
 (pdftex.def)             Requested size: 134.3175pt x 247.73065pt.
 
 
@@ -1125,81 +1125,75 @@ c} <./TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf>]
 [7]
 
 [8]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf, id=102, 209.7145pt 
+<TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf, id=103, 209.7145pt 
 x 261.03725pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.
-pdf  used on input line 403.
+pdf  used on input line 422.
 (pdftex.def)             Requested size: 209.71715pt x 261.04057pt.
 
 
 [9 <./TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf>]
-<AdjCentrality.png, id=119, 522.753pt x 308.352pt>
+<AdjCentrality.png, id=120, 522.753pt x 308.352pt>
 File: AdjCentrality.png Graphic file (type png)
 <use AdjCentrality.png>
-Package pdftex.def Info: AdjCentrality.png  used on input line 428.
+Package pdftex.def Info: AdjCentrality.png  used on input line 447.
 (pdftex.def)             Requested size: 522.75969pt x 308.35594pt.
 
-Overfull \hbox (53.00467pt too wide) in paragraph at lines 428--428
+Overfull \hbox (53.00467pt too wide) in paragraph at lines 447--447
 [][] 
  []
 
 
 
 [10 <./AdjCentrality.png>]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf, id=126, 75.54724pt 
+<TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf, id=127, 75.54724pt 
 x 74.412pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.
-pdf  used on input line 471.
+pdf  used on input line 490.
 (pdftex.def)             Requested size: 75.54704pt x 74.41182pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf, id=127, 75.54724pt 
+<TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf, id=128, 75.54724pt 
 x 74.412pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.
-pdf  used on input line 477.
+pdf  used on input line 496.
 (pdftex.def)             Requested size: 75.54704pt x 74.41182pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf, id=128, 143.81027pt
+<TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf, id=129, 143.81027pt
  x 291.28223pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.
-pdf  used on input line 485.
+pdf  used on input line 504.
 (pdftex.def)             Requested size: 143.8099pt x 291.2815pt.
 
 
-[11 <./TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf> <./TemporalPr
-estige_files/figure-latex/unnamed-chunk-5-1.pdf>]
+[11 <./TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf>]
 
-[12 <./TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf>]
+[12 <./TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf> <./TemporalPr
+estige_files/figure-latex/unnamed-chunk-6-1.pdf>]
 
 [13]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf, id=172, 143.81027pt
+<TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf, id=173, 143.81027pt
  x 177.47205pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.
-pdf  used on input line 566.
+pdf  used on input line 585.
 (pdftex.def)             Requested size: 143.81209pt x 177.4743pt.
 
 
 [14]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 6
-38.
-(C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
-File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
 
-[15{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}
- <./TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf>]
+[15 <./TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf>]
 
 [16]
 
@@ -1220,11 +1214,11 @@ L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 35199 strings out of 473523
- 805929 string characters out of 5714631
- 1302652 words of memory out of 5000000
- 57578 multiletter control sequences out of 15000+600000
- 642004 words of font info for 178 fonts, out of 8000000 for 9000
+ 35159 strings out of 473523
+ 804964 string characters out of 5714631
+ 1301658 words of memory out of 5000000
+ 57546 multiletter control sequences out of 15000+600000
+ 641398 words of font info for 174 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,15n,93p,1015b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
@@ -1246,9 +1240,9 @@ ic/lm/lmri8.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/publi
 c/lm/lmsy10.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/publi
 c/lm/lmsy6.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public
 /lm/lmsy8.pfb>
-Output written on TemporalPrestige.pdf (22 pages, 368188 bytes).
+Output written on TemporalPrestige.pdf (22 pages, 368035 bytes).
 PDF statistics:
- 416 PDF objects out of 1000 (max. 8388607)
- 82 named destinations out of 1000 (max. 500000)
- 45264 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 412 PDF objects out of 1000 (max. 8388607)
+ 85 named destinations out of 1000 (max. 500000)
+ 43208 words of extra memory for PDF output out of 51595 (max. 10000000)
 
