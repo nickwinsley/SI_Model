@@ -2,17 +2,24 @@
 title: "TemporalPrestige"
 author: "Nicholas Winsley"
 date: "2025-03-19"
-output: 
+output:
   pdf_document:
     toc: true
+  html_document:
+    toc: true
+    df_print: paged
 bibliography: references.bib
 linestretch: 1.5
 fontsize: 12pt
 header-includes:
-  - \usepackage{tikz}
-  - \usepackage{pgfplots}
-  - \usepackage{algorithm2e}
+- \usepackage{tikz}
+- \usepackage{pgfplots}
+- \usepackage{algorithm2e}
 ---
+
+```{r setup, include = FALSE}
+knitr::opts_knit$set(root.dir = getwd())
+```
 
 # Introduction
 
@@ -36,7 +43,7 @@ This study aims to address several key research questions:
 
 3. How can we extend these measures to cases where contact risk varies?
 
-Simulation is important in answering questions 2. and 3. as it provides a sort of "ground-truth" against which centrality measures can be compared.
+Simulation is important for answering questions 2. and 3. as it provides a sort of "ground-truth" against which centrality measures can be compared.
 
 # Methods
 
@@ -60,14 +67,22 @@ Centrality is roughly defined as the influence of a given node in a graph. The e
 
 Degree centrality is a simple metric for static networks where we only consider the number of neighbors of a given node. Let A be the adjacency matrix for a static network i.e. $A_{ij}$ = 1 if i and j are neighbours and 0 otherwise. The degree centrality is defined as:
 
-$$C_{D}(i) = \sum_{j = 1}^{N}{A_{ij}}$$
+\begin{equation}
+\label{eq:degree}
+C_{D}(i) = \sum_{j = 1}^{N}{A_{ij}}
+\end{equation}
+
 Degree centrality is simple and easily calculable, however it does not incorporate knowledge of the entire network structure. Improving this point is the motivation for our next centrality measure.
 
 ## Closeness Centrality
 
 For undirected graphs, @bavelas1950communication proposed closeness centrality
 
-$$C_{c}(\textit{u}) = \frac{N - 1}{\sum_{\upsilon \neq \textit{u}}d(\textit{u}, \upsilon)}$$
+\begin{equation}
+\label{eq:close}
+C_{c}(\textit{u}) = \frac{N - 1}{\sum_{\upsilon \neq \textit{u}}d(\textit{u}, \upsilon)}
+\end{equation}
+
 where N is the number of nodes and $d(\textit{u}, \upsilon)$ is the distance of the shortest path between $\upsilon$ and $\textit{u}$. Thus, referring to Figure 1, the closeness centrality of node E is $\frac{4}{1 + 1 + 2 + 3} = \frac{4}{7}$. Closeness centrality can be interpreted as the efficiency with which a node can access all other nodes in a network.
 
 ```{r, engine = "tikz", fig.cap = "A simple undirected graph", echo = FALSE}
@@ -95,26 +110,50 @@ where N is the number of nodes and $d(\textit{u}, \upsilon)$ is the distance of 
 
 In some situations, the effect that removing a node has on transmission through a network may be highly important (for instance, when quarantining individuals during a pandemic). This is the primary motivation behind Betweenness Centrality (@freeman1977set), which is defined as
 
-$$C_{B}(\upsilon) = \frac{1}{(N - 1)(N - 2)}\sum_{s \neq v \neq r}\frac{\sigma_{s, r}(\upsilon)}{\sigma_{s, r}}$$
+\begin{equation}
+  \label{eq:between}
+  C_{B}(\upsilon) = \frac{1}{(N - 1)(N - 2)}\sum_{s \neq v \neq r}\frac{\sigma_{s, r}(\upsilon)}{\sigma_{s, r}}
+\end{equation}
+
 where $\sigma_{s, r}$ is the number of shortest paths (geodesics) between s and r, and $\sigma_{s, r}(\upsilon)$ is the number of such paths that pass through $\upsilon$. The denominator term, $(N - 1)(N - 2)$, ensures that the value is normalized between 0 and 1.
 
 ## Percolation Centrality
 
 In practice, additional information around the percolation state of nodes may be known. For instance, in epidemiology we may know that certain individuals are infected. To incorporate knowledge of percolation state into centrality metrics, @piraveenan2013percolation proposed percolation centrality:
 
-$$C_{P}^{t}(\upsilon) = \frac{1}{(N - 1)(N - 2)}\sum_{s \neq v \neq r}\frac{\sigma_{s, r}(\upsilon)}{\sigma_{s, r}}\frac{x_{s}^{t}}{[\sum{x_{i}^{t}}] - x_{\upsilon}^{t}}$$
+\begin{equation}
+  \label{eq:perc}
+  C_{P}^{t}(\upsilon) = \frac{1}{(N - 1)(N - 2)}\sum_{s \neq v \neq r}\frac{\sigma_{s, r}(\upsilon)}{\sigma_{s, r}}\frac{x_{s}^{t}}{[\sum{x_{i}^{t}}] - x_{\upsilon}^{t}}
+\end{equation}
+
 where $x_{i}^{t}$ is the percolation state of node i at time t. The percolation state ranges from 0 to 1, where 1 means the individual is certainly infected, and 0 means the individual is healthy. A decimal value (say 0.6) could, for instance, represent a probability of infection or a proportion of a township which is infected.
 
 ## Adjusted Percolation Centrality
 
 I propose a novel variant of percolation centrality, which I will call Adjusted Percolation Centrality. Adjusted Percolation Centrality only considers paths which do not pass through any percolated nodes. By doing this, it ensures that redundant paths are not considered. I will define an unpercolated path as a path where no incident nodes are percolated, except for the start and end nodes, which may have any percolation state. The mathematical definition is
 
-$$C_{P}^{t}(\upsilon) = \frac{1}{M_{P}}\sum_{s \neq v \neq r}\frac{\sigma_{s, r}^{P}(\upsilon)}{\sigma_{s, r}^{P}}\frac{x_{s}^{t}}{[\sum{x_{i}^{t}}] - x_{\upsilon}^{t}}$$
+
+\begin{equation}
+  \label{eq:adj}
+  C_{P}^{t}(\upsilon) = \frac{1}{M_{P}}\sum_{s \neq v \neq r}\frac{\sigma_{s, r}^{P}(\upsilon)}{\sigma_{s, r}^{P}}\frac{x_{s}^{t}}{[\sum{x_{i}^{t}}] - x_{\upsilon}^{t}}
+\end{equation}
+
 where $M_{P}$ is the number of pairs (i, j) where there is an unpercolated path between i and j, and $\sigma_{s, r}^{P}$ is the number of shortest unpercolated paths between s and r.
+
+## Katz Centrality
+
+Betweenness and Closeness centrality focus on shortest paths, which potentially do not give the full picture. Katz centrality (@katz1953new) is an alternative approach which considers all paths between nodes. For the i'th node in a network, Katz centrality is defined as:
+
+\begin{equation}
+  \label{eq:katz}
+  C_{K}(i) = \sum_{j = 1}^{n}{(I + \alpha{A} + \alpha^{2}A^{2} + \alpha^{3}A^{3} + ...)_{ij}}
+\end{equation}
+
+where A is the adjacency matrix and $0 <= \alpha < 1$. Katz centrality down weights longer paths, as $A^{n}$ is simply the n-step adjacency matrix for the network. For a technical reason, the infinite sum ($I + \alpha{A} + ...$) converges when $\alpha <= \frac{1}{\rho(A)}$ where $\rho(A)$ is the spectral radius of A i.e. the largest absolute value of any of it's eigenvalues. Under this condition, the sum converges to $(I - \alpha{A})^{-1}$. If we are only interested in the first n steps, we adjust the formula accordingly to get $(I - \alpha^{n + 1}A^{n + 1})(I - \alpha{A})^{-1}$. This result is convenient for temporal networks, where a finite number of steps in each snapshot is often assumed.
 
 ## Epidemic Simulations for Static Networks
 
-This section describes a novel approach to epidemic modelling using static networks, and I use it as a "ground truth" to validate Adjusted Percolation Centrality. A social network is modeled by a static graph, where each node represents an individual, and each edge represents an ongoing, time-independent relationship between two individuals. It is assumed that contacts between any two individuals i and j follows a Poisson Process with a rate parameter of $\lambda_{ij}$, and each contact has a constant probability, $\beta$, of being infectious. The sojourn times (period between contacts) of contacts between i and j follow an exponential distribution with a rate of $\lambda$.
+This section describes a novel approach to epidemic modelling using static networks, which I use as a "ground truth" to validate Adjusted Percolation Centrality. A social network is modeled by a static graph, where each node represents an individual, and each edge represents an ongoing, time-independent relationship between two individuals. It is assumed that contacts between any two individuals i and j follows a Poisson Process with a rate parameter of $\lambda_{ij}$, and each contact has a constant probability, $\beta$, of being infectious. The sojourn times (period between contacts) of contacts between i and j follow an exponential distribution with a rate of $\lambda$.
 
 **Lemma 1: Let Y follow a Poisson Process with rate $\lambda$, and X be the Markov process where for each arrival in Y, X includes the  arrival with probability p. Then X is a Poisson Process with a rate parameter of $p\lambda$.**
 
@@ -149,9 +188,20 @@ The importance of a given node was tested empirically by calculating the differe
 The Erdos-Renyi model (@erdos1960evolution) was used to generate random graphs of 40 nodes (four of which are initially infected), and the connectedness property (an underlying assumption of betweenness centrality) was verified for each graph. We start with an edge between every vertex, and each edge is included with a constant probability, p. Figure 3 shows the results for various edge inclusion probabilities. Both variants of percolation centrality showed substantial correlations with the empirical measure of importance.
 
 ```{r, echo = FALSE, fig.cap = "Correlation between the difference of reproductive numbers and the two variants of percolation centrality for different edge inclusion probabilities"}
-knitr::include_graphics("AdjCentrality.png")
+setwd("C:\\Users\\nickw\\Downloads\\SI_Model")
+knitr::include_graphics("AdjCentrality.png", rel_path = TRUE)
 ```
 
+## Temporal Katz Centrality
+
+Temporal Katz Centrality, proposed by @grindrod2011communicability, follows fairly straightforwardly from @ref(eq:katz). Denote by $A_{t}$ the adjacency matrix for the snapshot at time t. For a temporal network with snapshots at times $1, 2, 3, ..., T - 1, T$, the Temporal Katz Centrality is defined by the matrix product
+
+\begin{equation}
+\label{eq:tempkatz}
+  (I - \alpha{A_{1}})^{-1}(I - \alpha{A_{2}})^{-1}...(I - \alpha{A_{T - 1}})^{-1}(I - \alpha{A_{T}})^{-1}
+\end{equation}
+
+The centrality for a given node is likewise calculated by the row sum of this matrix product.
 
 ## Time-Ordered Networks
 
@@ -270,9 +320,9 @@ Figure 4 shows the temporal network represented as a directed graph.
 Define the distance of the temporal shortest path length over time interval [i, j], denoted by $d_{i,j}(\upsilon, \textit{u})$, as the smallest $d = j - n$, where $i \leq n \leq j$ and there is a path from $\upsilon_{n}$ to $\textit{u}_{j}$. Thus, in Figure 1, the shortest path distance $d_{1,3}(a, b)$ is two, with the temporal shortest path being $a_{1}$-$b_{2}$-$b_{3}$. By representing a temporal network as a high-granularity digraph, we can now generalize conventional measures of prestige and centrality to temporal networks.
 
 
-## Temporal Closeness and Proximity Prestige
+## Temporal Closeness Rank
 
-This study is primarily concerned with the likelihood of infection, as estimating transmission requires future contact tracing data, which is usually not known. Likelihood of infection is roughly analogous to the idea of prestige (also known as rank). I will use the terms prestige and rank interchangeably throughout this paper. In a directional network, a prestigious node is the object of many ties i.e. has many incoming connections. This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are ill-defined in directional graphs, owing to the fact that directional graphs are not necessarily strongly-connected. Due to this limitation, we usually only consider nodes in the influence domain of node i i.e. the set of all nodes from whom $n_{i}$ is reachable. @lin1976foundations proposed the following measure of prestige for directional relations, called the proximity prestige:
+This study is primarily concerned with the likelihood of infection, as estimating transmission requires future contact tracing data, which is usually not known. Likelihood of infection is roughly analogous to the idea of prestige (also known as rank). I will use the terms prestige and rank interchangeably throughout this paper. In a directional network, a prestigious node is the object of many ties i.e. has many incoming connections. This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are ill-defined in directional graphs, owing to the fact that directional graphs are not necessarily strongly-connected. Due to this limitation, we usually only consider nodes in the influence domain of node i i.e. the set of all nodes from whom $n_{i}$ is reachable. @lin1976foundations proposed the following measure for directional relations, called the proximity prestige:
 
 $$P_{p}(n_{i}) = \frac{I_{i}/(g - 1)}{\sum{d(n_{j}, n_{i})}/I_{i}} \tag{1.}$$
 where $I_{i}$ is the size of the influence domain of node i, and g is the total number of nodes in the network. For temporal networks, I propose a modified version
@@ -280,7 +330,7 @@ where $I_{i}$ is the size of the influence domain of node i, and g is the total 
 $$P_{p}(\textit{u}_{i}) = \frac{I_{\textit{u}/(g - 1)}}{\sum_{\upsilon \in \textit{N}}{d_{0, i}(\upsilon, \textit{u})}/I_{\textit{u}}} \tag{2.}$$
 where $\textit{N}$ is the influence domain of node $\textit{u}$ at time i. Intuitively, this is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity prestige is defined to be 0. Kim and Anderson [2012] proposed temporal closeness, a similar metric which considers all time intervals $[t, i], t \in [0, i - 1]$.
 
-$$C_{i,j} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\upsilon, \textit{u})}}} \tag{3.}$$
+$$C_{i,j} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{j, t}(\upsilon, \textit{u})}}} \tag{3.}$$
 When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn (3.) into a prestige measure, we simply reverse the direction of the paths to get:
 
 $$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\textit{u}, \upsilon)}}} \tag{4.}$$
@@ -289,7 +339,7 @@ We will call this the temporal prestige. The temporal prestige can be normalized
 @kim2012temporal showed that by considering all time-intervals, temporal closeness improves the quality of estimates in some situations. By this same token, we can modify equation (2.) to obtain
 
 $$P_{p}(\textit{u}_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, \textit{u}}/(g - 1)}{\sum_{\upsilon \in \textit{N}}{d_{t, i}(\upsilon, \textit{u})}/I_{t, i, \textit{u}}} \tag{5.}$$
-where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity prestige. The temporal proximity prestige can be normalized by dividing by i.
+where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity rank. The temporal proximity rank can be normalized by dividing by i.
 
 ## Multiplicative Temporal Closeness Rank
 
@@ -397,63 +447,63 @@ $$s_{ij}(t) = 1 - \prod_{k = 1}^{n_{ij}(t)}{(1 - p_{ijk}(t))}$$
 $$s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}$$
 Denote by $\mathbf{B}_{i}(t)$ the transition matrix obtained by taking $\mathbf{B}(t)$, and setting all entries in the i'th row to zero, except the diagonal entry (which is necessarily one). The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the absorption rank for individual i, at time t. The absorption rank of individual i is interpreted as the probability that a random walk through the temporal network passes through i.
 
-## Example
+<!-- ## Example -->
 
-A simple example network of five nodes is shown in Example_Network.csv. For simplicity, a constant transmission probability was used for all contact events. In total, 500 simulations were run on this network. The absorption centrality and the number of times infected were calculated for the final contact time. Table 1 shows the correlation between the absorption centrality and the probability of infection by the end of the simulation.
+<!-- A simple example network of five nodes is shown in Example_Network.csv. For simplicity, a constant transmission probability was used for all contact events. In total, 500 simulations were run on this network. The absorption centrality and the number of times infected were calculated for the final contact time. Table 1 shows the correlation between the absorption centrality and the probability of infection by the end of the simulation. -->
 
 
-```{r, table.cap = "Pearson Correlation between temporal absorption centrality and proportion of times infected over 500 simulations", echo = FALSE}
-corr = c()
-
-df = read.csv("Results1.csv")
-df = df[, 1:5]
-
-colnames(df) = c("Node1", "Node2", "Node3", "Node4", "Node5")
-
-prop = c()
-
-for (col in colnames(df)) {
-  prop = c(prop, sum(df[,col] <= 254) / 500)
-}
-
-centrality = read.csv("AbsorptionCentrality1.csv")
-
-colnames(centrality) = c("Node", "Centrality")
-
-res = rev(centrality$Centrality)
-
-corr = c(corr, cor(x = prop, y = res, method = "pearson"))
-```
-
-```{r, table.cap = "Pearson Correlation between temporal absorption centrality and number of times infected over 500 simulations", echo = FALSE}
-
-df = read.csv("Results2.csv")
-df = df[, 1:5]
-
-colnames(df) = c("Node1", "Node2", "Node3", "Node4", "Node5")
-
-prop = c()
-
-for (col in colnames(df)) {
-  prop = c(prop, sum(df[,col] <= 254) / 500)
-}
-
-centrality = read.csv("AbsorptionCentrality2.csv")
-
-colnames(centrality) = c("Node", "Centrality")
-
-res = rev(centrality$Centrality)
-
-corr = c(corr, cor(x = prop, y = res, method = "pearson"))
-
-data = data.frame(Correlation = corr)
-
-rownames(data) = c("p = 0.2", "p = 0.1")
-```
-
-```{r, echo = FALSE}
-knitr::kable(data, caption = "Pearson correlation between temporal absorption centrality and infected proportion over 500 simulations")
-```
+<!-- # ```{r, table.cap = "Pearson Correlation between temporal absorption centrality and proportion of times infected over 500 simulations", echo = FALSE} -->
+<!-- # corr = c() -->
+<!-- #  -->
+<!-- # df = read.csv("Results1.csv") -->
+<!-- # df = df[, 1:5] -->
+<!-- #  -->
+<!-- # colnames(df) = c("Node1", "Node2", "Node3", "Node4", "Node5") -->
+<!-- #  -->
+<!-- # prop = c() -->
+<!-- #  -->
+<!-- # for (col in colnames(df)) { -->
+<!-- #   prop = c(prop, sum(df[,col] <= 254) / 500) -->
+<!-- # } -->
+<!-- #  -->
+<!-- # centrality = read.csv("AbsorptionCentrality1.csv") -->
+<!-- #  -->
+<!-- # colnames(centrality) = c("Node", "Centrality") -->
+<!-- #  -->
+<!-- # res = rev(centrality$Centrality) -->
+<!-- #  -->
+<!-- # corr = c(corr, cor(x = prop, y = res, method = "pearson")) -->
+<!-- # ``` -->
+<!-- #  -->
+<!-- # ```{r, table.cap = "Pearson Correlation between temporal absorption centrality and number of times infected over 500 simulations", echo = FALSE} -->
+<!-- #  -->
+<!-- # df = read.csv("Results2.csv") -->
+<!-- # df = df[, 1:5] -->
+<!-- #  -->
+<!-- # colnames(df) = c("Node1", "Node2", "Node3", "Node4", "Node5") -->
+<!-- #  -->
+<!-- # prop = c() -->
+<!-- #  -->
+<!-- # for (col in colnames(df)) { -->
+<!-- #   prop = c(prop, sum(df[,col] <= 254) / 500) -->
+<!-- # } -->
+<!-- #  -->
+<!-- # centrality = read.csv("AbsorptionCentrality2.csv") -->
+<!-- #  -->
+<!-- # colnames(centrality) = c("Node", "Centrality") -->
+<!-- #  -->
+<!-- # res = rev(centrality$Centrality) -->
+<!-- #  -->
+<!-- # corr = c(corr, cor(x = prop, y = res, method = "pearson")) -->
+<!-- #  -->
+<!-- # data = data.frame(Correlation = corr) -->
+<!-- #  -->
+<!-- # rownames(data) = c("p = 0.2", "p = 0.1") -->
+<!-- # ``` -->
+<!-- #  -->
+<!-- # ```{r, echo = FALSE} -->
+<!-- # knitr::kable(data, caption = "Pearson correlation between temporal absorption centrality and infected proportion over 500 simulations") -->
+<!-- # ``` -->
 
 ## Simulation
 
@@ -465,6 +515,85 @@ For simulation, we use the event-based algorithm first proposed by @kiss2017math
 
 $$\lceil \frac{log(1 - X)}{log(1 - \beta)} \rceil$$
 where $\beta$ is the fixed transmission probability and $X \sim Uniform(0, 1)$.
+
+## Results
+
+Five measures were calculated for the CovidCard dataset, namely Temporal Closeness (denoted by TP) and Proximity Rank (denoted by TPP), Absorption Rank, Temporal Katz Centrality and Temporal Degree Centrality. For a fair comparison, all centrality measures were calculated assuming constant transmission probabilities for every contact event. This was done because Temporal Katz Centrality does not generalize to varying transmission probabilities. These measures were correlated to the observed number of times each individual was infected over 751,000 simulations (shown in Figure 8). The dataset contained 751 individuals in total, and 1000 simulations were run with each individual being the sole starting node.
+
+```{r, results = 'hide', echo = FALSE, fig.cap = "Spearman rank correlations between centrality measures and observed likelihood of infection."}
+suppressPackageStartupMessages(library(dplyr))
+library(ggplot2)
+
+katz <- read.csv("Katz_Centrality.csv")
+katz <- katz %>% mutate(Centrality = round(Centrality, 6), TempDegree = round(TempDegree, 6))
+
+tpp <- read.csv("tpp.csv", header = FALSE)
+
+absorb <- read.csv("AbsorptionCentrality.csv")
+absorb <- absorb[rev(rownames(absorb)), ]
+
+colnames(absorb) <- c("Node", "Absorb")
+colnames(tpp) <- c("Node", "TP", "TPP")
+
+katz$Node = round(katz$Node, 0)
+
+
+results = read.csv("Results.csv")
+results = results[1:751, 1:751]
+
+results[] = lapply(results, function(x) ifelse(x > 1000, 0, x))
+
+probs = apply(results, 2, mean)/1000
+
+corKatz = cor(probs, katz$Centrality, method = "spearman")
+corDeg = cor(probs, katz$TempDegree, method = "spearman")
+corAbs = cor(probs, absorb$Absorb, method = "spearman")
+corTp = cor(probs, tpp$TP, method = "spearman")
+corTpp = cor(probs, tpp$TPP, method = "spearman")
+
+correlations = c(corKatz, corDeg, corAbs, corTp, corTpp)
+
+names <- c("Katz Centrality", "Degree Centrality", "Absorption Centrality", "Temporal Closeness", "Temporal Proximity")
+
+df <- data.frame(type = names, corr = correlations)
+
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Spearman Rank Correlation")
+```
+```{r, echo = FALSE, fig.cap = "Pearson correlations between centrality measures and observed likelihood of infection."}
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Pearson Correlation")
+```
+
+The Spearman Correlations are generally large, with Absorption Rank showing a larger correlation ($\rho \approx 0.7$) compared to other metrics. Conversely, all metrics showed relatively low Pearson Correlations. This suggests that the metrics should not be interpreted as a linearly increasing variable, rather they should be used for ranking the relative importance of individuals within the same network. 
+
+```{r, echo = FALSE, fig.cap = "Correlations between the five centrality measures."}
+library(ggcorrplot)
+
+data <- data.frame(TP = tpp$TP, TPP = tpp$TPP, Absorb = absorb$Absorb, Katz = katz$Centrality, Degree = katz$TempDegree)
+
+corr <- cor(data)
+
+ggcorrplot(corr, lab = TRUE)
+```
+
+Figure 8 shows the Pearson correlations between the five metrics. With the exception of Proximity Rank and Closeness Rank, the metrics are mostly independent. This suggests that our rankings could be improved by including many metrics as predictors in a regression model.
+
+```{r, echo = FALSE, fig.cap = "Standardized residuals of the model plotted against theoretical quantiles of the normal distribution."}
+data$probs = probs
+
+model = lm(probs ~ TP + TPP + Absorb + Katz + Degree, data = data)
+
+residuals <- residuals(model)
+
+qqnorm(residuals)
+qqline(residuals)
+```
+Figure 9 shows the Q-Q plot for a linear regression model predicting the observed likelihood of infection, with the five centrality metrics as predictors. The relationship is clearly non-linear, with a large number of extreme values for the residuals. 
+
+```{r, echo = FALSE, fig.cap = ""}
+library(GGally)
+
+ggpairs(data)
+```
 
 ### Constant Transmission Probability
 

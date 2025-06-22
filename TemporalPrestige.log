@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  15 MAY 2025 13:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  22 JUN 2025 17:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -229,72 +229,7 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@layoutvoffset=\dimen159
 \Gm@dimlist=\toks27
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
-(C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/tools\longtable.sty
-Package: longtable 2024-10-27 v4.22 Multi-page Table package (DPC)
-\LTleft=\skip55
-\LTright=\skip56
-\LTpre=\skip57
-\LTpost=\skip58
-\LTchunksize=\count288
-\LTcapwidth=\dimen160
-\LT@head=\box55
-\LT@firsthead=\box56
-\LT@foot=\box57
-\LT@lastfoot=\box58
-\LT@gbox=\box59
-\LT@cols=\count289
-\LT@rows=\count290
-\c@LT@tables=\count291
-\c@LT@chunks=\count292
-\LT@p@ftn=\toks28
-) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
-Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen161
-\lightrulewidth=\dimen162
-\cmidrulewidth=\dimen163
-\belowrulesep=\dimen164
-\belowbottomsep=\dimen165
-\aboverulesep=\dimen166
-\abovetopsep=\dimen167
-\cmidrulesep=\dimen168
-\cmidrulekern=\dimen169
-\defaultaddspace=\dimen170
-\@cmidla=\count293
-\@cmidlb=\count294
-\@aboverulesep=\dimen171
-\@belowrulesep=\dimen172
-\@thisruleclass=\count295
-\@lastruleclass=\count296
-\@thisrulewidth=\dimen173
-) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
-Package: array 2024/10/17 v2.6g Tabular extension package (FMi)
-\col@sep=\dimen174
-\ar@mcellbox=\box60
-\extrarowheight=\dimen175
-\NC@list=\toks29
-\extratabsurround=\skip59
-\backup@length=\skip60
-\ar@cellbox=\box61
-) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/tools\calc.sty
-Package: calc 2023/07/08 v4.3 Infix arithmetic (KKT,FJ)
-\calc@Acount=\count297
-\calc@Bcount=\count298
-\calc@Adimen=\dimen176
-\calc@Bdimen=\dimen177
-\calc@Askip=\skip61
-\calc@Bskip=\skip62
-LaTeX Info: Redefining \setlength on input line 80.
-LaTeX Info: Redefining \addtolength on input line 81.
-\calc@Ccount=\count299
-\calc@Cskip=\skip63
-)
-(C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/footnotehyper\footnoteh
-yper.sty
-Package: footnotehyper 2021/08/13 v1.1e hyperref aware footnote.sty (JFB)
-\FNH@notes=\box62
-\FNH@width=\dimen178
-\FNH@toks=\toks30
-) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+(C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
 Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
@@ -307,12 +242,24 @@ File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 106.
 )
-\Gin@req@height=\dimen179
-\Gin@req@width=\dimen180
+\Gin@req@height=\dimen160
+\Gin@req@width=\dimen161
 )
-\cslhangindent=\skip64
-\csllabelwidth=\skip65
-
+\cslhangindent=\skip55
+\csllabelwidth=\skip56
+(C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/tools\calc.sty
+Package: calc 2023/07/08 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count288
+\calc@Bcount=\count289
+\calc@Adimen=\dimen162
+\calc@Bdimen=\dimen163
+\calc@Askip=\skip57
+\calc@Bskip=\skip58
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count290
+\calc@Cskip=\skip59
+)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.
 sty (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.
 sty
@@ -320,13 +267,13 @@ sty
 y
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
 -common.tex
-\pgfutil@everybye=\toks31
-\pgfutil@tempdima=\dimen181
-\pgfutil@tempdimb=\dimen182
+\pgfutil@everybye=\toks28
+\pgfutil@tempdima=\dimen164
+\pgfutil@tempdimb=\dimen165
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
 -latex.def
-\pgfutil@abb=\box63
+\pgfutil@abb=\box55
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.
 code.tex (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revi
@@ -345,33 +292,33 @@ Package: pgfsys 2023-01-15 v3.1.10 (3.1.10)
 
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
 .code.tex
-\pgfkeys@pathtoks=\toks32
-\pgfkeys@temptoks=\toks33
+\pgfkeys@pathtoks=\toks29
+\pgfkeys@temptoks=\toks30
 
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
 libraryfiltered.code.tex
-\pgfkeys@tmptoks=\toks34
+\pgfkeys@tmptoks=\toks31
 ))
-\pgf@x=\dimen183
-\pgf@y=\dimen184
-\pgf@xa=\dimen185
-\pgf@ya=\dimen186
-\pgf@xb=\dimen187
-\pgf@yb=\dimen188
-\pgf@xc=\dimen189
-\pgf@yc=\dimen190
-\pgf@xd=\dimen191
-\pgf@yd=\dimen192
+\pgf@x=\dimen166
+\pgf@y=\dimen167
+\pgf@xa=\dimen168
+\pgf@ya=\dimen169
+\pgf@xb=\dimen170
+\pgf@yb=\dimen171
+\pgf@xc=\dimen172
+\pgf@yc=\dimen173
+\pgf@xd=\dimen174
+\pgf@yd=\dimen175
 \w@pgf@writea=\write3
 \r@pgf@reada=\read2
-\c@pgf@counta=\count300
-\c@pgf@countb=\count301
-\c@pgf@countc=\count302
-\c@pgf@countd=\count303
-\t@pgf@toka=\toks35
-\t@pgf@tokb=\toks36
-\t@pgf@tokc=\toks37
-\pgf@sys@id@count=\count304
+\c@pgf@counta=\count291
+\c@pgf@countb=\count292
+\c@pgf@countc=\count293
+\c@pgf@countd=\count294
+\t@pgf@toka=\toks32
+\t@pgf@tokb=\toks33
+\t@pgf@tokc=\toks34
+\pgf@sys@id@count=\count295
 
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.c
 fg
@@ -390,8 +337,8 @@ File: pgfsys-common-pdf.def 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
 ssoftpath.code.tex
 File: pgfsyssoftpath.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfsyssoftpath@smallbuffer@items=\count305
-\pgfsyssoftpath@bigbuffer@items=\count306
+\pgfsyssoftpath@smallbuffer@items=\count296
+\pgfsyssoftpath@bigbuffer@items=\count297
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
 sprotocol.code.tex
@@ -407,12 +354,12 @@ Package: pgfcore 2023-01-15 v3.1.10 (3.1.10)
 code.tex)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparse
 r.code.tex
-\pgfmath@dimen=\dimen193
-\pgfmath@count=\count307
-\pgfmath@box=\box64
-\pgfmath@toks=\toks38
-\pgfmath@stack@operand=\toks39
-\pgfmath@stack@operation=\toks40
+\pgfmath@dimen=\dimen176
+\pgfmath@count=\count298
+\pgfmath@box=\box56
+\pgfmath@toks=\toks35
+\pgfmath@stack@operand=\toks36
+\pgfmath@stack@operation=\toks37
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
 ions.code.tex)
@@ -436,59 +383,59 @@ ions.integerarithmetics.code.tex)
 code.tex)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat
 .code.tex
-\c@pgfmathroundto@lastzeros=\count308
+\c@pgfmathroundto@lastzeros=\count299
 ))
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.
 tex)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 epoints.code.tex
 File: pgfcorepoints.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@picminx=\dimen194
-\pgf@picmaxx=\dimen195
-\pgf@picminy=\dimen196
-\pgf@picmaxy=\dimen197
-\pgf@pathminx=\dimen198
-\pgf@pathmaxx=\dimen199
-\pgf@pathminy=\dimen256
-\pgf@pathmaxy=\dimen257
-\pgf@xx=\dimen258
-\pgf@xy=\dimen259
-\pgf@yx=\dimen260
-\pgf@yy=\dimen261
-\pgf@zx=\dimen262
-\pgf@zy=\dimen263
+\pgf@picminx=\dimen177
+\pgf@picmaxx=\dimen178
+\pgf@picminy=\dimen179
+\pgf@picmaxy=\dimen180
+\pgf@pathminx=\dimen181
+\pgf@pathmaxx=\dimen182
+\pgf@pathminy=\dimen183
+\pgf@pathmaxy=\dimen184
+\pgf@xx=\dimen185
+\pgf@xy=\dimen186
+\pgf@yx=\dimen187
+\pgf@yy=\dimen188
+\pgf@zx=\dimen189
+\pgf@zy=\dimen190
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 epathconstruct.code.tex
 File: pgfcorepathconstruct.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@path@lastx=\dimen264
-\pgf@path@lasty=\dimen265
+\pgf@path@lastx=\dimen191
+\pgf@path@lasty=\dimen192
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 epathusage.code.tex
 File: pgfcorepathusage.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@shorten@end@additional=\dimen266
-\pgf@shorten@start@additional=\dimen267
+\pgf@shorten@end@additional=\dimen193
+\pgf@shorten@start@additional=\dimen194
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 escopes.code.tex
 File: pgfcorescopes.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfpic=\box65
-\pgf@hbox=\box66
-\pgf@layerbox@main=\box67
-\pgf@picture@serial@count=\count309
+\pgfpic=\box57
+\pgf@hbox=\box58
+\pgf@layerbox@main=\box59
+\pgf@picture@serial@count=\count300
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 egraphicstate.code.tex
 File: pgfcoregraphicstate.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgflinewidth=\dimen268
+\pgflinewidth=\dimen195
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 etransformations.code.tex
 File: pgfcoretransformations.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@pt@x=\dimen269
-\pgf@pt@y=\dimen270
-\pgf@pt@temp=\dimen271
+\pgf@pt@x=\dimen196
+\pgf@pt@y=\dimen197
+\pgf@pt@temp=\dimen198
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 equick.code.tex
@@ -505,14 +452,14 @@ File: pgfcorepathprocessing.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 earrows.code.tex
 File: pgfcorearrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfarrowsep=\dimen272
+\pgfarrowsep=\dimen199
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 eshade.code.tex
 File: pgfcoreshade.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@max=\dimen273
-\pgf@sys@shading@range@num=\count310
-\pgf@shadingcount=\count311
+\pgf@max=\dimen256
+\pgf@sys@shading@range@num=\count301
+\pgf@shadingcount=\count302
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 eimage.code.tex
@@ -521,7 +468,7 @@ File: pgfcoreimage.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 eexternal.code.tex
 File: pgfcoreexternal.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfexternal@startupbox=\box68
+\pgfexternal@startupbox=\box60
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 elayers.code.tex
@@ -542,7 +489,7 @@ File: pgfcorerdf.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
 shapes.code.tex
 File: pgfmoduleshapes.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfnodeparttextbox=\box69
+\pgfnodeparttextbox=\box61
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
 plot.code.tex
@@ -551,8 +498,8 @@ File: pgfmoduleplot.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
 mp-version-0-65.sty
 Package: pgfcomp-version-0-65 2023-01-15 v3.1.10 (3.1.10)
-\pgf@nodesepstart=\dimen274
-\pgf@nodesepend=\dimen275
+\pgf@nodesepstart=\dimen257
+\pgf@nodesepend=\dimen258
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
 mp-version-1-18.sty
@@ -570,10 +517,10 @@ fmath.sty
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.
 code.tex
 Package: pgffor 2023-01-15 v3.1.10 (3.1.10)
-\pgffor@iter=\dimen276
-\pgffor@skip=\dimen277
-\pgffor@stack=\toks41
-\pgffor@toks=\toks42
+\pgffor@iter=\dimen259
+\pgffor@skip=\dimen260
+\pgffor@stack=\toks38
+\pgffor@toks=\toks39
 ))
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
 z\tikz.code.tex
@@ -582,34 +529,34 @@ Package: tikz 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
 aryplothandlers.code.tex
 File: pgflibraryplothandlers.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@plot@mark@count=\count312
-\pgfplotmarksize=\dimen278
+\pgf@plot@mark@count=\count303
+\pgfplotmarksize=\dimen261
 )
-\tikz@lastx=\dimen279
-\tikz@lasty=\dimen280
-\tikz@lastxsaved=\dimen281
-\tikz@lastysaved=\dimen282
-\tikz@lastmovetox=\dimen283
-\tikz@lastmovetoy=\dimen284
-\tikzleveldistance=\dimen285
-\tikzsiblingdistance=\dimen286
-\tikz@figbox=\box70
-\tikz@figbox@bg=\box71
-\tikz@tempbox=\box72
-\tikz@tempbox@bg=\box73
-\tikztreelevel=\count313
-\tikznumberofchildren=\count314
-\tikznumberofcurrentchild=\count315
-\tikz@fig@count=\count316
+\tikz@lastx=\dimen262
+\tikz@lasty=\dimen263
+\tikz@lastxsaved=\dimen264
+\tikz@lastysaved=\dimen265
+\tikz@lastmovetox=\dimen266
+\tikz@lastmovetoy=\dimen267
+\tikzleveldistance=\dimen268
+\tikzsiblingdistance=\dimen269
+\tikz@figbox=\box62
+\tikz@figbox@bg=\box63
+\tikz@tempbox=\box64
+\tikz@tempbox@bg=\box65
+\tikztreelevel=\count304
+\tikznumberofchildren=\count305
+\tikznumberofcurrentchild=\count306
+\tikz@fig@count=\count307
 
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
 matrix.code.tex
 File: pgfmodulematrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfmatrixcurrentrow=\count317
-\pgfmatrixcurrentcolumn=\count318
-\pgf@matrix@numberofcolumns=\count319
+\pgfmatrixcurrentrow=\count308
+\pgfmatrixcurrentcolumn=\count309
+\pgf@matrix@numberofcolumns=\count310
 )
-\tikz@expandcount=\count320
+\tikz@expandcount=\count311
 
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
 z/libraries\tikzlibrarytopaths.code.tex
@@ -624,12 +571,12 @@ Package: pgfplots 2021/05/15 v1.18.1 Data Visualization (1.18.1)
 e.tex
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotscore
 .code.tex
-\t@pgfplots@toka=\toks43
-\t@pgfplots@tokb=\toks44
-\t@pgfplots@tokc=\toks45
-\pgfplots@tmpa=\dimen287
-\c@pgfplots@coordindex=\count321
-\c@pgfplots@scanlineindex=\count322
+\t@pgfplots@toka=\toks40
+\t@pgfplots@tokb=\toks41
+\t@pgfplots@tokc=\toks42
+\pgfplots@tmpa=\dimen270
+\c@pgfplots@coordindex=\count312
+\c@pgfplots@scanlineindex=\count313
 
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgfplots
 sysgeneric.code.tex))
@@ -640,9 +587,9 @@ ib\pgfplotsoldpgfsupp_loader.code.tex
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
 aryfpu.code.tex)
 Package pgfplots: loading complementary utilities for your pgf version...
-\t@pgf@toka=\toks46
-\t@pgf@tokb=\toks47
-\t@pgf@tokc=\toks48
+\t@pgf@toka=\toks43
+\t@pgf@tokb=\toks44
+\t@pgf@tokc=\toks45
 
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/oldpgfcompat
 ib\pgfplotsoldpgfsupp_pgfutil-common-lists.tex))
@@ -654,14 +601,14 @@ e\pgfplotsliststructure.code.tex)
 e\pgfplotsliststructureext.code.tex)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructur
 e\pgfplotsarray.code.tex
-\c@pgfplotsarray@tmp=\count323
+\c@pgfplotsarray@tmp=\count314
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructur
 e\pgfplotsmatrix.code.tex)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/numtable\pgf
 plotstableshared.code.tex
-\c@pgfplotstable@counta=\count324
-\t@pgfplotstable@a=\toks49
+\c@pgfplotstable@counta=\count315
+\t@pgfplotstable@a=\toks46
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructur
 e\pgfplotsdeque.code.tex)
@@ -673,7 +620,7 @@ sbinary.data.code.tex))
 sutil.verb.code.tex)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\pgflibr
 arypgfplots.surfshading.code.tex
-\c@pgfplotslibrarysurf@no=\count325
+\c@pgfplotslibrarysurf@no=\count316
 
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgflibra
 rypgfplots.surfshading.pgfsys-pdftex.def)))
@@ -705,16 +652,16 @@ hs.code.tex)
 z/libraries\tikzlibrarydecorations.code.tex
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
 decorations.code.tex
-\pgfdecoratedcompleteddistance=\dimen288
-\pgfdecoratedremainingdistance=\dimen289
-\pgfdecoratedinputsegmentcompleteddistance=\dimen290
-\pgfdecoratedinputsegmentremainingdistance=\dimen291
-\pgf@decorate@distancetomove=\dimen292
-\pgf@decorate@repeatstate=\count326
-\pgfdecorationsegmentamplitude=\dimen293
-\pgfdecorationsegmentlength=\dimen294
+\pgfdecoratedcompleteddistance=\dimen271
+\pgfdecoratedremainingdistance=\dimen272
+\pgfdecoratedinputsegmentcompleteddistance=\dimen273
+\pgfdecoratedinputsegmentremainingdistance=\dimen274
+\pgf@decorate@distancetomove=\dimen275
+\pgf@decorate@repeatstate=\count317
+\pgfdecorationsegmentamplitude=\dimen276
+\pgfdecorationsegmentlength=\dimen277
 )
-\tikz@lib@dec@box=\box74
+\tikz@lib@dec@box=\box66
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
 z/libraries\tikzlibrarydecorations.pathmorphing.code.tex
@@ -726,13 +673,13 @@ z/libraries\tikzlibrarydecorations.pathreplacing.code.tex
 ions\pgflibrarydecorations.pathreplacing.code.tex))
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\tikzlib
 rarypgfplots.contourlua.code.tex)
-\pgfplots@numplots=\count327
-\pgfplots@xmin@reg=\dimen295
-\pgfplots@xmax@reg=\dimen296
-\pgfplots@ymin@reg=\dimen297
-\pgfplots@ymax@reg=\dimen298
-\pgfplots@zmin@reg=\dimen299
-\pgfplots@zmax@reg=\dimen300
+\pgfplots@numplots=\count318
+\pgfplots@xmin@reg=\dimen278
+\pgfplots@xmax@reg=\dimen279
+\pgfplots@ymin@reg=\dimen280
+\pgfplots@ymax@reg=\dimen281
+\pgfplots@zmin@reg=\dimen282
+\pgfplots@zmax@reg=\dimen283
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
 z/libraries\tikzlibraryplotmarks.code.tex
@@ -745,55 +692,55 @@ File: pgflibraryplotmarks.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/algorithm2e\algorithm2e
 .sty
 Package: algorithm2e 2017/07/18 v5.2 algorithms environments
-\c@AlgoLine=\count328
+\c@AlgoLine=\count319
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
 Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
 )
-\algocf@hangindent=\skip66
+\algocf@hangindent=\skip60
 
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/ifoddpage\ifoddpage.sty
 Package: ifoddpage 2022/10/18 v1.2 Conditionals for odd/even page detection
-\c@checkoddpage=\count329
+\c@checkoddpage=\count320
 ) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/tools\xspace.sty
 Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
 ) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/relsize\relsize.sty
 Package: relsize 2013/03/29 ver 4.1
 )
-\skiptotal=\skip67
-\skiplinenumber=\skip68
-\skiprule=\skip69
-\skiphlne=\skip70
-\skiptext=\skip71
-\skiplength=\skip72
-\algomargin=\skip73
-\skipalgocfslide=\skip74
-\algowidth=\dimen301
-\inoutsize=\dimen302
-\inoutindent=\dimen303
-\interspacetitleruled=\dimen304
-\interspacealgoruled=\dimen305
-\interspacetitleboxruled=\dimen306
-\algocf@ruledwidth=\skip75
-\algocf@inoutbox=\box75
-\algocf@inputbox=\box76
-\AlCapSkip=\skip76
-\AlCapHSkip=\skip77
-\algoskipindent=\skip78
-\algocf@nlbox=\box77
-\algocf@hangingbox=\box78
-\algocf@untilbox=\box79
-\algocf@skipuntil=\skip79
-\algocf@capbox=\box80
-\algocf@lcaptionbox=\skip80
-\algoheightruledefault=\skip81
-\algoheightrule=\skip82
-\algotitleheightruledefault=\skip83
-\algotitleheightrule=\skip84
-\c@algocfline=\count330
-\c@algocfproc=\count331
-\c@algocf=\count332
-\algocf@algoframe=\box81
-\algocf@algobox=\box82
+\skiptotal=\skip61
+\skiplinenumber=\skip62
+\skiprule=\skip63
+\skiphlne=\skip64
+\skiptext=\skip65
+\skiplength=\skip66
+\algomargin=\skip67
+\skipalgocfslide=\skip68
+\algowidth=\dimen284
+\inoutsize=\dimen285
+\inoutindent=\dimen286
+\interspacetitleruled=\dimen287
+\interspacealgoruled=\dimen288
+\interspacetitleboxruled=\dimen289
+\algocf@ruledwidth=\skip69
+\algocf@inoutbox=\box67
+\algocf@inputbox=\box68
+\AlCapSkip=\skip70
+\AlCapHSkip=\skip71
+\algoskipindent=\skip72
+\algocf@nlbox=\box69
+\algocf@hangingbox=\box70
+\algocf@untilbox=\box71
+\algocf@skipuntil=\skip73
+\algocf@capbox=\box72
+\algocf@lcaptionbox=\skip74
+\algoheightruledefault=\skip75
+\algoheightrule=\skip76
+\algotitleheightruledefault=\skip77
+\algotitleheightrule=\skip78
+\c@algocfline=\count321
+\c@algocfproc=\count322
+\c@algocf=\count323
+\algocf@algoframe=\box73
+\algocf@algobox=\box74
 ) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/bookmark\bookmark.sty
 Package: bookmark 2023-12-10 v1.31 PDF bookmarks (HO)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
@@ -830,16 +777,16 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 lestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count333
+\c@section@level=\count324
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.s
 ty
 Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
 )
-\@linkdim=\dimen307
-\Hy@linkcounter=\count334
-\Hy@pagecounter=\count335
+\@linkdim=\dimen290
+\Hy@linkcounter=\count325
+\Hy@pagecounter=\count326
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
 File: pd1enc.def 2024-11-05 v7.01l Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
@@ -847,7 +794,7 @@ Now handling font encoding PD1 ...
 ) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count336
+\Hy@SavedSpaceFactor=\count327
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
 File: puenc.def 2024-11-05 v7.01l Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
@@ -861,13 +808,13 @@ Package hyperref Info: Plain pages OFF on input line 4172.
 Package hyperref Info: Backreferencing OFF on input line 4177.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4424.
-\c@Hy@tempcnt=\count337
+\c@Hy@tempcnt=\count328
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
 \Urlmuskip=\muskip18
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 4763.
-\XeTeXLinkMargin=\dimen308
+\XeTeXLinkMargin=\dimen291
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 
@@ -876,9 +823,9 @@ Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count338
-\Field@Width=\dimen309
-\Fld@charsize=\dimen310
+\Fld@menulength=\count329
+\Field@Width=\dimen292
+\Fld@charsize=\dimen293
 Package hyperref Info: Hyper figures OFF on input line 6042.
 Package hyperref Info: Link nesting OFF on input line 6047.
 Package hyperref Info: Hyper index ON on input line 6050.
@@ -890,9 +837,9 @@ Package hyperref Info: PDF/A mode OFF on input line 6072.
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
 package with kernel methods
 )
-\Hy@abspage=\count339
-\c@Item=\count340
-\c@Hfootnote=\count341
+\Hy@abspage=\count330
+\c@Item=\count331
+\c@Hfootnote=\count332
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
@@ -902,8 +849,8 @@ Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
 kage
 with kernel methods
 )
-\Fld@listcount=\count342
-\c@bookmark@seq@number=\count343
+\Fld@listcount=\count333
+\c@bookmark@seq@number=\count334
 
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
 echeck.sty
@@ -916,16 +863,16 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 85.
 )
-\Hy@SectionHShift=\skip85
+\Hy@SectionHShift=\skip79
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/bookmark\bkm-pdftex.def
 File: bkm-pdftex.def 2023-12-10 v1.31 bookmark driver for pdfTeX and luaTeX (HO
 )
-\BKM@id=\count344
+\BKM@id=\count335
 )) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/xurl\xurl.sty
 Package: xurl 2022/01/09 v 0.10 modify URL breaks
 )
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 12
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 11
 1.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmr.fd
 File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -933,43 +880,43 @@ File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 tex.def
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count345
-\l__pdf_internal_box=\box83
+\l__color_backend_stack_int=\count336
+\l__pdf_internal_box=\box75
 ) (TemporalPrestige.aux)
 \openout1 = `TemporalPrestige.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Info: Redefining \microtypecontext on input line 121.
-Package microtype Info: Applying patch `item' on input line 121.
-Package microtype Info: Applying patch `toc' on input line 121.
-Package microtype Info: Applying patch `eqnum' on input line 121.
-Package microtype Info: Applying patch `footnote' on input line 121.
-Package microtype Info: Applying patch `verbatim' on input line 121.
-LaTeX Info: Redefining \microtypesetup on input line 121.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Info: Redefining \microtypecontext on input line 111.
+Package microtype Info: Applying patch `item' on input line 111.
+Package microtype Info: Applying patch `toc' on input line 111.
+Package microtype Info: Applying patch `eqnum' on input line 111.
+Package microtype Info: Applying patch `footnote' on input line 111.
+Package microtype Info: Applying patch `verbatim' on input line 111.
+LaTeX Info: Redefining \microtypesetup on input line 111.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 121.
+LaTeX Info: Redefining \showhyphens on input line 111.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -980,17 +927,17 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count346
-\scratchdimen=\dimen311
-\scratchbox=\box84
-\nofMPsegments=\count347
-\nofMParguments=\count348
-\everyMPshowfont=\toks50
-\MPscratchCnt=\count349
-\MPscratchDim=\dimen312
-\MPnumerator=\count350
-\makeMPintoPDFobject=\count351
-\everyMPtoPDFconversion=\toks51
+\scratchcounter=\count337
+\scratchdimen=\dimen294
+\scratchbox=\box76
+\nofMPsegments=\count338
+\nofMParguments=\count339
+\everyMPshowfont=\toks47
+\MPscratchCnt=\count340
+\MPscratchDim=\dimen295
+\MPnumerator=\count341
+\makeMPintoPDFobject=\count342
+\everyMPtoPDFconversion=\toks48
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
 ase.sty
@@ -1040,43 +987,43 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
 ick labels; missing features). Consider writing \pgfplotsset{compat=1.18} into 
 your preamble.
- on input line 121.
+ on input line 111.
 
-Package hyperref Info: Link coloring OFF on input line 121.
+Package hyperref Info: Link coloring OFF on input line 111.
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 1
-23.
+13.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
-23.
+13.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-123.
+113.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-123.
+113.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <14.4> on input line 123.
+(Font)              <14.4> on input line 113.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 123.
+(Font)              <10> on input line 113.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 123.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 123
+(Font)              <7> on input line 113.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 113
 .
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 123
+LaTeX Font Info:    Trying to load font information for U+msb on input line 113
 .
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1107,118 +1054,197 @@ w/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}]
 [4]
 
 [5{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.en
-c}{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C
-:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc}]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf, id=77, 134.3158pt x
+c}]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf, id=78, 134.3158pt x
  247.72751pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.
-pdf  used on input line 321.
+pdf  used on input line 319.
 (pdftex.def)             Requested size: 134.3175pt x 247.73065pt.
 
 
-[6{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.en
-c} <./TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf>]
+[6{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C
+:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc}{C
+:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc} <
+./TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf>]
 
 [7]
 
 [8]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf, id=103, 209.7145pt 
+<TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf, id=113, 209.7145pt 
 x 261.03725pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.
-pdf  used on input line 422.
+pdf  used on input line 456.
 (pdftex.def)             Requested size: 209.71715pt x 261.04057pt.
 
 
-[9 <./TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf>]
-<AdjCentrality.png, id=120, 522.753pt x 308.352pt>
+[9]
+<AdjCentrality.png, id=118, 522.753pt x 308.352pt>
 File: AdjCentrality.png Graphic file (type png)
 <use AdjCentrality.png>
-Package pdftex.def Info: AdjCentrality.png  used on input line 447.
+Package pdftex.def Info: AdjCentrality.png  used on input line 481.
 (pdftex.def)             Requested size: 522.75969pt x 308.35594pt.
 
-Overfull \hbox (53.00467pt too wide) in paragraph at lines 447--447
+Overfull \hbox (53.00467pt too wide) in paragraph at lines 481--481
 [][] 
  []
 
 
 
-[10 <./AdjCentrality.png>]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf, id=127, 75.54724pt 
+[10 <./TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf>]
+
+[11 <./AdjCentrality.png>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf, id=141, 75.54724pt 
 x 74.412pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.
-pdf  used on input line 490.
+pdf  used on input line 540.
 (pdftex.def)             Requested size: 75.54704pt x 74.41182pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf, id=128, 75.54724pt 
+<TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf, id=142, 75.54724pt 
 x 74.412pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.
-pdf  used on input line 496.
+pdf  used on input line 546.
 (pdftex.def)             Requested size: 75.54704pt x 74.41182pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf, id=129, 143.81027pt
+<TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf, id=143, 143.81027pt
  x 291.28223pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.
-pdf  used on input line 504.
+pdf  used on input line 554.
 (pdftex.def)             Requested size: 143.8099pt x 291.2815pt.
 
 
-[11 <./TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf>]
+[12]
 
-[12 <./TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf> <./TemporalPr
-estige_files/figure-latex/unnamed-chunk-6-1.pdf>]
+[13 <./TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf> <./TemporalPr
+estige_files/figure-latex/unnamed-chunk-5-1.pdf> <./TemporalPrestige_files/figu
+re-latex/unnamed-chunk-6-1.pdf>]
 
-[13]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf, id=173, 143.81027pt
+[14]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf, id=188, 143.81027pt
  x 177.47205pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.
-pdf  used on input line 585.
+pdf  used on input line 634.
 (pdftex.def)             Requested size: 143.81209pt x 177.4743pt.
 
 
-[14]
+[15]
 
-[15 <./TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf>]
-
-[16]
+[16 <./TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf>]
 
 [17]
 
 [18]
 
 [19]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf, id=234, 469.755pt x
+ 325.215pt>
+File: TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file (t
+ype pdf)
+<use TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf>
+Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.
+pdf  used on input line 780.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf, id=235, 469.755pt x
+ 325.215pt>
+File: TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (t
+ype pdf)
+<use TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf>
+Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.
+pdf  used on input line 781.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-[20]
+Underfull \hbox (badness 10000) in paragraph at lines 780--782
+[][]
+ []
 
-[21]
 
-[22] (TemporalPrestige.aux)
+
+[20 <./TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf>]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf, id=245, 469.755pt 
+x 325.215pt>
+File: TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (
+type pdf)
+<use TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf>
+Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-10-1
+.pdf  used on input line 792.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf, id=246, 469.755pt 
+x 325.215pt>
+File: TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (
+type pdf)
+<use TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf>
+Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-11-1
+.pdf  used on input line 801.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 801--806
+[][]
+ []
+
+
+
+[21 <./TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf>]
+
+[22 <./TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf>]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 8
+07.
+(C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 
+811.
+(C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmtt.fd
+File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+<TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf, id=267, 469.755pt 
+x 325.215pt>
+File: TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (
+type pdf)
+<use TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf>
+Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-12-1
+.pdf  used on input line 813.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+
+
+[23{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}
+ <./TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf>]
+
+[24 <./TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf>]
+
+[25]
+
+[26]
+
+[27] (TemporalPrestige.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 35159 strings out of 473523
- 804964 string characters out of 5714631
- 1301658 words of memory out of 5000000
- 57546 multiletter control sequences out of 15000+600000
- 641398 words of font info for 174 fonts, out of 8000000 for 9000
+ 34975 strings out of 473523
+ 803338 string characters out of 5714631
+ 1296369 words of memory out of 5000000
+ 57342 multiletter control sequences out of 15000+600000
+ 642460 words of font info for 180 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,15n,93p,1015b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
@@ -1239,10 +1265,11 @@ ic/lm/lmri12.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/publ
 ic/lm/lmri8.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/publi
 c/lm/lmsy10.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/publi
 c/lm/lmsy6.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public
-/lm/lmsy8.pfb>
-Output written on TemporalPrestige.pdf (22 pages, 368035 bytes).
+/lm/lmsy8.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public/
+lm/lmtt12.pfb>
+Output written on TemporalPrestige.pdf (27 pages, 868015 bytes).
 PDF statistics:
- 412 PDF objects out of 1000 (max. 8388607)
- 85 named destinations out of 1000 (max. 500000)
- 43208 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 495 PDF objects out of 1000 (max. 8388607)
+ 101 named destinations out of 1000 (max. 500000)
+ 43249 words of extra memory for PDF output out of 51595 (max. 10000000)
 

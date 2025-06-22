@@ -66,59 +66,8 @@ void addContact(vector<pair<int, map<int, set<int>>>> &vec, int time, double pro
     }
 }
 
-int main(int argc, char * argv[]) {
+pair<double, double> calcCentrality(int target, vector<pair<int, map<int, set<int>>>> contacts) {
 
-    // Each pair contains a time, and a map of contacts for each node
-    vector<pair<int, map<int, set<int>>>> contacts;
-
-    FILE * instream = fopen("Card Data Cleaned.csv", "r");
-
-    char line[1024];
-    fgets(line, 1024, instream);
-    while (fgets(line, 1024, instream)) {
-        strtok(line, ",");
-
-        unsigned int id1 = atoi(strtok(NULL, ","));
-        unsigned int id2 = atoi(strtok(NULL, ","));
-
-        char * datetime = strtok(NULL, ",");
-
-        int time = getTime(datetime);
-
-        if (time < 0) {
-            continue;
-        }
-
-        strtok(NULL, ",");
-        strtok(NULL, ",");
-        strtok(NULL, ",");
-
-        unsigned int class0 = atoi(strtok(NULL, ","));
-        unsigned int class1 = atoi(strtok(NULL, ","));
-        unsigned int class2 = atoi(strtok(NULL, ","));
-
-        double prob = logistic(class0, class1, class2);
-
-        if (contacts.size() == 0) {
-            map<int, set<int>> map;
-            map[id1] = {id2};
-            map[id2] = {id1};
-            contacts.push_back({time, map});
-            continue;
-        }
-
-        else if (time == contacts.front().first) {
-            contacts.front().second[id1].insert(id2);
-            contacts.front().second[id2].insert(id1);
-            continue;
-        }
-
-        addContact(contacts, time, prob, id1, id2, 0, contacts.size());
-    }
-
-    fclose(instream);
-
-    int target = 1; // atoi(argv[1]);
     set<int> reachable = {target};
     map<int, int> times = {};
     int end_time = (--contacts.end()) -> first;
@@ -215,6 +164,67 @@ int main(int argc, char * argv[]) {
 
         tpp += ((double)n_influence/(double)750)/((double)tot_dist/(double)n_influence);
     }
+    return {tp, tpp};
+}
+
+int main(int argc, char * argv[]) {
+
+    // Each pair contains a time, and a map of contacts for each node
+    vector<pair<int, map<int, set<int>>>> contacts;
+
+    FILE * instream = fopen("Card Data Cleaned.csv", "r");
+
+    char line[1024];
+    fgets(line, 1024, instream);
+    
+    while (fgets(line, 1024, instream)) {
+        strtok(line, ",");
+
+        unsigned int id1 = atoi(strtok(NULL, ","));
+        unsigned int id2 = atoi(strtok(NULL, ","));
+
+        char * datetime = strtok(NULL, ",");
+
+        int time = getTime(datetime);
+
+        if (time < 0) {
+            continue;
+        }
+
+        strtok(NULL, ",");
+        strtok(NULL, ",");
+        strtok(NULL, ",");
+
+        unsigned int class0 = atoi(strtok(NULL, ","));
+        unsigned int class1 = atoi(strtok(NULL, ","));
+        unsigned int class2 = atoi(strtok(NULL, ","));
+
+        if (contacts.size() == 0) {
+            map<int, set<int>> map;
+            map[id1] = {id2};
+            map[id2] = {id1};
+            contacts.push_back({time, map});
+            continue;
+        }
+
+        else if (time == contacts.front().first) {
+            contacts.front().second[id1].insert(id2);
+            contacts.front().second[id2].insert(id1);
+            continue;
+        }
+
+        double prob = 1;
+
+        addContact(contacts, time, prob, id1, id2, 0, contacts.size());
+    }
+
+    fclose(instream);
+
+    vector<pair<double, double>> results;
+
+    for (int i = 1; i < 752; i++) {
+        results.push_back(calcCentrality(i, contacts));
+    }
 
     // tpp /= ind;
     // tp /= ind*750;
@@ -232,10 +242,13 @@ int main(int argc, char * argv[]) {
     }
 
     else {
-        outstream = fopen("tpp.csv", "a");
+        outstream = fopen("tpp.csv", "w");
     }
 
-    fprintf(outstream, "%d,%.2lf,%.2lf\n", target, tp, tpp);
+    for (int i = 0; i < 751; i++) {
+        pair<double, double> res = results[i];
+        fprintf(outstream, "%d,%.2lf,%.2lf\n", i + 1, res.first, res.second);
+    }
 
     fclose(outstream);
 
