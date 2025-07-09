@@ -108,7 +108,7 @@ where N is the number of nodes and $d(\textit{u}, \upsilon)$ is the distance of 
 
 ## Betweenness Centrality
 
-In some situations, the effect that removing a node has on transmission through a network may be highly important (for instance, when quarantining individuals during a pandemic). This is the primary motivation behind Betweenness Centrality (@freeman1977set), which is defined as
+In some situations, the effect of removing a node on transmission through a network may be highly important (for instance, when quarantining individuals during a pandemic). This is the primary motivation behind Betweenness Centrality (@freeman1977set), which is defined as
 
 \begin{equation}
   \label{eq:between}
@@ -149,7 +149,7 @@ Betweenness and Closeness centrality focus on shortest paths, which potentially 
   C_{K}(i) = \sum_{j = 1}^{n}{(I + \alpha{A} + \alpha^{2}A^{2} + \alpha^{3}A^{3} + ...)_{ij}}
 \end{equation}
 
-where A is the adjacency matrix and $0 <= \alpha < 1$. Katz centrality down weights longer paths, as $A^{n}$ is simply the n-step adjacency matrix for the network. For a technical reason, the infinite sum ($I + \alpha{A} + ...$) converges when $\alpha <= \frac{1}{\rho(A)}$ where $\rho(A)$ is the spectral radius of A i.e. the largest absolute value of any of it's eigenvalues. Under this condition, the sum converges to $(I - \alpha{A})^{-1}$. If we are only interested in the first n steps, we adjust the formula accordingly to get $(I - \alpha^{n + 1}A^{n + 1})(I - \alpha{A})^{-1}$. This result is convenient for temporal networks, where a finite number of steps in each snapshot is often assumed.
+where A is the adjacency matrix and $0 <= \alpha < 1$. $A^{n}$ is simply the n-step adjacency matrix for the network, and $\alpha^{n}$ decreases as n grows, therefore longer paths are down weighted. For a technical reason, the infinite sum ($I + \alpha{A} + ...$) converges when $\alpha <= \frac{1}{\rho(A)}$ where $\rho(A)$ is the spectral radius of A i.e. the largest absolute value of any of it's eigenvalues. Under this condition, the sum converges to $(I - \alpha{A})^{-1}$. If we are only interested in the first n steps, we adjust the formula accordingly to get $(I - \alpha^{n + 1}A^{n + 1})(I - \alpha{A})^{-1}$. This result is convenient for temporal networks, where a finite number of steps in each snapshot is often assumed.
 
 ## Epidemic Simulations for Static Networks
 
@@ -194,7 +194,7 @@ knitr::include_graphics("AdjCentrality.png", rel_path = TRUE)
 
 ## Temporal Katz Centrality
 
-Temporal Katz Centrality, proposed by @grindrod2011communicability, follows fairly straightforwardly from @ref(eq:katz). Denote by $A_{t}$ the adjacency matrix for the snapshot at time t. For a temporal network with snapshots at times $1, 2, 3, ..., T - 1, T$, the Temporal Katz Centrality is defined by the matrix product
+Temporal Katz Centrality, proposed by @grindrod2011communicability, follows fairly straightforwardly from \@ref(eq:katz). Denote by $A_{t}$ the adjacency matrix for the snapshot at time t. For a temporal network with snapshots at times $1, 2, 3, ..., T - 1, T$, the Temporal Katz Centrality is defined by the matrix product
 
 \begin{equation}
 \label{eq:tempkatz}
@@ -431,21 +431,63 @@ Return tcp\;
 
 ## Absorption Rank
 
-@rocha2014random proposed TempoRank, an extension of the illustrious Google PageRank algorithm to temporal networks. TempoRank considers the stationary distribution of a random walk through the temporal network. However, TempoRank does not generalize well to epidemiology modelling, where infection may be a permanent state. Intuitively, some sort of aggregation over all previous contacts would seem to be a preferable option. In this section, I propose an aggregate metric for temporal networks. Without loss of generality, we will consider a temporal network consisting of a set of nodes, N, and positive integer contact times, $t = (1, 2, 3, \cdots, T)$. Let $p_{ijk}(t)$ denote the probability of transmission for the k'th contact between individual i and individual j, at time t. Let $n_{ij}(t)$ denote the number of contacts between i and j at time t. Define the transition probability matrix for each contact time as:
+@rocha2014random proposed TempoRank, an extension of the illustrious Google PageRank algorithm to temporal networks. TempoRank considers the stationary distribution of a random walk through the temporal network. However, TempoRank does not generalize well to epidemiology modelling, where infection may be a permanent state. Intuitively, some sort of aggregation over all previous contacts would be preferred. In this section, I propose an aggregate metric for temporal networks. Without loss of generality, we will consider a temporal network consisting of a set of nodes, N, and positive integer contact times, $t = (1, 2, 3, \cdots, T)$. Let $p_{ijk}(t)$ denote the probability of transmission for the k'th contact between individual i and individual j, at time t. Let $n_{ij}(t)$ denote the number of contacts between i and j at time t. Define the transition probability matrix for each contact time as:
 
-$$\mathbf{B}_{ij}(t) = \left\{\begin{matrix}
+\begin{equation}
+\label{eq:absorb}
+\mathbf{B}_{ij}(t) = \left\{\begin{matrix}
   1 & i = j, s_{i}(t) = 0 \\
   0 & i \neq j, s_{ij}(t) = 0 \\
   \prod_{m \in N, m \neq i}{\prod_{k = 1}^{n_{im}(t)}{(1 - p_{imk}(t))}} & i = j, s_{i}(t) > 0 \\
-  (1 - \mathbf{B}_{ii})(s_{ij}(t)/s_{i}(t)) & i \neq j, s_{ij}(t) > 0  \\
+  (1 - \mathbf{B}_{ii}(t))(s_{ij}(t)/s_{i}(t)) & i \neq j, s_{ij}(t) > 0  \\
 \end{matrix}
-\right. \tag{6.}$$
+\right.
+\end{equation}
 
 where $s_{ij}(t)$ and $s_{i}(t)$ are defined as:
 
-$$s_{ij}(t) = 1 - \prod_{k = 1}^{n_{ij}(t)}{(1 - p_{ijk}(t))}$$
-$$s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}$$
+\begin{equation}
+\label{eq:si}
+s_{ij}(t) = 1 - \prod_{k = 1}^{n_{ij}(t)}{(1 - p_{ijk}(t))}
+\end{equation}
+
+\begin{equation}
+\label{eq:s}
+s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}
+\end{equation}
+
+
+
 Denote by $\mathbf{B}_{i}(t)$ the transition matrix obtained by taking $\mathbf{B}(t)$, and setting all entries in the i'th row to zero, except the diagonal entry (which is necessarily one). The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the absorption rank for individual i, at time t. The absorption rank of individual i is interpreted as the probability that a random walk through the temporal network passes through i.
+
+If we assume a constant transmission probability, p, for all contacts, \@ref(eq:absorb) reduces to:
+
+\begin{equation}
+\label{eq:absorb_const}
+\mathbf{B}_{ij}(t) = \left\{\begin{matrix}
+  1 & i = j, s_{i}(t) = 0 \\
+  0 & i \neq j, s_{ij}(t) = 0 \\
+  \prod_{m \in N, m \neq i}{(1 - p)^{n_{ij}(t)}} & i = j, s_{i}(t) > 0 \\
+  (1 - \mathbf{B}_{ii}(t))(s_{ij}(t)/s_{i}(t)) & i \neq j, s_{ij}(t) > 0  \\
+\end{matrix}
+\right.
+\end{equation}
+
+where $s_{ij}(t)$ is defined as:
+
+\begin{equation}
+\label{eq:si_adj}
+s_{ij}(t) = 1 - (1 - p)^{n_{ij}(t)}
+\end{equation}
+
+and $s_{i}(t)$ is similarly defined as:
+
+\begin{equation}
+\label{eq:s_adj}
+s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}
+\end{equation}
+
+In practice, p may be estimable from domain-specific knowledge or simply guessed. The value of p is not particularly important, however values close to 0 or 1 may cause the output values to cluster together, making differences difficult to detect.
 
 <!-- ## Example -->
 
@@ -511,7 +553,7 @@ Stochastic simulations typically follow the standard Markovian framework, in whi
 
 ### Algorithms
 
-For simulation, we use the event-based algorithm first proposed by @kiss2017mathematics, and described in great detail by @holme2021fast. In this algorithm, contacts are conveniently stored an adjacency list format (each node is represented by a data structure with a list of neighbours). For each neighbour, a sorted list of contact times (and associated transmission probabilities) is stored. All infection events are stored in a min-heap ordered by infection time. At each step, the earliest infection is removed and processes. This continues until no infection events remain in the heap. When node i is infected, we iterate through the list of neighbours and add the earliest time of infection (if any) to the heap. If we assume a constant transmission probability, the index of the first infectious contact follows a geometric distribution. We can sample this index by
+For simulation, we use the event-based algorithm first proposed by @kiss2017mathematics, and described in great detail by @holme2021fast. In this algorithm, contacts are conveniently stored an adjacency list format (each node is represented by a data structure with a list of neighbours). For each neighbour, a sorted list of contact times (and associated transmission probabilities) is stored. All infection events are stored in a min-heap ordered by infection time. At each step, the earliest infection is removed and processed. This continues until no infection events remain in the heap. When node i is infected, we iterate through the list of neighbours and sample an infection time for each neighbour, adding the event to the heap as we go. If we assume a constant transmission probability, the index of the first infectious contact follows a geometric distribution. We can sample this index by
 
 $$\lceil \frac{log(1 - X)}{log(1 - \beta)} \rceil$$
 where $\beta$ is the fixed transmission probability and $X \sim Uniform(0, 1)$.
@@ -538,6 +580,10 @@ colnames(tpp) <- c("Node", "TP", "TPP")
 katz$Node = round(katz$Node, 0)
 
 
+tbc_data <- read.csv("tbc.csv")
+
+tbc <- round(tbc_data$tbc, 9)
+
 results = read.csv("Results.csv")
 results = results[1:751, 1:751]
 
@@ -550,50 +596,231 @@ corDeg = cor(probs, katz$TempDegree, method = "spearman")
 corAbs = cor(probs, absorb$Absorb, method = "spearman")
 corTp = cor(probs, tpp$TP, method = "spearman")
 corTpp = cor(probs, tpp$TPP, method = "spearman")
+corTbc = cor(probs, tbc, method = "spearman")
 
-correlations = c(corKatz, corDeg, corAbs, corTp, corTpp)
+correlations = c(corKatz, corDeg, corAbs, corTp, corTpp, corTbc)
 
-names <- c("Katz Centrality", "Degree Centrality", "Absorption Centrality", "Temporal Closeness", "Temporal Proximity")
+names <- c("Katz Centrality", "Degree Centrality", "Absorption Centrality", "Temporal Closeness", "Temporal Proximity", "Temporal Betweenness Centrality")
 
 df <- data.frame(type = names, corr = correlations)
 
-df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Spearman Rank Correlation")
+df %>% ggplot(aes(x = type, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Spearman Rank Correlation")
 ```
 ```{r, echo = FALSE, fig.cap = "Pearson correlations between centrality measures and observed likelihood of infection."}
+corKatz = cor(probs, katz$Centrality)
+corDeg = cor(probs, katz$TempDegree)
+corAbs = cor(probs, absorb$Absorb)
+corTp = cor(probs, tpp$TP)
+corTpp = cor(probs, tpp$TPP)
+corTbc = cor(probs, tbc)
+
+correlations = c(corKatz, corDeg, corAbs, corTp, corTpp, corTbc)
+
+df <- data.frame(type = names, corr = correlations)
+
 df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Pearson Correlation")
 ```
 
-The Spearman Correlations are generally large, with Absorption Rank showing a larger correlation ($\rho \approx 0.7$) compared to other metrics. Conversely, all metrics showed relatively low Pearson Correlations. This suggests that the metrics should not be interpreted as a linearly increasing variable, rather they should be used for ranking the relative importance of individuals within the same network. 
+The Spearman Correlations are generally large, with Absorption Rank showing a larger correlation ($\rho \approx 0.8$) compared to other metrics. Conversely, the metrics generally showed lower Pearson correlations, especially Katz centrality. This suggests that the metrics should not be interpreted numerically, rather they should be used for ranking the relative importance of individuals within the same network. TP and TPP performed similarly with regards to ranking individuals, however TPP outperformed TP in terms of Pearson Correlation.
 
 ```{r, echo = FALSE, fig.cap = "Correlations between the five centrality measures."}
 library(ggcorrplot)
 
-data <- data.frame(TP = tpp$TP, TPP = tpp$TPP, Absorb = absorb$Absorb, Katz = katz$Centrality, Degree = katz$TempDegree)
+data <- data.frame(TP = tpp$TP, TPP = tpp$TPP, Absorb = absorb$Absorb, Katz = katz$Centrality, Degree = katz$TempDegree, TBC = tbc)
 
 corr <- cor(data)
 
 ggcorrplot(corr, lab = TRUE)
 ```
 
-Figure 8 shows the Pearson correlations between the five metrics. With the exception of Proximity Rank and Closeness Rank, the metrics are mostly independent. This suggests that our rankings could be improved by including many metrics as predictors in a regression model.
+Figure 8 shows the Pearson correlations between the five metrics. With the exception of Proximity Rank and Closeness Rank, the metrics are mostly independent, with many weak or negative correlations. This suggests that the metrics are tapping into different effects, and our rankings could be improved by combining many metrics as predictors in a regression model.
 
 ```{r, echo = FALSE, fig.cap = "Standardized residuals of the model plotted against theoretical quantiles of the normal distribution."}
-data$probs = probs
+data$likelihood = probs
 
-model = lm(probs ~ TP + TPP + Absorb + Katz + Degree, data = data)
+model = lm(likelihood ~ TP + TPP + Absorb + Katz + Degree + TBC, data = data)
 
 residuals <- residuals(model)
 
 qqnorm(residuals)
 qqline(residuals)
 ```
-Figure 9 shows the Q-Q plot for a linear regression model predicting the observed likelihood of infection, with the five centrality metrics as predictors. The relationship is clearly non-linear, with a large number of extreme values for the residuals. 
 
-```{r, echo = FALSE, fig.cap = ""}
+Figure 9 shows the Q-Q plot for a linear regression model predicting the observed likelihood of infection, with the five centrality metrics as predictors. The relationship is clearly non-linear, with a large number of extreme values for the residuals. A transformation of the output variable may satisfy the linearity assumption, particularly if the distribution is skewed.
+
+```{r, echo = FALSE, fig.cap = "Pairwise relationships between the centrality metrics and the output variable (likelihood)"}
 library(GGally)
 
 ggpairs(data)
 ```
+
+<!--
+```{r, echo = FALSE}
+new_df <- data.frame(TP = log(data$TP), TPP = log(data$TPP), Absorb = log(data$Absorb), Katz = log(data$Katz), Degree = log(data$Degree), TBC = log(data$TBC), likelihood = data$likelihood)
+```
+
+```{r}
+ggpairs(new_df)
+```
+-->
+
+<!--
+```{r, echo = FALSE, fig.lab = "Pairwise relationships between predictor variables after locally linear embedding (LLE) transformation.", cache = TRUE}
+ library(Rdimtools)
+ 
+ X <- data[, -which(names(data) == "likelihood")]
+ 
+ lle_result <- do.lle(as.matrix(X), ndim = 4, type = c("knn", 5))
+ 
+ reduced_data <- data.frame(lle_result$Y)
+ 
+ names(reduced_data) <- c("Component 1", "Component 2", "Component 3", "Component 4")
+ ggpairs(reduced_data)
+```
+
+```{r, echo = FALSE}
+data <- cbind(reduced_data, data$likelihood)
+names(data) <- c(names(reduced_data), "likelihood")
+```
+-->
+
+Looking at the pairwise relationships (shown in Figure 10), the assumptions of linear regression clearly cannot be satisfied. The output variable (plotted in the bottom-right corner) is bimodal and not amenable to common transformations (e.g. log, square root, polynomial etc). Machine Learning and Artifical Intelligence are often used for regression when the distribution of the data is non-standard. We use three machine learning methods - Gradient Boosting Regression, Decision Trees and Polynomial Regression - to predict the likelihood of infection from the six centrality metrics. 
+
+Polynomial Regression is based on a similar concept to linear regression, however it allows for powers greater than one in the regression equation (e.g. $y = \beta_{1}X + \beta_{2}X^{2}$). Closed-form solutions are rarely known, so the coefficients must be "learned" by numerical optimization methods. Decision Trees split the data into progressively smaller subgroups using decision rules (e.g. X > 40), and each group (sometimes called a leaf node) is assigned a predicted value. The prediction for a given observation is then the predicted value of it's respective leaf node, which is determined by the decision rules. At each branch of the tree, the optimal decision rule is found by minimizing a splitting criteria (e.g. Sum of Squared Errors (SSE), Mean Squared Error (MSE) etc). Gradient Boosting Regression is an extension of decision trees which takes a weighted average of predictions for many decision trees. This may result in better predictions, especially when the number of predictors is large or the data is very noisy.
+
+The data was split into training and test sets, comprising 75% and 25% of the data respectively. The models were trained on the training set and evaluated on the test set. Hyper parameters were optimized (where necessary) by 10-fold cross validation. 
+
+```{r, echo = FALSE, fig.cap = "Predicted vs Actual values after training Gradient Boosting model and applying to test set.", cache = TRUE}
+library(rsample)
+library(Matrix)
+library(xgboost)
+
+set.seed(1374)
+
+data_split <- initial_split(data, prop = 0.75)
+
+train <- training(data_split)
+
+train[] = lapply(train, as.numeric)
+
+xTrain = train[, -which(names(train) %in% c("likelihood"))]
+
+# pca <- prcomp(xTrain, scale. = TRUE)
+
+# rotation <- pca$rotation
+
+# xTrain = as.matrix(xTrain) %*% rotation
+
+# xTrain <- xgb.DMatrix(data = matrix(train[, -which(names(data) == "likelihood")]))
+# yTrain <- xgb.DMatrix(data = matrix(train$likelihood))
+
+test <- testing(data_split)
+
+xTest <- test[, -which(names(test) %in% c("likelihood"))]
+names(xTest) <- names(xTrain)
+
+# xTest = as.matrix(xTest) %*% rotation
+
+yTest <- test$likelihood
+
+params = list(objective = "reg:absoluteerror", eval_metric = "rmse")
+
+dtrain = xgb.DMatrix(data = data.matrix(xTrain), label = data.matrix(train$likelihood))
+
+cv_results <- xgb.cv(params = params, data = dtrain, nfold = 10, nrounds = 500, early_stopping_rounds = 150, verbose = FALSE)
+
+best_round = cv_results$best_iteration
+
+model = xgb.train(params = params, data = dtrain, nrounds = best_round, num_boost_round = 1000)
+
+y_pred = predict(model, newdata = xgb.DMatrix(data.matrix(xTest)))
+
+corXG <- cor(y_pred, yTest, method = "spearman")
+
+df <- data.frame(predicted = y_pred, actual = yTest)
+
+df %>% ggplot(aes(x = predicted, y = actual)) + geom_point() + geom_smooth(color = "blue")
+```
+
+```{r, echo = FALSE}
+library(rsample)
+library(rpart)
+library(rpart.plot)
+
+decTree <- rpart(likelihood ~ ., data = train)
+```
+
+```{r, echo = FALSE}
+y_pred = predict(decTree, newdata = xTest)
+
+corTree = cor(y_pred, yTest, method = "spearman")
+
+plot(y_pred, test$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Decision Tree.")
+```
+
+```{r, echo = FALSE, cache = TRUE}
+library(mltools)
+
+x <- data[, -which(names(data) == "likelihood")]
+
+y <- data$likelihood
+degree <- 7
+
+polynomial_optimizer <- function(par) {
+  prediction <- numeric(nrow(data))
+  for (i in 1:length(par)){
+    col = as.vector(x[, ((i - 1) %/% degree) + 1])
+    power = (i %% degree) + 1
+    
+    prediction = prediction + col * (par[i]^power)
+  }
+  
+  rmse(prediction, y)
+}
+
+polynomial_predictor <- function(params) {
+  
+  prediction <- numeric(nrow(data))
+  for (i in 1:length(params)){
+    col = as.vector(data[, ((i - 1) %/% degree) + 1])
+    power = (i %% degree) + 1
+    
+    prediction = prediction + col * (params[i]^power)
+  }
+  
+  prediction
+  
+}
+
+parameters = rep(0.1, times = 15)
+
+model <- optim(par = parameters, fn = polynomial_optimizer, method = "L-BFGS-B", control = list(maxit = 1000))
+
+coefs = model$par
+
+y_pred = polynomial_predictor(coefs)
+
+corPoly <- cor(y_pred, y, method = "spearman")
+
+plot(y_pred, data$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Polynomial Regression")
+```
+
+```{r, echo = FALSE, fig.lab = "Spearman rank correlations between predictions and observations for three machine learning algorithms."}
+correlations = c(corPoly, corTree, corXG)
+
+names = c("Polynomial Regression", "Decision Tree Regression", "XGBoost Regression")
+
+df <- data.frame(type = names, corr = correlations)
+
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Spearman Correlation")
+```
+
+```{r, echo = FALSE, fig.lab = "Pearson correlations between predictions and observations for three machine learning algorithms."}
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Pearson Correlation")
+```
+
+Figures 11-13 show the predicted values plotted against observed values for the three algorithms. Figures 14 and 15 show the Spearman and Pearson correlations. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly. This is not surprising 
+
 
 ### Constant Transmission Probability
 
