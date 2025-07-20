@@ -654,35 +654,6 @@ library(GGally)
 ggpairs(data)
 ```
 
-<!--
-```{r, echo = FALSE}
-new_df <- data.frame(TP = log(data$TP), TPP = log(data$TPP), Absorb = log(data$Absorb), Katz = log(data$Katz), Degree = log(data$Degree), TBC = log(data$TBC), likelihood = data$likelihood)
-```
-
-```{r}
-ggpairs(new_df)
-```
--->
-
-<!--
-```{r, echo = FALSE, fig.lab = "Pairwise relationships between predictor variables after locally linear embedding (LLE) transformation.", cache = TRUE}
- library(Rdimtools)
- 
- X <- data[, -which(names(data) == "likelihood")]
- 
- lle_result <- do.lle(as.matrix(X), ndim = 4, type = c("knn", 5))
- 
- reduced_data <- data.frame(lle_result$Y)
- 
- names(reduced_data) <- c("Component 1", "Component 2", "Component 3", "Component 4")
- ggpairs(reduced_data)
-```
-
-```{r, echo = FALSE}
-data <- cbind(reduced_data, data$likelihood)
-names(data) <- c(names(reduced_data), "likelihood")
-```
--->
 
 Looking at the pairwise relationships (shown in Figure 10), the assumptions of linear regression clearly cannot be satisfied. The output variable (plotted in the bottom-right corner) is bimodal and not amenable to common transformations (e.g. log, square root, polynomial etc). Machine Learning and Artifical Intelligence are often used for regression when the distribution of the data is non-standard. We use three machine learning methods - Gradient Boosting Regression, Decision Trees and Polynomial Regression - to predict the likelihood of infection from the six centrality metrics. 
 
@@ -819,7 +790,55 @@ df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Ce
 df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Pearson Correlation")
 ```
 
-Figures 11-13 show the predicted values plotted against observed values for the three algorithms. Figures 14 and 15 show the Spearman and Pearson correlations. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly. This is not surprising 
+Figures 11-13 show the predicted values plotted against observed values for the three algorithms. Figures 14 and 15 show the Spearman and Pearson correlations. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank.
+
+If some predictors in a model are unimportant, we risk suffering from the "Curse of Dimensionality". Large numbers of unimportant predictors may result in increased overfitting and difficulty with finding meaningful patterns in the data. The process of selecting a good set of predictors is called feature selection.
+
+```{r, echo = FALSE, table.cap = "Feature importance scores of the six features in the decision tree."}
+scores <- decTree$variable.importance
+
+barplot(scores, main = "Variable Importance")
+```
+Katz centrality, Degree Centrality and Absorption Centrality had significantly higher importance rankings than other predictors, and should be included in the final model. However, TP and TPP may have attenuated importance rankings due to multicollinearity (high correlation between features). For this reason, I have chosen to include TP in the final model.
+
+```{r, echo = FALSE, message = FALSE}
+library(caret)
+
+split <- initial_split(data, prop = 0.75)
+
+train <- training(split)
+
+test <- testing(split)
+
+xTest <- test[, -which(names(test) %in% c("TPP", "TBC", "likelihood"))]
+
+yTest <- test$likelihood
+
+train <- train[, -which(names(train) %in% c("TPP", "TBC"))]
+
+tree <- rpart(likelihood ~ ., data = train)
+```
+
+```{r, echo = FALSE, fig.lab = "Comparison of predictions from final model against observed values", message = FALSE}
+library(ggplot2)
+
+predictions <- predict(tree, newdata = xTest)
+
+df <- data.frame(x = predictions, y = yTest)
+
+df %>% ggplot(aes(x = x, y = y)) + geom_point() + xlab("Predicted Values") + ylab("Observed Values")
+```
+
+```{r, echo = FALSE}
+corPear <- cor(predictions, yTest, method = "spearman")
+corSpear <- cor(predictions, yTest, method = "pearson")
+
+cors <- c(corPear, corSpear)
+
+names(cors) <- c("Pearson Correlation", "Spearman Correlation")
+
+barplot(cors, main = "Correlation for final model.")
+```
 
 
 ### Constant Transmission Probability
