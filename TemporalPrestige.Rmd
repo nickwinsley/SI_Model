@@ -635,6 +635,8 @@ ggcorrplot(corr, lab = TRUE)
 
 Figure 8 shows the Pearson correlations between the five metrics. With the exception of Proximity Rank and Closeness Rank, the metrics are mostly independent, with many weak or negative correlations. This suggests that the metrics are tapping into different effects, and our rankings could be improved by combining many metrics as predictors in a regression model.
 
+### Model Selection
+
 ```{r, echo = FALSE, fig.cap = "Standardized residuals of the model plotted against theoretical quantiles of the normal distribution."}
 data$likelihood = probs
 
@@ -654,14 +656,13 @@ library(GGally)
 ggpairs(data)
 ```
 
-
 Looking at the pairwise relationships (shown in Figure 10), the assumptions of linear regression clearly cannot be satisfied. The output variable (plotted in the bottom-right corner) is bimodal and not amenable to common transformations (e.g. log, square root, polynomial etc). Machine Learning and Artifical Intelligence are often used for regression when the distribution of the data is non-standard. We use three machine learning methods - Gradient Boosting Regression, Decision Trees and Polynomial Regression - to predict the likelihood of infection from the six centrality metrics. 
 
 Polynomial Regression is based on a similar concept to linear regression, however it allows for powers greater than one in the regression equation (e.g. $y = \beta_{1}X + \beta_{2}X^{2}$). Closed-form solutions are rarely known, so the coefficients must be "learned" by numerical optimization methods. Decision Trees split the data into progressively smaller subgroups using decision rules (e.g. X > 40), and each group (sometimes called a leaf node) is assigned a predicted value. The prediction for a given observation is then the predicted value of it's respective leaf node, which is determined by the decision rules. At each branch of the tree, the optimal decision rule is found by minimizing a splitting criteria (e.g. Sum of Squared Errors (SSE), Mean Squared Error (MSE) etc). Gradient Boosting Regression is an extension of decision trees which takes a weighted average of predictions for many decision trees. This may result in better predictions, especially when the number of predictors is large or the data is very noisy.
 
 The data was split into training and test sets, comprising 75% and 25% of the data respectively. The models were trained on the training set and evaluated on the test set. Hyper parameters were optimized (where necessary) by 10-fold cross validation. 
 
-```{r, echo = FALSE, fig.cap = "Predicted vs Actual values after training Gradient Boosting model and applying to test set.", cache = TRUE}
+```{r, echo = FALSE, fig.cap = "Predicted vs Actual values after training Gradient Boosting model and applying to test set.", cache = TRUE, warning = FALSE}
 library(rsample)
 library(Matrix)
 library(xgboost)
@@ -792,6 +793,8 @@ df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Ce
 
 Figures 11-13 show the predicted values plotted against observed values for the three algorithms. Figures 14 and 15 show the Spearman and Pearson correlations. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank.
 
+### Feature Selection
+
 If some predictors in a model are unimportant, we risk suffering from the "Curse of Dimensionality". Large numbers of unimportant predictors may result in increased overfitting and difficulty with finding meaningful patterns in the data. The process of selecting a good set of predictors is called feature selection.
 
 ```{r, echo = FALSE, table.cap = "Feature importance scores of the six features in the decision tree."}
@@ -799,7 +802,10 @@ scores <- decTree$variable.importance
 
 barplot(scores, main = "Variable Importance")
 ```
-Katz centrality, Degree Centrality and Absorption Centrality had significantly higher importance rankings than other predictors, and should be included in the final model. However, TP and TPP may have attenuated importance rankings due to multicollinearity (high correlation between features). For this reason, I have chosen to include TP in the final model.
+
+Katz centrality, Degree Centrality and Absorption Centrality had significantly higher importance rankings than other predictors, and should be included in the final model. However, TP and TPP may have attenuated importance rankings due to multicollinearity (high correlation between features).
+
+For completeness, we test all possible combinations of two or more features by 5-fold cross validation. Each model was tested with four different values of the complexity parameter, a regularization criterion which limits the complexity of the tree in order to prevent over-fitting. Models were evaluated by the Mean Squared Error (MSE) metric, and the best-performing model was tested against a holdout set.
 
 ```{r, echo = FALSE, message = FALSE}
 library(caret)
@@ -819,25 +825,134 @@ train <- train[, -which(names(train) %in% c("TPP", "TBC"))]
 tree <- rpart(likelihood ~ ., data = train)
 ```
 
-```{r, echo = FALSE, fig.lab = "Comparison of predictions from final model against observed values", message = FALSE}
+```{r, echo = FALSE, cache = TRUE}
+# Load the "doParallel" package for parallel processing.
+library(doParallel)
+# Load the "foreach" package for splitting loops across multiple cores.
+library(foreach)
+
+library(pander)
+
+registerDoParallel(cores = 4)
+
+all.comb <- expand.grid(var1 = c(0, 1), var2 = c(0, 1), var3 = c(0, 1), var4 = c(0, 1), var5 = c(0, 1), var6 = c(0, 1))[-1, ]
+```
+
+```{r, echo = FALSE, cache = TRUE, warning = FALSE}
+set.seed(485030)
+
+all.comb <- all.comb[rowSums(all.comb) > 1,]
+
+var.indices <- which(!(names(data) == "likelihood"))
+
+data.shuffled <- data[sample(1:nrow(data), nrow(data)), ]
+
+data.shuffled <- as.data.frame(lapply(data.shuffled, as.numeric))
+
+names(data.shuffled) <- names(data)
+
+folds <- 5
+
+MSE.extract <- function(x) {
+  return(as.numeric(min(x$results$RMSE)) ^ 2)
+}
+
+cp_vals <- data.frame(cp = c(0.0001, 0.001, 0.006, 0.01))
+
+fitControl <- trainControl(method = "cv", number = folds)
+
+all.models.fit.cv <- foreach(i = 1 : nrow(all.comb), .packages = "caret") %dopar%
+  {
+    model.equation <- as.formula(paste("likelihood ~ ", paste(names(data)[var.indices][all.comb[i, ] == 1], collapse = " + ")))
+    train(model.equation, data = data.shuffled, method = "rpart", trControl = fitControl, metric = "RMSE", tuneGrid = cp_vals)
+  }
+
+MSE.rep.cv <- sapply(all.models.fit.cv, MSE.extract)
+
+MSE.ordered <- order(MSE.rep.cv)
+
+# Construct a matrix in which to store information on which variables are included in the 10 best models.
+best.models <- matrix(NA, nrow = 5, ncol = length(var.indices), dimnames = list(NULL, names(data[var.indices])))
+```
+
+```{r, echo = FALSE}
+
+for (i in 1:5)
+{
+  for (j in 1:ncol(best.models)) {
+    
+    if (all.comb[MSE.ordered[i], j] == 1) {
+      best.models[i, j] = names(data[var.indices])[j]
+    }
+    
+    else {
+      best.models[i, j] = "N/A"
+    }
+    
+  }
+}
+
+pander::pander(best.models, caption = "Five best-performing feature combinations (N/A means not included)")
+```
+
+The best-performing model used Absorption Rank, Temporal Proximity Prestige, Temporal Katz Centrality and Temporal Betweenness Centrality. As expected, Absorption Centrality was included in all five models, and the inclusion of Temporal Proximity Prestige excludes Temporal Prestige. Figure 12 compares the Root Mean Squared Error (RMSE) of the final model to that of the individual predictors. Katz Centrality and Temporal Prestige were omitted due to extremely large RMSE values.
+
+```{r, echo = FALSE, message = FALSE, cache = TRUE}
 library(ggplot2)
+
+split <- initial_split(data, prop = 0.75)
+
+train <- training(split)
+
+test <- testing(split)
+
+xTest <- test[, -which(names(test) == "likelihood")]
+
+yTest <- test$likelihood
+
+optimal_cp <- all.models.fit.cv[[MSE.ordered[1]]]$bestTune[1]
+
+tree <- rpart(likelihood ~ TPP + Absorb + Katz + TBC, data = train, cp = optimal_cp)
 
 predictions <- predict(tree, newdata = xTest)
 
 df <- data.frame(x = predictions, y = yTest)
 
-df %>% ggplot(aes(x = x, y = y)) + geom_point() + xlab("Predicted Values") + ylab("Observed Values")
+df %>% ggplot(aes(x = x, y = y)) + geom_point() + xlab("Predicted Values") + ylab("Observed Values") + ggtitle("Comparison of predictions from best model against observed values")
 ```
 
+```{r, echo = FALSE, fig.cap = "Comparison of RMSE for final decision tree and individual predictors", warning = FALSE}
+suppressPackageStartupMessages(library(Metrics))
+
+full_rmse <- min(all.models.fit.cv[[MSE.ordered[1]]]$results$RMSE)
+abs_rmse <- rmse(data$Absorb, data$likelihood)
+katz_rmse <- rmse(data$Katz, data$likelihood)
+deg_rmse <- rmse(data$Degree, data$likelihood)
+tp_rmse <- rmse(data$TP, data$likelihood)
+tpp_rmse <- rmse(data$TPP, data$likelihood)
+tbc_rmse <- rmse(data$TBC, data$likelihood)
+
+rmse_vec <- c(full_rmse, abs_rmse, deg_rmse, tpp_rmse, tbc_rmse)
+
+names(rmse_vec) <- c("Final Model", "Absorb", "Degree", "TPP", "TBC")
+
+barplot(rmse_vec, main = "Comparison of RMSE for final decision tree and individual predictors", xlab = "Predictor", ylab = "RMSE", col = "blue")
+```
+
+Clearly, the Decision Tree model has the lowest RMSE, followed closely Absorption Rank and Temporal Betweenness Centrality. It should be clear that RMSE rankings are only meaningful in the context of prediction, and these results should be interpreted accordingly. When ranking the relative importance of nodes in a network, other metrics should be given greater importance (e.g. Spearman Rank Correlation).
+
 ```{r, echo = FALSE}
+
 corPear <- cor(predictions, yTest, method = "spearman")
 corSpear <- cor(predictions, yTest, method = "pearson")
+
+
 
 cors <- c(corPear, corSpear)
 
 names(cors) <- c("Pearson Correlation", "Spearman Correlation")
 
-barplot(cors, main = "Correlation for final model.")
+barplot(cors, main = "Correlation for final model")
 ```
 
 
@@ -845,16 +960,67 @@ barplot(cors, main = "Correlation for final model.")
 
 The constant transmission probability assumption is commonplace in the literature, most likely because it greatly speeds up the simulation algorithm. To test this assumption, we compare the observed probability of infection for 751 individuals for two different algorithms (run on the same temporal network). Probabilities were calculated using an arbitrarily defined logistic regression model. In the first algorithm, the probability of transmission is calculated separately for every contact. In contrast, the second algorithm assumes that all contacts between any pair of nodes (i, j) have the same probability (taken to be the average over all contacts between i and j). In total, 1000 simulations were run for each algorithm. For each run, the indicator variable, $I_{i}$, is 1 if node i was infected, and 0 otherwise. The observed probability of infection for node i is the average of $I_{i}$ over all 1000 runs.
 
-Denote by $\hat{P^{\mathbf{1}}}$ the vector of observed probabilities for algorithm 1 (and likewise for algorithm 2). Thus, $\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}$ is the observed difference between the two algorithms for node i. We wish to test whether this difference is equal to 0. The test statistic is
+Denote by $\hat{P^{\mathbf{1}}}$ the vector of observed probabilities for algorithm 1 (and likewise for algorithm 2). Thus, $\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}$ is the observed difference between the two algorithms for node i. Suppose we want to test whether this difference is equal to 0. The test statistic is
 
 $$Z = \frac{\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}}{\hat{P_{i}}(1 - \hat{P_{i}})(\frac{1}{1000} + \frac{1}{1000})}$$
-where $\hat{P_{i}}$ is the pooled proportion under the null hypothesis ($P_{i}^{\mathbf{1}} = P_{i}^{\mathbf{2}}$). This is a well-known test statistic which follows a standard normal distribution if the proportions are equal.  In order to test for equality of the vectors $P^{\mathbf{1}}$ and $P^{\mathbf{2}}$, we must adjust the significance level of each individual test to correct for multiple comparisons. The Bonferroni correction, proposed by @dunn1961multiple, is an adjustment which controls the family-wise Type I error rate. For a given significance level $\alpha$, the Bonferroni correction guarantees a family-wise Type I error rate which is $\leq \alpha$. It does this by setting the test-wise significance level to $\frac{\alpha}{N}$, where N is the number of tests. The Bonferroni correction is ideal for this experiment because it makes no assumptions about independence between the individual tests. Note that the Bonferroni correction is conservative, meaning it lacks power for rejecting the null hypothesis.
-
-Holm's method, proposed by @holm1979simple, is a more powerful alternative to the Bonferroni correction. Holm's method tests the hypotheses iteratively, updating the p-value at each step. First, we sort the list of p-values in increasing order, and we begin the sequential significance tests from the lowest p-value. The algorithm starts with a significance level of $\frac{\alpha}{N}$. If the first result is non-significant, we test the second result with a significance level of $\frac{\alpha}{N - 1}$. In general, the i'th test statistic is tested with a significance level of $\frac{\alpha}{N - i + 1}$. Holm's method also guarantees a family-wise Type I error rate of $\leq \alpha$, however it offers greater power than the Bonferroni correction.
-
-The Šidák correction, proposed by @vsidak1967rectangular, is a slightly less conservative alternative to the Bonferroni correction in which we set the test-wise significance level to $1 - (1 - \alpha)^{\frac{1}{N}}$. This is the exact solution when tests are independent, conservative when tests are positively correlated and liberal when tests are negatively correlated.
+where $\hat{P_{i}}$ is the pooled proportion under the null hypothesis ($P_{i}^{\mathbf{1}} = P_{i}^{\mathbf{2}}$). This is a well-known test statistic which follows a standard normal distribution when the true proportions are equal. In order to test for equality of the vectors $P^{\mathbf{1}}$ and $P^{\mathbf{2}}$, we must adjust the significance level of each individual test to correct for multiple comparisons. Power and Type I error rate are two important factors which influence our choice of adjustment. Power is defined as the probability of falsely accepting the null hypothesis, whereas the Type I error rate is the probability of falsely rejecting the null hypothesis. Multiple comparison adjustments aim to reduce the family-wise Type I error rate by controlling the significance level of each individual comparison. We will discuss several common adjustment methods and their use cases:
 
 
+#### Bonferroni Correction:
+
+The Bonferroni correction, proposed by @dunn1961multiple, is an adjustment which controls the family-wise Type I error rate. For a given significance level $\alpha$, the Bonferroni correction guarantees a family-wise Type I error rate which is $\leq \alpha$. It does this by setting the test-wise significance level to $\frac{\alpha}{N}$, where N is the number of tests. The Bonferroni correction is ideal for this experiment because it makes no assumptions about independence between the individual tests. Note that the Bonferroni correction is conservative, meaning it lacks power for rejecting the null hypothesis.
+
+
+#### Holm's Method:
+
+Holm's method, proposed by @holm1979simple, is a powerful alternative to the Bonferroni correction. Holm's method tests the hypotheses iteratively, updating the p-value at each step. First, we sort the list of p-values in increasing order, and we begin the sequential significance tests from the lowest p-value. The algorithm starts with a significance level of $\frac{\alpha}{N}$. If the first result is non-significant, we test the second result with a significance level of $\frac{\alpha}{N - 1}$. In general, the i'th test statistic is tested with a significance level of $\frac{\alpha}{N - i + 1}$. Holm's method also guarantees a family-wise Type I error rate of $\leq \alpha$, however it offers greater power than the Bonferroni correction.
+
+
+#### Hochberg Procedure:
+
+The Hochberg procedure is similar to Holm's method, however it assumes non-negative correlation between tests. We begin by testing the largest p-value, adjusted for a single comparison. If the p-value is insignificant, we test the next largest p-value sequentially. In general, the i'th largest p-value is tested by adjusting for i comparisons. By doing this, we guarantee a greater power than Holm's method and the Bonferroni Correction.
+
+
+Pairwise comparisons were carried out with Fisher's Exact Test and p-values were simulated due to computational constraints. The Z-test was rejected due to the presence of proportions close to 0, which violated the $np > 5$ assumption. Multiple comparisons were controlled for by the three methods (Bonferroni Correction, Holm's method and Hochberg Procedure). The results are shown in Table 1.
+
+```{r, echo = FALSE}
+library(gt)
+
+fixed <- read.csv("Variable_Probability_Results.csv")
+variable <- read.csv("Fixed_Probability_Results.csv")
+
+fixed_prob <- colSums(fixed)
+var_prob <- colSums(variable)
+
+p_vals <- c()
+
+n <- c(1000, 1000)
+
+for (i in 1:length(fixed_prob)) {
+  sums <- data.frame(fix = fixed[i], var = variable[i])
+  p_vals <- c(p_vals, fisher.test(as.matrix(sums), alternative = "two.sided", conf.level = 0.95, simulate.p.value = TRUE, workspace = 2e7)$p.value)
+}
+
+p_bonf <- p.adjust(p_vals, method = "bonferroni")
+p_holm <- p.adjust(p_vals, method = "holm")
+p_hochberg <- p.adjust(p_vals, method = "hochberg")
+
+rej_bonf <- sum(p_bonf < 0.05)
+rej_holm <- sum(p_holm < 0.05)
+rej_hochberg <- sum(p_hochberg < 0.05)
+
+bonf <- c(rej_bonf, rej_bonf/751)
+holm <- c(rej_holm, rej_holm/751)
+hochberg <- c(rej_hochberg, rej_hochberg/751)
+
+df <- data.frame(Bonferroni = bonf, Holm = holm, Hochberg = hochberg)
+
+rownames(df) <- c("Number of Rejections", "Proportion of Rejections")
+
+df %>% gt() %>% tab_header(title = "Table 1: Number of rejections for each method")
+```
+
+The null hypothesis was accepted for all multiple comparison adjustments, which strongly suggests that the constant transmission probability assumption is valid in this case.
 
 
 ## References
