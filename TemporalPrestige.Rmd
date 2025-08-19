@@ -15,6 +15,9 @@ header-includes:
 - \usepackage{tikz}
 - \usepackage{pgfplots}
 - \usepackage{algorithm2e}
+- \usepackage{pifont}
+- \DeclareUnicodeCharacter{2713}{\checkmark}
+- \DeclareUnicodeCharacter{2717}{\ding{55}}
 ---
 
 ```{r setup, include = FALSE}
@@ -44,6 +47,7 @@ This study aims to address several key research questions:
 3. How can we extend these measures to cases where contact risk varies?
 
 Simulation is important for answering questions 2. and 3. as it provides a sort of "ground-truth" against which centrality measures can be compared.
+
 
 # Methods
 
@@ -560,7 +564,7 @@ where $\beta$ is the fixed transmission probability and $X \sim Uniform(0, 1)$.
 
 ## Results
 
-Five measures were calculated for the CovidCard dataset, namely Temporal Closeness (denoted by TP) and Proximity Rank (denoted by TPP), Absorption Rank, Temporal Katz Centrality and Temporal Degree Centrality. For a fair comparison, all centrality measures were calculated assuming constant transmission probabilities for every contact event. This was done because Temporal Katz Centrality does not generalize to varying transmission probabilities. These measures were correlated to the observed number of times each individual was infected over 751,000 simulations (shown in Figure 8). The dataset contained 751 individuals in total, and 1000 simulations were run with each individual being the sole starting node.
+Five measures were calculated for the CovidCard dataset, namely Temporal Closeness (denoted by TP) and Proximity Rank (denoted by TPP), Absorption Rank, Temporal Katz Centrality and Temporal Degree Centrality. For a fair comparison, all centrality measures were calculated by assuming constant transmission probabilities for every contact event. This was done because Temporal Katz Centrality does not generalize to varying transmission probabilities. These measures were correlated to the observed number of times each individual was infected over 751,000 simulations (shown in Figure 8). The dataset contained 751 individuals in total, and 1000 simulations for each of the 751 possible starting node.
 
 ```{r, results = 'hide', echo = FALSE, fig.cap = "Spearman rank correlations between centrality measures and observed likelihood of infection."}
 suppressPackageStartupMessages(library(dplyr))
@@ -658,9 +662,9 @@ ggpairs(data)
 
 Looking at the pairwise relationships (shown in Figure 10), the assumptions of linear regression clearly cannot be satisfied. The output variable (plotted in the bottom-right corner) is bimodal and not amenable to common transformations (e.g. log, square root, polynomial etc). Machine Learning and Artifical Intelligence are often used for regression when the distribution of the data is non-standard. We use three machine learning methods - Gradient Boosting Regression, Decision Trees and Polynomial Regression - to predict the likelihood of infection from the six centrality metrics. 
 
-Polynomial Regression is based on a similar concept to linear regression, however it allows for powers greater than one in the regression equation (e.g. $y = \beta_{1}X + \beta_{2}X^{2}$). Closed-form solutions are rarely known, so the coefficients must be "learned" by numerical optimization methods. Decision Trees split the data into progressively smaller subgroups using decision rules (e.g. X > 40), and each group (sometimes called a leaf node) is assigned a predicted value. The prediction for a given observation is then the predicted value of it's respective leaf node, which is determined by the decision rules. At each branch of the tree, the optimal decision rule is found by minimizing a splitting criteria (e.g. Sum of Squared Errors (SSE), Mean Squared Error (MSE) etc). Gradient Boosting Regression is an extension of decision trees which takes a weighted average of predictions for many decision trees. This may result in better predictions, especially when the number of predictors is large or the data is very noisy.
+Polynomial Regression is based on a similar concept to linear regression, however it allows for powers greater than one in the regression equation (e.g. $y = \beta_{1}X + \beta_{2}X^{2}$). Closed-form solutions are rarely known, so the coefficients must be "learned" by numerical optimization methods. Decision Trees split the data into progressively smaller subgroups using decision rules (e.g. X > 40), and each group (sometimes called a leaf node) is assigned a predicted value. The prediction for a given observation is then the predicted value of it's respective leaf node, which is determined by the decision rules. At each branch of the tree, the optimal decision rule is found by minimizing a splitting criteria (e.g. Sum of Squared Errors (SSE), Mean Squared Error (MSE) etc). Gradient Boosting Regression takes a weighted average of predictions for many decision trees. This may result in better predictions, especially when the number of predictors is large or the data is very noisy.
 
-The data was split into training and test sets, comprising 75% and 25% of the data respectively. The models were trained on the training set and evaluated on the test set. Hyper parameters were optimized (where necessary) by 10-fold cross validation. 
+The data was split into training and test sets, comprising 75% and 25% of the data respectively. The models were trained on the training set and evaluated on the test set. Hyper parameters were optimized by 10-fold cross validation. 
 
 ```{r, echo = FALSE, fig.cap = "Predicted vs Actual values after training Gradient Boosting model and applying to test set.", cache = TRUE, warning = FALSE}
 library(rsample)
@@ -803,7 +807,7 @@ scores <- decTree$variable.importance
 barplot(scores, main = "Variable Importance")
 ```
 
-Katz centrality, Degree Centrality and Absorption Centrality had significantly higher importance rankings than other predictors. However, correlated predictors (for instance, TP and TPP) may have attenuated importance rankings due to multicollinearity (high correlation between features). For this reason, iterative feature selection methods (i.e. testing many combinations of features systematically) are commonly used in lieu of feature importance scores.
+Katz centrality, Degree Centrality and Absorption Centrality had significantly higher importance rankings than other predictors. However, correlated predictors (for instance, TP and TPP) may have attenuated importance rankings due to multicollinearity (high correlation between features). For this reason, iterative feature selection methods (i.e. testing many combinations of features systematically) are often used in lieu of feature importance scores.
 
 We test all possible combinations of two or more features by 5-fold cross validation. Each model was tested with four different values of the complexity parameter, a regularization criterion which limits the complexity of the tree in order to prevent over-fitting. Models were evaluated by the Mean Squared Error (MSE) metric, and the best-performing model was tested against a holdout set.
 
@@ -876,7 +880,6 @@ best.models <- matrix(NA, nrow = 5, ncol = length(var.indices), dimnames = list(
 ```
 
 ```{r, echo = FALSE}
-
 for (i in 1:5)
 {
   for (j in 1:ncol(best.models)) {
@@ -892,12 +895,24 @@ for (i in 1:5)
   }
 }
 
-pander::pander(best.models, caption = "Five best-performing feature combinations (N/A means not included)")
+fun <- function(row) {
+  ifelse(row == "N/A", "\u2717", "\u2713")
+}
+
+best.models <- sapply(as.list(data.frame(t(best.models))), fun)
+
+new_names <- c("MSE", colnames(best.models))
+
+best.models <- cbind(round(as.numeric(unlist(MSE.rep.cv[MSE.ordered[1:5]])), 6), best.models)
+
+colnames(best.models) <- new_names
+
+pander::pander(best.models, caption = "Five best performing features combinations and their MSE")
 ```
 
 The best-performing model used Absorption Rank, Temporal Proximity Prestige, Temporal Katz Centrality and Temporal Betweenness Centrality. As expected, Absorption Centrality was included in all five models, and the inclusion of Temporal Proximity Prestige excludes Temporal Prestige. Figure 12 compares the Root Mean Squared Error (RMSE) of the final model to that of the individual predictors. Katz Centrality and Temporal Prestige were omitted due to extremely large RMSE values.
 
-```{r, echo = FALSE, message = FALSE, cache = TRUE}
+```{r, echo = FALSE, message = FALSE, cache = TRUE, fig.lab = "Predicted values vs Observed values for the decision tree", warnings = FALSE}
 library(ggplot2)
 
 split <- initial_split(data, prop = 0.75)
@@ -958,7 +973,17 @@ barplot(cors, main = "Correlation for final model")
 
 ### Constant Transmission Probability
 
-The constant transmission probability assumption is commonplace in the literature, most likely because it greatly speeds up the simulation algorithm. To test this assumption, we compare the observed probability of infection for 751 individuals for two different algorithms (run on the same temporal network). Probabilities were calculated using an arbitrarily defined logistic regression model. In the first algorithm, the probability of transmission is calculated separately for every contact. In contrast, the second algorithm assumes that all contacts between any pair of nodes (i, j) have the same probability (taken to be the average over all contacts between i and j). In total, 1000 simulations were run for each algorithm. For each run, the indicator variable, $I_{i}$, is 1 if node i was infected, and 0 otherwise. The observed probability of infection for node i is the average of $I_{i}$ over all 1000 runs.
+The constant transmission probability assumption is commonplace in the literature, most likely because it greatly speeds up the simulation algorithm. Probabilities were estimated by using various proximity categories, which we will call classes, as predictors in a generalized linear model. The number of 15-time intervals spent in each class is given over the two hour observation period. Transmission probabilities were then calculated by a logistic regression model of the form:
+
+$$log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}c_{1} + \beta_{2}c_{2} + \beta_{3}c_{3}$$
+where $\pi(x)$ is the transmission probability of the contact and $c_{i}$ is the number of 15-minute time intervals spent in class i during the two hour observation period. The classes are indexed in increasing order of proximity (i.e. class 3 indicates greater proximity than class 2), therefore the coefficients were chosen to satisfy the constraint $\beta_{3} > \beta_{2} > \beta_{1}$. One may treat the classes as levels of an ordinal variable and assume a proportional relationship, reducing the model to:
+
+$$log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}(c_{1} + 2c_{2} + 3c_{3})$$
+However, this simplified model was rejected because ordinal variables are unlikely to have a proportional relationship with the outcome variable in general.
+
+To test the constant transmission probability assumption, we compare the observed probability of infection for 751 individuals for two different algorithms (run on the same temporal network). In the first algorithm, the probability of transmission is calculated separately for every contact. In the second algorithm, we assume that for two nodes i and j, the probability of transmission is a constant value $p_{ij}$, regardless of the duration and proximity of the contact event, and this probability is estimated by averaging the event-specific probabilities $p_{ijt}$ (where t is a time index) over all time points. As in the first algorithm, event-specific probabilities are calculated by the same logistic regression model.
+
+In total, 1000 simulations were run for each algorithm. For each run, the indicator variable, $I_{i}$, is 1 if node i was infected, and 0 otherwise. The observed probability of infection for node i is the average of $I_{i}$ over all 1000 runs.
 
 Denote by $\hat{P^{\mathbf{1}}}$ the vector of observed probabilities for algorithm 1 (and likewise for algorithm 2). Thus, $\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}$ is the observed difference between the two algorithms for node i. Suppose we want to test whether this difference is equal to 0. The test statistic is
 
@@ -981,10 +1006,10 @@ Holm's method, proposed by @holm1979simple, is a powerful alternative to the Bon
 The Hochberg procedure is similar to Holm's method, however it assumes non-negative correlation between tests. We begin by testing the largest p-value, adjusted for a single comparison. If the p-value is insignificant, we test the next largest p-value sequentially. In general, the i'th largest p-value is tested by adjusting for i comparisons. By doing this, we guarantee a greater power than Holm's method and the Bonferroni Correction.
 
 
-Pairwise comparisons were carried out with Fisher's Exact Test and p-values were simulated due to computational constraints. The Z-test was rejected due to the presence of proportions close to 0, which violated the $np > 5$ assumption. Multiple comparisons were controlled for by the three methods (Bonferroni Correction, Holm's method and Hochberg Procedure). The results are shown in Table 1.
+Pairwise comparisons were carried out with Fisher's Exact Test and p-values were simulated due to computational constraints. The Z-test was rejected due to the presence of proportions close to 0, which violated the $np > 5$ assumption. Multiple comparisons were controlled for by the three methods. The results are shown in Table 1.
 
 ```{r, echo = FALSE}
-library(gt)
+suppressPackageStartupMessages(library(gt))
 
 fixed <- read.csv("Variable_Probability_Results.csv")
 variable <- read.csv("Fixed_Probability_Results.csv")
@@ -1020,7 +1045,7 @@ rownames(df) <- c("Number of Rejections", "Proportion of Rejections")
 df %>% gt() %>% tab_header(title = "Table 1: Number of rejections for each method")
 ```
 
-The null hypothesis was accepted for all multiple comparison adjustments, which strongly suggests that the constant transmission probability assumption is valid in this case.
+The null hypothesis was accepted for all multiple comparison adjustments, which strongly suggests that the constant transmission probability assumption is valid.
 
 
 ## References
