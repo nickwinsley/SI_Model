@@ -61,11 +61,11 @@ The CovidCard is a bluetooth device developed for detecting close-contact events
 
 ## Data Preparation
 
-The last day of the trial period saw an anomalously high number of close-contacts, most likely because participants congregated at a single location to return the cards. For this reason, contact events which occurred on the last day of the trial were omitted. Participants who could not be cross-verified by case investigation were removed. If two cards registered the same contact event, and gave conflicting proximity values, one of the proximity values was arbitrarily removed. Contact dates were converted to numeric times by calculating the time elapsed (in hours) between the contact date and the start of the trial. Some cards were collected before the last day of the trial, resulting in an anomalous number of contacts during card collection. For this reason, all contact events which occurred on the same day they were uploaded were removed.
+The last day of the trial period saw an anomalously high number of close-contacts, most likely because participants congregated at a single location to return the cards. For this reason, contact events which occurred on the last day of the trial were omitted. Participants who could not be cross-verified by case investigation were removed. If two cards registered the same contact event, and gave conflicting proximity values, one of the proximity values was arbitrarily removed. Contact dates were converted to numeric times by calculating the time elapsed (in hours) between the contact date and the start of the trial. Some cards were collected before the last day of the trial, resulting in an anomalous number of contacts during card collection. For this reason, all contact events which occurred on the day in which they were uploaded were removed.
 
 ## Centrality
 
-Centrality is roughly defined as the influence of a given node in a graph. The exact meaning of a "central" node varies depending on the context.
+Centrality is roughly defined as the influence of a given node in a graph. The exact meaning of a "central" node varies depending on the specific context.
 
 ## Degree Centrality
 
@@ -843,7 +843,7 @@ all.comb <- expand.grid(var1 = c(0, 1), var2 = c(0, 1), var3 = c(0, 1), var4 = c
 ```
 
 ```{r, echo = FALSE, cache = TRUE, warning = FALSE}
-set.seed(485030)
+set.seed(485434)
 
 all.comb <- all.comb[rowSums(all.comb) > 1,]
 
@@ -899,18 +899,20 @@ fun <- function(row) {
   ifelse(row == "N/A", "\u2717", "\u2713")
 }
 
-best.models <- sapply(as.list(data.frame(t(best.models))), fun)
-
 new_names <- c("MSE", colnames(best.models))
+
+best.models <- apply(best.models, 1, fun)
+
+best.models <- matrix(best.models, nrow = 5)
 
 best.models <- cbind(round(as.numeric(unlist(MSE.rep.cv[MSE.ordered[1:5]])), 6), best.models)
 
 colnames(best.models) <- new_names
 
-pander::pander(best.models, caption = "Five best performing features combinations and their MSE")
+pander::pander(best.models, caption = "Five best performing feature combinations and their MSE")
 ```
 
-The best-performing model used Absorption Rank, Temporal Proximity Prestige, Temporal Katz Centrality and Temporal Betweenness Centrality. As expected, Absorption Centrality was included in all five models, and the inclusion of Temporal Proximity Prestige excludes Temporal Prestige. Figure 12 compares the Root Mean Squared Error (RMSE) of the final model to that of the individual predictors. Katz Centrality and Temporal Prestige were omitted due to extremely large RMSE values.
+The best-performing model used Absorption Rank, Temporal Katz Centrality and Degree Centrality. As expected, Absorption Centrality was included in all five models, however the inclusion of Temporal Proximity Prestige did not exclude Temporal Prestige. Figure 12 compares the Root Mean Squared Error (RMSE) of the final model to that of the individual predictors. Katz Centrality and Temporal Prestige were omitted due to extremely large RMSE values.
 
 ```{r, echo = FALSE, message = FALSE, cache = TRUE, fig.lab = "Predicted values vs Observed values for the decision tree", warnings = FALSE}
 library(ggplot2)
@@ -973,13 +975,15 @@ barplot(cors, main = "Correlation for final model")
 
 ### Constant Transmission Probability
 
-The constant transmission probability assumption is commonplace in the literature, most likely because it greatly speeds up the simulation algorithm. Probabilities were estimated by using various proximity categories, which we will call classes, as predictors in a generalized linear model. The number of 15-time intervals spent in each class is given over the two hour observation period. Transmission probabilities were then calculated by a logistic regression model of the form:
+The constant transmission probability assumption is commonplace in the literature, most likely because it greatly speeds up the simulation algorithm. Probabilities were estimated by using proximity categories, which we will call classes, as predictors in a generalized linear model. The number of 15-time intervals spent in each class is given over the two hour observation period. Transmission probabilities were then calculated by a logistic regression model of the form:
 
 $$log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}c_{1} + \beta_{2}c_{2} + \beta_{3}c_{3}$$
-where $\pi(x)$ is the transmission probability of the contact and $c_{i}$ is the number of 15-minute time intervals spent in class i during the two hour observation period. The classes are indexed in increasing order of proximity (i.e. class 3 indicates greater proximity than class 2), therefore the coefficients were chosen to satisfy the constraint $\beta_{3} > \beta_{2} > \beta_{1}$. One may treat the classes as levels of an ordinal variable and assume a proportional relationship, reducing the model to:
+
+where $\pi(x)$ is the transmission probability of the contact and $c_{i}$ is the number of 15-minute time intervals spent in class i during the two hour observation period. The classes are indexed in increasing order of proximity (i.e. class 3 indicates greater proximity than class 2), therefore the coefficients were chosen to satisfy the constraint $\beta_{3} > \beta_{2} > \beta_{1}$. One may treat the classes as levels of an ordinal variable and assume a proportional relationship, which reduces the model to:
 
 $$log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}(c_{1} + 2c_{2} + 3c_{3})$$
-However, this simplified model was rejected because ordinal variables are unlikely to have a proportional relationship with the outcome variable in general.
+
+However, this simplified model was rejected due to insufficient evidence to suggest a proportional relationship.
 
 To test the constant transmission probability assumption, we compare the observed probability of infection for 751 individuals for two different algorithms (run on the same temporal network). In the first algorithm, the probability of transmission is calculated separately for every contact. In the second algorithm, we assume that for two nodes i and j, the probability of transmission is a constant value $p_{ij}$, regardless of the duration and proximity of the contact event, and this probability is estimated by averaging the event-specific probabilities $p_{ijt}$ (where t is a time index) over all time points. As in the first algorithm, event-specific probabilities are calculated by the same logistic regression model.
 
@@ -1010,6 +1014,7 @@ Pairwise comparisons were carried out with Fisher's Exact Test and p-values were
 
 ```{r, echo = FALSE}
 suppressPackageStartupMessages(library(gt))
+suppressPackageStartupMessages(library(rstatix))
 
 fixed <- read.csv("Variable_Probability_Results.csv")
 variable <- read.csv("Fixed_Probability_Results.csv")
@@ -1022,30 +1027,83 @@ p_vals <- c()
 n <- c(1000, 1000)
 
 for (i in 1:length(fixed_prob)) {
-  sums <- data.frame(fix = fixed[i], var = variable[i])
-  p_vals <- c(p_vals, fisher.test(as.matrix(sums), alternative = "two.sided", conf.level = 0.95, simulate.p.value = TRUE, workspace = 2e7)$p.value)
+  sums <- matrix(c(fixed_prob[i], nrow(fixed) - fixed_prob[i], var_prob[i], nrow(variable) - var_prob[i]), nrow = 2)
+  p_vals <- c(p_vals, fisher_test(sums, alternative = "two.sided", conf.level = 0.95, simulate.p.value = TRUE)$p)
 }
 
 p_bonf <- p.adjust(p_vals, method = "bonferroni")
 p_holm <- p.adjust(p_vals, method = "holm")
 p_hochberg <- p.adjust(p_vals, method = "hochberg")
 
-rej_bonf <- sum(p_bonf < 0.05)
-rej_holm <- sum(p_holm < 0.05)
-rej_hochberg <- sum(p_hochberg < 0.05)
+rej_bonf <- as.integer(sum(p_bonf < 0.05))
+rej_holm <- as.integer(sum(p_holm < 0.05))
+rej_hochberg <- as.integer(sum(p_hochberg < 0.05))
 
-bonf <- c(rej_bonf, rej_bonf/751)
-holm <- c(rej_holm, rej_holm/751)
-hochberg <- c(rej_hochberg, rej_hochberg/751)
+bonf <- c(rej_bonf, round(rej_bonf/751, 5))
+holm <- c(rej_holm, round(rej_holm/751, 5))
+hochberg <- c(rej_hochberg, round(rej_hochberg/751, 5))
 
 df <- data.frame(Bonferroni = bonf, Holm = holm, Hochberg = hochberg)
 
-rownames(df) <- c("Number of Rejections", "Proportion of Rejections")
+new_names <- c("Row Label", colnames(df))
+
+df <- as.data.frame(t(rbind(colnames(df), df)))
+
+colnames(df) <- c("Method", "Number of Rejections", "Proportion of Rejections")
 
 df %>% gt() %>% tab_header(title = "Table 1: Number of rejections for each method")
 ```
 
-The null hypothesis was accepted for all multiple comparison adjustments, which strongly suggests that the constant transmission probability assumption is valid.
+The null hypothesis was 24 times for all multiple comparison adjustments, which suggests that the constant transmission probability assumption is invalid. It is worth noting that the Bonferroni Correction is extremely conservative for 751 comparisons, therefore this result provides strong evidence of a difference between the algorithms. @alger2020scientific promotes the use of multiple experiments to strengthen the reliability of a conclusion. Accordingly, we use a goodness of fit test to support the hypothesis that applying the constant transmission probability assumption produces different results.
+
+### Goodness-of-fit test
+
+In this section, we test the constant transmission probability assumption by a likelihood ratio test. First, we sum $I_{i}$ over all runs to get the total times infected, $n_{i}$. By doing this for every node, we obtain a contingency table of the form:
+
+\begin{table}[hbtp]
+  \begin{tabular}{lccccc}
+  Node & 1 & 2 & 3 & 4 & ... \\
+  
+  \hline
+  
+  Algorithm 1 (Constant Transmission) & $n_{11}$ & $n_{12}$ & $n_{13}$ & $n_{14}$ & ... \\
+  
+  \hline
+  
+  Algorithm 2 (Varying Transmission) & $n_{21}$ & $n_{22}$ & $n_{23}$ & $n_{24}$ & ... \\
+  
+  \hline
+  
+  \end{tabular}
+\end{table}
+
+Where $n_{ij}$ is the number of times node j is infected for algorithm i. Denote by $n_{i+}$ the i'th row sum, and similarly by $n_{+j}$ the j'th column sum. Under the assumption of independence between the two variables, algorithm and node, the expected value of the cell count, $E_{ij}$, is given by:
+
+$$E_{ij} = \frac{n_{i+}n_{+j}}{n}$$
+where $n = \sum_{i}{n_{i+}}$. The likelihood ratio test statistic 
+
+\begin{equation}
+\label{eq:chi_square}
+G = 2\sum_{ij}{n_{ij} ln \left(\frac{n_{ij}}{E_{ij}} \right)}
+\end{equation}
+
+is known to asymptotically converge to a $\chi^{2}$ distribution with $(I - 1)(J - 1)$ degrees of freedom, where I and J are the number of rows and columns respectively in the contingency table.
+
+```{r, echo = FALSE, messages = FALSE}
+library(broom)
+library(knitr)
+
+suppressPackageStartupMessages(library(DescTools))
+
+table <- rbind(matrix(colSums(fixed), nrow = 1), matrix(colSums(variable), nrow = 1))
+
+result <- GTest(table)
+
+output <- tidy(result)
+
+kable(output, caption = "Chi-Squared Test Results")
+```
+
 
 
 ## References
