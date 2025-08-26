@@ -397,7 +397,7 @@ When each edge is associated with a probability of transmission, as may be the c
 \end{tikzpicture}
 ```
 
-In accordance with the Susceptible-Infected (SI) framework, the probability of transmission from an individual to them self is assumed to be one, and hence the natural log becomes 0. This representation has several useful mathematical properties. Consider a path, P, starting at $\upsilon_{i}$ and ending at $\textit{u}_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P. The probability of path P can be calculated by:
+The probability of transmission from an individual to them self is assumed to be one, and hence the natural log becomes 0. Consider a path, P, starting at $\upsilon_{i}$ and ending at $\textit{u}_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P. The probability of path P can be calculated by:
 
 $$e^{\sum_{w \in E}{log(w)}}$$
 It can be shown that for the representation in Figure 2, all highest-probability paths to $\textit{u}_{i}$ can be calculated in $O(i|V|^{2})$ time using a modified version of the Reversed Evolution Network (abbreviated as REN) algorithm proposed by @hanke2017clone. Algorithm 1 shows the psuedocode for this algorithm.
