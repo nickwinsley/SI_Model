@@ -30,7 +30,7 @@ Epidemiology is a subject of much contemporary relevance. The recent Covid-19 pa
 
 We will begin by defining what is meant by "high-risk" in this context. Government's wish to intervene for individuals who are most instrumental in the spread of a disease. Therefore, risk is a combination of the likelihood of a particular individual becoming contagious due to prior contacts, and the likelihood of the individual spreading the illness via future contacts. In practice, future contacts are not known, therefore this study will primarily focus on the risk of infection.
 
-Social networks can be modeled as a number of close personal contacts, each paired with a measure of proximity. Each contact is written as (i, j, t), where i and j are the interacting individuals, and t is the time of the interaction (note that (i, j, t) is semantically no different from (j, i, t)). This representation is called a temporal network, and it is frequently used in the study of epidemics. In practice, contact events are identified using contact tracing.
+Social networks can be modeled as a number of close personal contacts, each paired with a measure of proximity. Each contact is written as (i, j, t), where i and j are the interacting individuals, and t is the time of the interaction (note that (i, j, t) is semantically no different from (j, i, t)). This representation is called a temporal network, and it is frequently used in the study of epidemics. In practice, contact events are identified by using contact tracing.
 
 Contact tracing is a methodology for combating the spread of infectious diseases transmitted by close personal contacts. By uncovering close contact events, contact tracing can be used to identify people at high risk of infection, and foresee future growth or contraction of the epidemic. This information can inform further interventions (e.g. quarantining, disease tests, vaccination). Traditionally, contact tracing focused on confirmed cases, which were reported to authorities. When a new case is reported, an official asks the patient to recall all recent contacts. Although this method has been shown to be effective (@fetzer2021measuring), it is labor-intensive and does not give a complete picture. Recently, digital contact tracing has emerged as a cost-effective (albeit unreliable) alternative to conventional contact tracing methods. In it's latest incarnations, digital contact tracing uses portable bluetooth devices which detect close contacts between carriers of the device. In addition, digital contact tracing can provide indicators of proximity between the interacting individuals. Statistical methods are often used (in combination with contact tracing) to identify high-risk individuals in a social network. This study investigates two common methods for the analysis of contact tracing data: Simulation and Social Network Analysis (SNA).
 
@@ -57,11 +57,16 @@ In 2020, the New Zealand Ministry of Health (MoH) commissioned a pilot study of 
 
 ## Data Description
 
-The CovidCard is a bluetooth device developed for detecting close-contact events between carriers. Each card advertises it's presence and detects signals from other cards. Algorithms evaluate the radio signal strength indicator (RSSI) of close-contacts in real-time, and the signal strength is aggregated over 15 minute time intervals. Each interval was classified as either < 1 meter, < 2 meter and < 4 meter proximity, and the total number of intervals belonging to each class was summed over a two-hour period. The cards can hold up to 128 contact events in short-term cache memory at any given time, of which some are recorded in long-term flash memory. An interaction was recorded in flash memory if it was longer than 2 minutes in duration, and the RSSI exceeded -62dBm (roughly corresponding to a distance of less than 4 meters). For more details on the CovidCard, see @admiraal2022case.
+The CovidCard is a bluetooth device developed for detecting close-contact events between carriers. Each card advertises it's presence and detects signals from other cards. Algorithms evaluate the radio signal strength indicator (RSSI) of close-contacts in real-time, and the signal strength is aggregated over 15 minute time intervals. The raw RSSI values are transformed into distance estimates by the path loss model, proposed by @seidel1992914, for which
+
+$$RSSI \propto -20\log_{10}(distance)$$
+Noise in distance estimates is subsequently reduced by signal processing methods, most commonly Kalman Filters.
+
+Each interval was classified as either < 1 meter, < 2 meter and < 4 meter proximity, and the total number of intervals belonging to each class was summed over a two-hour period. The cards can hold up to 128 contact events in short-term cache memory at any given time, of which some are recorded in long-term flash memory. An interaction was recorded in flash memory if it was longer than 2 minutes in duration, and the RSSI exceeded -62dBm (roughly corresponding to a distance of less than 4 meters). For more details on the CovidCard, see @admiraal2022case.
 
 ## Data Preparation
 
-The last day of the trial period saw an anomalously high number of close-contacts, most likely because participants congregated at a single location to return the cards. For this reason, contact events which occurred on the last day of the trial were omitted. Participants who could not be cross-verified by case investigation were removed. If two cards registered the same contact event, and gave conflicting proximity values, one of the proximity values was arbitrarily removed. Contact dates were converted to numeric times by calculating the time elapsed (in hours) between the contact date and the start of the trial. Some cards were collected before the last day of the trial, resulting in an anomalous number of contacts during card collection. For this reason, all contact events which occurred on the day in which they were uploaded were removed.
+The last day of the trial period saw an anomalously high number of close-contacts, most likely because participants congregated at a single location for card collection. For this reason, contact events which occurred on the last day of the trial were omitted. Participants who could not be cross-verified by case investigation were removed. If two cards registered the same contact event, and gave conflicting proximity values, one of the proximity values was arbitrarily removed. Contact dates were converted to numeric times by calculating the time elapsed (in hours) between the contact date and the start of the trial. Some cards were collected before the last day of the trial, resulting in an anomalous number of contacts during card collection. For this reason, all contact events which occurred on the day in which they were uploaded were removed. Data on the proximity classes was processed to form non-overlapping categories. For instance, the number of 15-intervals with a distance less than 4 metres, $n_{< 4}$, was transformed by subtracting $n_{< 2}$ and $n_{< 1}$ to get $n_{\geq 3, < 4}$; the total number of 15-minute intervals between 3 and 4 metres. By doing this, we get a categorical variable on which further statistical models are based.
 
 ## Centrality
 
@@ -329,21 +334,26 @@ Define the distance of the temporal shortest path length over time interval [i, 
 This study is primarily concerned with the likelihood of infection, as estimating transmission requires future contact tracing data, which is usually not known. Likelihood of infection is roughly analogous to the idea of prestige (also known as rank). I will use the terms prestige and rank interchangeably throughout this paper. In a directional network, a prestigious node is the object of many ties i.e. has many incoming connections. This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are ill-defined in directional graphs, owing to the fact that directional graphs are not necessarily strongly-connected. Due to this limitation, we usually only consider nodes in the influence domain of node i i.e. the set of all nodes from whom $n_{i}$ is reachable. @lin1976foundations proposed the following measure for directional relations, called the proximity prestige:
 
 $$P_{p}(n_{i}) = \frac{I_{i}/(g - 1)}{\sum{d(n_{j}, n_{i})}/I_{i}} \tag{1.}$$
-where $I_{i}$ is the size of the influence domain of node i, and g is the total number of nodes in the network. For temporal networks, I propose a modified version
+where $I_{i}$ is the size of the influence domain of node i, and g is the total number of nodes in the network.Intuitively, this is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity prestige is defined to be 0.
 
-$$P_{p}(\textit{u}_{i}) = \frac{I_{\textit{u}/(g - 1)}}{\sum_{\upsilon \in \textit{N}}{d_{0, i}(\upsilon, \textit{u})}/I_{\textit{u}}} \tag{2.}$$
-where $\textit{N}$ is the influence domain of node $\textit{u}$ at time i. Intuitively, this is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity prestige is defined to be 0. Kim and Anderson [2012] proposed temporal closeness, a similar metric which considers all time intervals $[t, i], t \in [0, i - 1]$.
+For temporal networks, I propose a modified version
 
-$$C_{i,j} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{j, t}(\upsilon, \textit{u})}}} \tag{3.}$$
-When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn (3.) into a prestige measure, we simply reverse the direction of the paths to get:
+$$P_{p}(\textit{u}_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, \textit{u}}/(g - 1)}{\sum_{\upsilon \in I_{t,i,\textit{u}}}{d_{t, i}(\upsilon, \textit{u})}/I_{t, i, \textit{u}}} \tag{5.}$$
+
+where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity prestige, or TPP for short. The temporal proximity prestige can be normalized by dividing by i.
+
+Kim and Anderson [2012] proposed temporal closeness, a similar metric which considers all time intervals $[t, i], t \in [0, i - 1]$.
+
+\begin{equation}
+\label{eq:tc}
+C_{i,j} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{j, t}(\upsilon, \textit{u})}}} \tag{3.}
+\end{equation}
+
+When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn \@ref(eq:tc) into a prestige measure, we simply reverse the direction of the paths to get:
 
 $$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\textit{u}, \upsilon)}}} \tag{4.}$$
 We will call this the temporal prestige. The temporal prestige can be normalized by dividing by $(|\textit{V}| - 1)(j - i)$. 
 
-@kim2012temporal showed that by considering all time-intervals, temporal closeness improves the quality of estimates in some situations. By this same token, we can modify equation (2.) to obtain
-
-$$P_{p}(\textit{u}_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, \textit{u}}/(g - 1)}{\sum_{\upsilon \in \textit{N}}{d_{t, i}(\upsilon, \textit{u})}/I_{t, i, \textit{u}}} \tag{5.}$$
-where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity rank. The temporal proximity rank can be normalized by dividing by i.
 
 ## Multiplicative Temporal Closeness Rank
 
@@ -564,7 +574,7 @@ where $\beta$ is the fixed transmission probability and $X \sim Uniform(0, 1)$.
 
 ## Results
 
-Five measures were calculated for the CovidCard dataset, namely Temporal Closeness (denoted by TP) and Proximity Rank (denoted by TPP), Absorption Rank, Temporal Katz Centrality and Temporal Degree Centrality. For a fair comparison, all centrality measures were calculated by assuming constant transmission probabilities for every contact event. This was done because Temporal Katz Centrality does not generalize to varying transmission probabilities. These measures were correlated to the observed number of times each individual was infected over 751,000 simulations (shown in Figure 8). The dataset contained 751 individuals in total, and 1000 simulations for each of the 751 possible starting node.
+Five measures were calculated for the CovidCard dataset, namely Temporal Closeness (denoted by TP) and Proximity Rank (denoted by TPP), Absorption Rank, Temporal Katz Centrality and Temporal Degree Centrality. For a fair comparison, all centrality measures were calculated by assuming constant transmission probabilities for every contact event. This was done because Temporal Katz Centrality does not generalize to varying transmission probabilities. These measures were correlated to the observed number of times each individual was infected over 751,000 simulations (shown in Figure 8). The dataset contained 751 individuals in total, and 1000 simulations for each of the 751 possible starting node were carried out.
 
 ```{r, results = 'hide', echo = FALSE, fig.cap = "Spearman rank correlations between centrality measures and observed likelihood of infection."}
 suppressPackageStartupMessages(library(dplyr))
@@ -625,7 +635,7 @@ df <- data.frame(type = names, corr = correlations)
 df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Pearson Correlation")
 ```
 
-The Spearman Correlations are generally large, with Absorption Rank showing a larger correlation ($\rho \approx 0.8$) compared to other metrics. Conversely, the metrics generally showed lower Pearson correlations, especially Katz centrality. This suggests that the metrics should not be interpreted numerically, rather they should be used for ranking the relative importance of individuals within the same network. TP and TPP performed similarly with regards to ranking individuals, however TPP outperformed TP in terms of Pearson Correlation.
+The Spearman Correlations are generally large, with Absorption Rank showing a larger correlation ($\rho \approx 0.8$) compared to other metrics. Conversely, the metrics generally showed lower Pearson correlations, especially Katz centrality. This suggests that the metrics should not be used for prediction, rather they should be used for ranking the relative importance of individuals within the same network. TP and TPP performed similarly with regards to ranking individuals, however TPP outperformed TP in terms of Pearson Correlation.
 
 ```{r, echo = FALSE, fig.cap = "Correlations between the five centrality measures."}
 library(ggcorrplot)
@@ -654,7 +664,7 @@ qqline(residuals)
 
 Figure 9 shows the Q-Q plot for a linear regression model predicting the observed likelihood of infection, with the five centrality metrics as predictors. The relationship is clearly non-linear, with a large number of extreme values for the residuals. A transformation of the output variable may satisfy the linearity assumption, particularly if the distribution is skewed.
 
-```{r, echo = FALSE, fig.cap = "Pairwise relationships between the centrality metrics and the output variable (likelihood)"}
+```{r, echo = FALSE, fig.cap = "Pairwise relationships between the centrality metrics and the output variable (likelihood)", message = FALSE}
 library(GGally)
 
 ggpairs(data)
@@ -666,10 +676,10 @@ Polynomial Regression is based on a similar concept to linear regression, howeve
 
 The data was split into training and test sets, comprising 75% and 25% of the data respectively. The models were trained on the training set and evaluated on the test set. Hyper parameters were optimized by 10-fold cross validation. 
 
-```{r, echo = FALSE, fig.cap = "Predicted vs Actual values after training Gradient Boosting model and applying to test set.", cache = TRUE, warning = FALSE}
+```{r, echo = FALSE, fig.cap = "Predicted vs Actual values after training Gradient Boosting model and applying to test set.", cache = TRUE, warning = FALSE, message = FALSE}
 library(rsample)
 library(Matrix)
-library(xgboost)
+suppressPackageStartupMessages(library(xgboost))
 
 set.seed(1374)
 
@@ -707,7 +717,7 @@ cv_results <- xgb.cv(params = params, data = dtrain, nfold = 10, nrounds = 500, 
 
 best_round = cv_results$best_iteration
 
-model = xgb.train(params = params, data = dtrain, nrounds = best_round, num_boost_round = 1000)
+model = xgb.train(params = params, data = dtrain, nrounds = best_round)
 
 y_pred = predict(model, newdata = xgb.DMatrix(data.matrix(xTest)))
 
@@ -1054,7 +1064,7 @@ colnames(df) <- c("Method", "Number of Rejections", "Proportion of Rejections")
 df %>% gt() %>% tab_header(title = "Table 1: Number of rejections for each method")
 ```
 
-The null hypothesis was 24 times for all multiple comparison adjustments, which suggests that the constant transmission probability assumption is invalid. It is worth noting that the Bonferroni Correction is extremely conservative for 751 comparisons, therefore this result provides strong evidence of a difference between the algorithms. @alger2020scientific promotes the use of multiple experiments to strengthen the reliability of a conclusion. Accordingly, we use a goodness of fit test to support the hypothesis that applying the constant transmission probability assumption produces different results.
+The null hypothesis was rejected 24 times for all multiple comparison adjustments, which suggests that the constant transmission probability assumption is invalid. It is worth noting that the Bonferroni Correction is extremely conservative for 751 comparisons, therefore this result provides strong evidence of a difference between the algorithms. @alger2020scientific promotes the use of multiple experiments to increase the reliability of a conclusion. Accordingly, we use a goodness of fit test to support the hypothesis that applying the constant transmission probability assumption produces different results.
 
 ### Goodness-of-fit test
 
@@ -1087,7 +1097,7 @@ where $n = \sum_{i}{n_{i+}}$. The likelihood ratio test statistic
 G = 2\sum_{ij}{n_{ij} ln \left(\frac{n_{ij}}{E_{ij}} \right)}
 \end{equation}
 
-is known to asymptotically converge to a $\chi^{2}$ distribution with $(I - 1)(J - 1)$ degrees of freedom, where I and J are the number of rows and columns respectively in the contingency table.
+asymptotically converges to a $\chi^{2}$ distribution with $(I - 1)(J - 1)$ degrees of freedom, where I and J are the number of rows and columns respectively in the contingency table.
 
 ```{r, echo = FALSE, messages = FALSE}
 library(broom)
@@ -1101,9 +1111,10 @@ result <- GTest(table)
 
 output <- tidy(result)
 
-kable(output, caption = "Chi-Squared Test Results")
+kable(output, caption = "Likelihood Ratio Test Results", digits = 20)
 ```
 
+The likelihood ratio test (Table 2) corroborates the conclusion that the two algorithms produce different outcomes, with $p-value < 1 \times 10^{-20}$.
 
 
 ## References
