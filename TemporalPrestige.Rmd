@@ -150,7 +150,7 @@ I propose a novel variant of percolation centrality, which I will call Adjusted 
 
 where $M_{P}$ is the number of pairs (i, j) where there is an unpercolated path between i and j, and $\sigma_{s, r}^{P}$ is the number of shortest unpercolated paths between s and r.
 
-## Novel Algorithm for Betweenness Centrality
+## A Simple Algorithm for Betweenness Centrality
 
 Adjusted percolation centrality was calculated by a modified version of a novel algorithm for calculating betweenness centrality, shown in Algorithm 1.
 
@@ -228,13 +228,13 @@ Set all entries in dist to n\;
     j <- node2.id\;
     k <- node3.id\;
     \If{dist[j, k] == dist[j, i] + dist[i, k]}{
-      pbc[node1] = pbc[node1] + (numPaths[j, i] * numPaths[i, k])/numPaths[j, k]\;
+      pbc[node1] = pbc[node1] + (numPaths[j, i] $\times$ numPaths[i, k])/numPaths[j, k]\;
     }
     \If{dist[i, k] == dist[i, j] + dist[j, k]}{
-      pbc[node2] = pbc[node2] + (numPaths[i, j] * numPaths[j, k])/numPaths[i, k]\;
+      pbc[node2] = pbc[node2] + (numPaths[i, j] $\times$ numPaths[j, k])/numPaths[i, k]\;
     }
     \If{dist[i, j] == dist[i, k] + dist[k, j]}{
-      pbc[node3] = pbc[node3] + (numPaths[i, k] * numPaths[k, j])/numPaths[i, j]\;
+      pbc[node3] = pbc[node3] + (numPaths[i, k] $\times$ numPaths[k, j])/numPaths[i, j]\;
     }
   }
   \Return(pbc/((n - 1) $\times$ (n - 2)))\;
