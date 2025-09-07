@@ -14,10 +14,11 @@ fontsize: 12pt
 header-includes:
 - \usepackage{tikz}
 - \usepackage{pgfplots}
-- \usepackage{algorithm2e}
+- \usepackage[linesnumbered,ruled,longend,vlined]{algorithm2e}
 - \usepackage{pifont}
 - \DeclareUnicodeCharacter{2713}{\checkmark}
 - \DeclareUnicodeCharacter{2717}{\ding{55}}
+- \usepackage{float}
 ---
 
 ```{r setup, include = FALSE}
@@ -149,15 +150,16 @@ I propose a novel variant of percolation centrality, which I will call Adjusted 
 
 where $M_{P}$ is the number of pairs (i, j) where there is an unpercolated path between i and j, and $\sigma_{s, r}^{P}$ is the number of shortest unpercolated paths between s and r.
 
-## Novel algorithm for Betweenness Centrality
+## Novel Algorithm for Betweenness Centrality
 
 Adjusted percolation centrality was calculated by a modified version of a novel algorithm for calculating betweenness centrality, shown in Algorithm 1.
 
 \begin{algorithm}
-\DontPrintSemicolon
-\SetAlgoLined
+\caption{Novel algorithm for calculating Betweenness Centrality}
 \KwResult{Betweenness Centrality}
 \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+\RestyleAlgo{boxruled}
+\DontPrintSemicolon
 \Input{Undirected Static Network}
 \Output{Betweenness Centrality of all nodes in the network}
 \BlankLine
@@ -190,6 +192,13 @@ Set all entries in dist to n\;
 
 \BlankLine
 
+\end{algorithm}
+
+\clearpage
+
+\begin{algorithm}
+\RestyleAlgo{boxruled}
+\DontPrintSemicolon
 \ForEach{node in nodes}{
   queue <- Empty priority queue\;
   
@@ -230,12 +239,11 @@ Set all entries in dist to n\;
       pbc[node3] = pbc[node3] + (numPaths[i, k] * numPaths[k, j])/numPaths[i, j]\;
     }
   }
-  \Return(pbc/((n - 1) * (n - 2)))\;
+  \Return(pbc/((n - 1) $\times$ (n - 2)))\;
 }
-\caption{Novel algorithm for calculating Betweenness Centrality}
 \end{algorithm}
 
-At present, the gold standard algorithm for calculating betweenness centrality, Brandes' algorithm (@brandes2001faster), has a runtime complexity of $V^{2} + VE$, where $V$ is the number of nodes and $E$ is the number of edges in the network. The novel algorithm we propose has a runtime complexity of $V(V - 1)(V - 2) \approx V^{3}$, which can be reduced to approximately $V^{2}$ if we calculate the centrality for a small number of nodes. Conversely, Brandes' algorithm requires $V^{2} + VE$ iterations regardless of the number of nodes we require centrality calculations for. Moreover, this novel approach is easily comprehensible and relies on simple data structures (e.g. matrix, 2D array, priority queue) which are either natively available in many programming languages, or easy to implement from built-in language features.
+At present, the gold standard for calculating betweenness centrality, Brandes' algorithm (@brandes2001faster), has a runtime complexity of $V^{2} + VE$, where $V$ is the number of nodes and $E$ is the number of edges in the network. The novel algorithm we propose has a runtime complexity of $V(V - 1)(V - 2) \approx V^{3}$, which can be reduced to approximately $VE + V^{2}$ if we only calculate the centrality for a small number of nodes. Conversely, Brandes' algorithm requires $V^{2} + VE$ iterations regardless of the number of nodes we require centrality calculations for. Moreover, this novel approach is easily comprehensible and relies on simple data structures (e.g. matrix, 2D array, priority queue) which are either natively available in many programming languages, or easy to implement from built-in language features.
 
 ## Katz Centrality
 
@@ -492,8 +500,7 @@ It can be shown that for the representation in Figure 2, all highest-probability
 
 
 \begin{algorithm}
-\DontPrintSemicolon
-\SetAlgoLined
+\RestyleAlgo{boxruled}
 \KwResult{Multiplicative Closeness Rank}
 \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
 \Input{Data file with each row representing a contact and a probability of transmission}

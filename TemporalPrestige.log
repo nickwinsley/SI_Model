@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  7 SEP 2025 13:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  7 SEP 2025 15:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -808,7 +808,14 @@ File: upsy.fd 2001/06/04 font definitions for U/psy.
 ))
    defining Unicode char U+2713 (decimal 10003)
    defining Unicode char U+2717 (decimal 10007)
-(C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+(C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count333
+\float@exts=\toks50
+\float@box=\box83
+\@float@everytoks=\toks51
+\@floatcapt=\box84
+) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
 Package: caption 2023/08/05 v3.6o Customizing captions (AR)
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
 Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
@@ -822,17 +829,18 @@ Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
 \caption@hangindent=\dimen314
 Package caption Info: Standard document class detected.
 )
-\c@caption@flags=\count333
-\c@continuedfloat=\count334
+\c@caption@flags=\count334
+\c@continuedfloat=\count335
+Package caption Info: float package is loaded.
 Package caption Info: longtable package is loaded.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/caption\ltcaption.sty
 Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
 )) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/colortbl\colortbl.st
 y
 Package: colortbl 2024/10/29 v1.0k Color table columns (DPC)
-\everycr=\toks50
+\everycr=\toks52
 \minrowclearance=\skip85
-\rownum=\count335
+\rownum=\count336
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/anyfontsize\anyfontsize
 .sty
@@ -840,7 +848,7 @@ Package: anyfontsize 2007/11/22 anyfontsize.sty by pts
 ) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty
 Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
 \multirow@colwidth=\skip86
-\multirow@cntb=\count336
+\multirow@cntb=\count337
 \multirow@dima=\skip87
 \bigstrutjot=\dimen315
 ) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/bookmark\bookmark.sty
@@ -879,7 +887,7 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 lestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count337
+\c@section@level=\count338
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.s
 ty
@@ -887,8 +895,8 @@ Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
 )
 \@linkdim=\dimen316
-\Hy@linkcounter=\count338
-\Hy@pagecounter=\count339
+\Hy@linkcounter=\count339
+\Hy@pagecounter=\count340
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
 File: pd1enc.def 2024-11-05 v7.01l Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
@@ -896,7 +904,7 @@ Now handling font encoding PD1 ...
 ) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count340
+\Hy@SavedSpaceFactor=\count341
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
 File: puenc.def 2024-11-05 v7.01l Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
@@ -910,7 +918,7 @@ Package hyperref Info: Plain pages OFF on input line 4172.
 Package hyperref Info: Backreferencing OFF on input line 4177.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4424.
-\c@Hy@tempcnt=\count341
+\c@Hy@tempcnt=\count342
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
 \Urlmuskip=\muskip18
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
@@ -925,7 +933,7 @@ Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count342
+\Fld@menulength=\count343
 \Field@Width=\dimen318
 \Fld@charsize=\dimen319
 Package hyperref Info: Hyper figures OFF on input line 6042.
@@ -939,9 +947,9 @@ Package hyperref Info: PDF/A mode OFF on input line 6072.
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
 package with kernel methods
 )
-\Hy@abspage=\count343
-\c@Item=\count344
-\c@Hfootnote=\count345
+\Hy@abspage=\count344
+\c@Item=\count345
+\c@Hfootnote=\count346
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
@@ -951,8 +959,8 @@ Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
 kage
 with kernel methods
 )
-\Fld@listcount=\count346
-\c@bookmark@seq@number=\count347
+\Fld@listcount=\count347
+\c@bookmark@seq@number=\count348
 
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
 echeck.sty
@@ -970,55 +978,55 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/bookmark\bkm-pdftex.def
 File: bkm-pdftex.def 2023-12-10 v1.31 bookmark driver for pdfTeX and luaTeX (HO
 )
-\BKM@id=\count348
+\BKM@id=\count349
 )) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/xurl\xurl.sty
 Package: xurl 2022/01/09 v 0.10 modify URL breaks
 )
 LaTeX Font Info:    Trying to load font information for T1+lmr on input line 13
-1.
+2.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmr.fd
 File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 tex.def
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count349
-\l__pdf_internal_box=\box83
+\l__color_backend_stack_int=\count350
+\l__pdf_internal_box=\box85
 ) (TemporalPrestige.aux)
 \openout1 = `TemporalPrestige.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 131.
-LaTeX Font Info:    ... okay on input line 131.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 131.
-LaTeX Font Info:    ... okay on input line 131.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 131.
-LaTeX Font Info:    ... okay on input line 131.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 131.
-LaTeX Font Info:    ... okay on input line 131.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 131.
-LaTeX Font Info:    ... okay on input line 131.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 131.
-LaTeX Font Info:    ... okay on input line 131.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 131.
-LaTeX Font Info:    ... okay on input line 131.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 131.
-LaTeX Font Info:    ... okay on input line 131.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 131.
-LaTeX Font Info:    ... okay on input line 131.
-LaTeX Info: Redefining \microtypecontext on input line 131.
-Package microtype Info: Applying patch `item' on input line 131.
-Package microtype Info: Applying patch `toc' on input line 131.
-Package microtype Info: Applying patch `eqnum' on input line 131.
-Package microtype Info: Applying patch `footnote' on input line 131.
-Package microtype Info: Applying patch `verbatim' on input line 131.
-LaTeX Info: Redefining \microtypesetup on input line 131.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Info: Redefining \microtypecontext on input line 132.
+Package microtype Info: Applying patch `item' on input line 132.
+Package microtype Info: Applying patch `toc' on input line 132.
+Package microtype Info: Applying patch `eqnum' on input line 132.
+Package microtype Info: Applying patch `footnote' on input line 132.
+Package microtype Info: Applying patch `verbatim' on input line 132.
+LaTeX Info: Redefining \microtypesetup on input line 132.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 131.
+LaTeX Info: Redefining \showhyphens on input line 132.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -1029,17 +1037,17 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count350
+\scratchcounter=\count351
 \scratchdimen=\dimen320
-\scratchbox=\box84
-\nofMPsegments=\count351
-\nofMParguments=\count352
-\everyMPshowfont=\toks51
-\MPscratchCnt=\count353
+\scratchbox=\box86
+\nofMPsegments=\count352
+\nofMParguments=\count353
+\everyMPshowfont=\toks53
+\MPscratchCnt=\count354
 \MPscratchDim=\dimen321
-\MPnumerator=\count354
-\makeMPintoPDFobject=\count355
-\everyMPtoPDFconversion=\toks52
+\MPnumerator=\count355
+\makeMPintoPDFobject=\count356
+\everyMPtoPDFconversion=\toks54
 )
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
 ase.sty
@@ -1089,46 +1097,46 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
 ick labels; missing features). Consider writing \pgfplotsset{compat=1.18} into 
 your preamble.
- on input line 131.
+ on input line 132.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring OFF on input line 131.
+Package hyperref Info: Link coloring OFF on input line 132.
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 1
-33.
+34.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
-33.
+34.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-133.
+134.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-133.
+134.
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <14.4> on input line 133.
+(Font)              <14.4> on input line 134.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 133.
+(Font)              <10> on input line 134.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 133.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 133
+(Font)              <7> on input line 134.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 134
 .
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 133
+LaTeX Font Info:    Trying to load font information for U+msb on input line 134
 .
 (C:\Users\nickw\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1167,7 +1175,7 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.
-pdf  used on input line 352.
+pdf  used on input line 353.
 (pdftex.def)             Requested size: 134.3175pt x 247.73065pt.
 
 
@@ -1176,313 +1184,310 @@ c}]
 
 [7 <./TemporalPrestige_files/figure-latex/unnamed-chunk-1-1.pdf>]
 
-LaTeX Warning: Float too large for page by 194.4695pt on input line 501.
-
-
-
 [8]
 
 [9]
 
-[10]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf, id=126, 209.7145pt 
+[10
+
+]
+
+[11]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf, id=168, 209.7145pt 
 x 261.03725pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.
-pdf  used on input line 593.
+pdf  used on input line 601.
 (pdftex.def)             Requested size: 209.71715pt x 261.04057pt.
 
 
-[11]
-<AdjCentrality.png, id=131, 522.753pt x 308.352pt>
+[12]
+<AdjCentrality.png, id=173, 522.753pt x 308.352pt>
 File: AdjCentrality.png Graphic file (type png)
 <use AdjCentrality.png>
-Package pdftex.def Info: AdjCentrality.png  used on input line 618.
+Package pdftex.def Info: AdjCentrality.png  used on input line 626.
 (pdftex.def)             Requested size: 522.75969pt x 308.35594pt.
 
-Overfull \hbox (53.00467pt too wide) in paragraph at lines 618--618
+Overfull \hbox (53.00467pt too wide) in paragraph at lines 626--626
 [][] 
  []
 
 
 
-[12 <./TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf>]
+[13 <./TemporalPrestige_files/figure-latex/unnamed-chunk-2-1.pdf>]
 
-[13 <./AdjCentrality.png>]
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-<TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf, id=155, 75.54724pt 
+[14 <./AdjCentrality.png>]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf, id=197, 75.54724pt 
 x 74.412pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.
-pdf  used on input line 677.
+pdf  used on input line 685.
 (pdftex.def)             Requested size: 75.54704pt x 74.41182pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf, id=156, 75.54724pt 
+<TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf, id=198, 75.54724pt 
 x 74.412pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-5-1.
-pdf  used on input line 683.
+pdf  used on input line 691.
 (pdftex.def)             Requested size: 75.54704pt x 74.41182pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf, id=157, 143.81027pt
+<TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf, id=199, 143.81027pt
  x 291.28223pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-6-1.
-pdf  used on input line 691.
+pdf  used on input line 699.
 (pdftex.def)             Requested size: 143.8099pt x 291.2815pt.
 
 
-[14]
+[15]
 
-[15 <./TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf> <./TemporalPr
+[16 <./TemporalPrestige_files/figure-latex/unnamed-chunk-4-1.pdf> <./TemporalPr
 estige_files/figure-latex/unnamed-chunk-5-1.pdf> <./TemporalPrestige_files/figu
 re-latex/unnamed-chunk-6-1.pdf>]
 
-[16]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf, id=201, 143.81027pt
+[17]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf, id=246, 143.81027pt
  x 177.47205pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.
-pdf  used on input line 770.
+pdf  used on input line 778.
 (pdftex.def)             Requested size: 143.81209pt x 177.4743pt.
 
 
-[17]
+[18]
 pdfTeX warning (ext4): destination with the same identifier (name{equation.8}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.843 \begin{equation}
+l.850 \begin{equation}
                       
 pdfTeX warning (ext4): destination with the same identifier (name{equation.8}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.843 \begin{equation}
+l.850 \begin{equation}
                       
 pdfTeX warning (ext4): destination with the same identifier (name{equation.8}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.843 \begin{equation}
+l.850 \begin{equation}
                       
 pdfTeX warning (ext4): destination with the same identifier (name{equation.8}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.843 \begin{equation}
+l.850 \begin{equation}
                       
 
-[18 <./TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf>]
-
-[19]
+[19 <./TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf>]
 
 [20]
 
 [21]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf, id=254, 469.755pt x
+
+[22]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf, id=318, 469.755pt x
  325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.
-pdf  used on input line 958.
+pdf  used on input line 965.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf, id=255, 469.755pt x
+<TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf, id=319, 469.755pt x
  325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.
-pdf  used on input line 959.
+pdf  used on input line 966.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 958--960
+Underfull \hbox (badness 10000) in paragraph at lines 965--967
 [][]
  []
 
 
 
-[22]
+[23]
 
-[23 <./TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf>]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf, id=269, 469.755pt 
+[24 <./TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf>]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf, id=333, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-10-1
-.pdf  used on input line 972.
+.pdf  used on input line 979.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf, id=270, 469.755pt 
+<TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf, id=334, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-11-1
-.pdf  used on input line 987.
+.pdf  used on input line 994.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[24 <./TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf>]
+[25 <./TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf>]
 
-[25 <./TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf>]
+[26 <./TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf>]
 
-[26 <./TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf>]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf, id=303, 469.755pt 
+[27 <./TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf>]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf, id=367, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-12-1
-.pdf  used on input line 1001.
+.pdf  used on input line 1008.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[27 <./TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf>]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-13-1.pdf, id=315, 469.755pt 
+[28 <./TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf>]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-13-1.pdf, id=379, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-13-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-13-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-13-1
-.pdf  used on input line 1039.
+.pdf  used on input line 1046.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-15-1.pdf, id=316, 469.755pt 
+<TemporalPrestige_files/figure-latex/unnamed-chunk-15-1.pdf, id=380, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-15-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-15-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-15-1
-.pdf  used on input line 1044.
+.pdf  used on input line 1051.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-16-1.pdf, id=317, 469.755pt 
+<TemporalPrestige_files/figure-latex/unnamed-chunk-16-1.pdf, id=381, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-16-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-16-1
-.pdf  used on input line 1046.
+.pdf  used on input line 1053.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[28 <./TemporalPrestige_files/figure-latex/unnamed-chunk-15-1.pdf>]
+[29 <./TemporalPrestige_files/figure-latex/unnamed-chunk-15-1.pdf>]
 
-[29 <./TemporalPrestige_files/figure-latex/unnamed-chunk-13-1.pdf>]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-17-1.pdf, id=341, 469.755pt 
+[30 <./TemporalPrestige_files/figure-latex/unnamed-chunk-13-1.pdf>]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-17-1.pdf, id=405, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-17-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-17-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-17-1
-.pdf  used on input line 1048.
+.pdf  used on input line 1055.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[30 <./TemporalPrestige_files/figure-latex/unnamed-chunk-16-1.pdf>]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-18-1.pdf, id=352, 469.755pt 
+[31 <./TemporalPrestige_files/figure-latex/unnamed-chunk-16-1.pdf>]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-18-1.pdf, id=417, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-18-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-18-1
-.pdf  used on input line 1050.
+.pdf  used on input line 1057.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[31 <./TemporalPrestige_files/figure-latex/unnamed-chunk-17-1.pdf>]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-19-1.pdf, id=363, 469.755pt 
+[32 <./TemporalPrestige_files/figure-latex/unnamed-chunk-17-1.pdf>]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-19-1.pdf, id=427, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-19-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-19-1
-.pdf  used on input line 1067.
+.pdf  used on input line 1074.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[32 <./TemporalPrestige_files/figure-latex/unnamed-chunk-18-1.pdf>]
+[33 <./TemporalPrestige_files/figure-latex/unnamed-chunk-18-1.pdf>]
 
-[33 <./TemporalPrestige_files/figure-latex/unnamed-chunk-19-1.pdf>]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-24-1.pdf, id=384, 469.755pt 
+[34 <./TemporalPrestige_files/figure-latex/unnamed-chunk-19-1.pdf>]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-24-1.pdf, id=448, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-24-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-24-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-24-1
-.pdf  used on input line 1147.
+.pdf  used on input line 1154.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-25-1.pdf, id=385, 469.755pt 
+<TemporalPrestige_files/figure-latex/unnamed-chunk-25-1.pdf, id=449, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-25-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-25-1
-.pdf  used on input line 1151.
+.pdf  used on input line 1158.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[34]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-26-1.pdf, id=393, 469.755pt 
+[35]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-26-1.pdf, id=457, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-26-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-26-1
-.pdf  used on input line 1163.
+.pdf  used on input line 1170.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[35 <./TemporalPrestige_files/figure-latex/unnamed-chunk-24-1.pdf>]
+[36 <./TemporalPrestige_files/figure-latex/unnamed-chunk-24-1.pdf>]
 
-[36 <./TemporalPrestige_files/figure-latex/unnamed-chunk-25-1.pdf>]
+[37 <./TemporalPrestige_files/figure-latex/unnamed-chunk-25-1.pdf>]
 
-[37 <./TemporalPrestige_files/figure-latex/unnamed-chunk-26-1.pdf>]
-
-[38]
+[38 <./TemporalPrestige_files/figure-latex/unnamed-chunk-26-1.pdf>]
 
 [39]
 
 [40]
-Overfull \hbox (6.70908pt too wide) in paragraph at lines 1352--1353
- []\T1/lmr/m/n/12 (-20) parameter
- []
-
-
-Overfull \hbox (6.70908pt too wide) in paragraph at lines 1364--1365
- []\T1/lmr/m/n/12 (-20) parameter
- []
-
-
 
 [41]
+Overfull \hbox (6.70908pt too wide) in paragraph at lines 1359--1360
+ []\T1/lmr/m/n/12 (-20) parameter
+ []
+
+
+Overfull \hbox (6.70908pt too wide) in paragraph at lines 1371--1372
+ []\T1/lmr/m/n/12 (-20) parameter
+ []
+
+
 
 [42]
 
-[43] (TemporalPrestige.aux)
+[43]
+
+[44] (TemporalPrestige.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 36986 strings out of 473523
- 844502 string characters out of 5714631
- 1332292 words of memory out of 5000000
- 59255 multiletter control sequences out of 15000+600000
- 643345 words of font info for 189 fonts, out of 8000000 for 9000
+ 37110 strings out of 473523
+ 846306 string characters out of 5714631
+ 1333672 words of memory out of 5000000
+ 59312 multiletter control sequences out of 15000+600000
+ 646437 words of font info for 191 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,18n,93p,1015b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,21n,93p,1015b,681s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmmi10.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
 fonts/cm/cmr10.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/pu
@@ -1504,9 +1509,9 @@ ic/lm/lmsy6.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/publi
 c/lm/lmsy8.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public
 /amsfonts/symbols/msam10.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/zapfding/uzdr.pfb>
-Output written on TemporalPrestige.pdf (43 pages, 1139001 bytes).
+Output written on TemporalPrestige.pdf (44 pages, 1154059 bytes).
 PDF statistics:
- 666 PDF objects out of 1000 (max. 8388607)
- 144 named destinations out of 1000 (max. 500000)
- 43302 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 744 PDF objects out of 1000 (max. 8388607)
+ 204 named destinations out of 1000 (max. 500000)
+ 45350 words of extra memory for PDF output out of 51595 (max. 10000000)
 
