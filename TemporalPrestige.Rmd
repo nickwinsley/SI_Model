@@ -202,8 +202,6 @@ Set all entries in dist to n\;
 \ForEach{node in nodes}{
   queue <- Empty priority queue\;
   
-  node <- Queue item being processed.\;
-  
   startID <- node.id\;
   
   Add node to queue with a depth of 0\;
