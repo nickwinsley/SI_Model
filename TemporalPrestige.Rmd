@@ -241,7 +241,7 @@ Set all entries in dist to n\;
 }
 \end{algorithm}
 
-At present, the gold standard for calculating betweenness centrality, Brandes' algorithm (@brandes2001faster), has a runtime complexity of $O(V^{2} + VE)$, where $V$ is the number of nodes and $E$ is the number of edges in the network. The novel algorithm we propose has a runtime complexity of $O(V(V - 1)(V - 2)) \approx O(V^{3})$, which can be reduced to approximately $O(VE + V^{2})$ if we only calculate the centrality for a small number of nodes. Conversely, Brandes' algorithm requires $V^{2} + VE$ iterations regardless of the number of nodes we require centrality calculations for. Moreover, this novel approach is easily comprehensible and relies on simple data structures (e.g. matrix, 2D array, priority queue) which are either natively available in many programming languages, or easy to implement from built-in language features.
+At present, the gold standard for calculating betweenness centrality, Brandes' algorithm (@brandes2001faster), has a runtime complexity of $O(V^{2} + VE)$, where $V$ is the number of nodes and $E$ is the number of edges in the network. The novel algorithm we propose has a runtime complexity of $O(V(V - 1)(V - 2)) \approx O(V^{3})$, which can be reduced to approximately $O(VE + V^{2})$ if we only calculate the centrality for a small number of nodes. Conversely, Brandes' algorithm requires $V^{2} + VE$ iterations regardless of the number of nodes we require centrality calculations for. Moreover, this novel approach is accessible and it utilizes simple data structures (e.g. matrix, 2D array, priority queue) which are either natively available in many programming languages, or easy to implement from built-in language features.
 
 ## Katz Centrality
 
@@ -912,7 +912,7 @@ barplot(scores, main = "Variable Importance")
 
 Katz centrality, Degree Centrality and Absorption Centrality had significantly higher importance rankings than other predictors. However, correlated predictors (for instance, TP and TPP) may have attenuated importance rankings due to multicollinearity (high correlation between features). For this reason, iterative feature selection methods (i.e. testing many combinations of features systematically) are often used in lieu of feature importance scores.
 
-We test all possible combinations of two or more features by 5-fold cross validation. Each model was tested with four different values of the complexity parameter, a regularization criterion which limits the complexity of the tree in order to prevent over-fitting. Models were evaluated by the Mean Squared Error (MSE) metric, and the best-performing model was tested against a holdout set.
+We test all possible combinations of two or more features by 5-fold cross validation. Each model was tested with four different values of the complexity parameter, a regularization criterion which limits the complexity of the tree in order to prevent over-fitting. Models were evaluated by the Mean Squared Error (MSE) metric, and the five best-performing models were tested against a holdout set.
 
 ```{r, echo = FALSE, message = FALSE}
 library(caret)
@@ -1078,7 +1078,7 @@ barplot(cors, main = "Correlation for final model")
 
 ### Constant Transmission Probability
 
-The constant transmission probability assumption is commonplace in the literature, most likely because it greatly speeds up the simulation algorithm. Probabilities were estimated by using proximity categories, which we will call classes, as predictors in a generalized linear model. The number of 15-time intervals spent in each class is given over the two hour observation period. Transmission probabilities were then calculated by a logistic regression model of the form:
+The constant transmission probability assumption is often used in the literature, most likely because it greatly speeds up the simulation algorithm. Probabilities were estimated by using proximity categories, which we will call classes, as predictors in a generalized linear model. The number of 15-time intervals spent in each class is given over the two hour observation period. Transmission probabilities were then calculated by a logistic regression model of the form:
 
 $$log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}c_{1} + \beta_{2}c_{2} + \beta_{3}c_{3}$$
 
