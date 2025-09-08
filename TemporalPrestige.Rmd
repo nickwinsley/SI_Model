@@ -164,7 +164,7 @@ Adjusted percolation centrality was calculated by a modified version of a novel 
 \Output{Betweenness Centrality of all nodes in the network}
 \BlankLine
 
-n <- Number of nodes in the network\;
+n <- Number of nodes in the network.\;
 
 \BlankLine
 
@@ -228,20 +228,20 @@ Set all entries in dist to n\;
     j <- node2.id\;
     k <- node3.id\;
     \If{dist[j, k] == dist[j, i] + dist[i, k]}{
-      pbc[node1] = pbc[node1] + (numPaths[j, i] $\times$ numPaths[i, k])/numPaths[j, k]\;
+      bc[node1] = bc[node1] + (numPaths[j, i] $\times$ numPaths[i, k])/numPaths[j, k]\;
     }
     \If{dist[i, k] == dist[i, j] + dist[j, k]}{
-      pbc[node2] = pbc[node2] + (numPaths[i, j] $\times$ numPaths[j, k])/numPaths[i, k]\;
+      bc[node2] = bc[node2] + (numPaths[i, j] $\times$ numPaths[j, k])/numPaths[i, k]\;
     }
     \If{dist[i, j] == dist[i, k] + dist[k, j]}{
-      pbc[node3] = pbc[node3] + (numPaths[i, k] $\times$ numPaths[k, j])/numPaths[i, j]\;
+      bc[node3] = bc[node3] + (numPaths[i, k] $\times$ numPaths[k, j])/numPaths[i, j]\;
     }
   }
-  \Return(pbc/((n - 1) $\times$ (n - 2)))\;
+  \Return(bc/((n - 1) $\times$ (n - 2)))\;
 }
 \end{algorithm}
 
-At present, the gold standard for calculating betweenness centrality, Brandes' algorithm (@brandes2001faster), has a runtime complexity of $V^{2} + VE$, where $V$ is the number of nodes and $E$ is the number of edges in the network. The novel algorithm we propose has a runtime complexity of $V(V - 1)(V - 2) \approx V^{3}$, which can be reduced to approximately $VE + V^{2}$ if we only calculate the centrality for a small number of nodes. Conversely, Brandes' algorithm requires $V^{2} + VE$ iterations regardless of the number of nodes we require centrality calculations for. Moreover, this novel approach is easily comprehensible and relies on simple data structures (e.g. matrix, 2D array, priority queue) which are either natively available in many programming languages, or easy to implement from built-in language features.
+At present, the gold standard for calculating betweenness centrality, Brandes' algorithm (@brandes2001faster), has a runtime complexity of $O(V^{2} + VE)$, where $V$ is the number of nodes and $E$ is the number of edges in the network. The novel algorithm we propose has a runtime complexity of $O(V(V - 1)(V - 2)) \approx O(V^{3})$, which can be reduced to approximately $O(VE + V^{2})$ if we only calculate the centrality for a small number of nodes. Conversely, Brandes' algorithm requires $V^{2} + VE$ iterations regardless of the number of nodes we require centrality calculations for. Moreover, this novel approach is easily comprehensible and relies on simple data structures (e.g. matrix, 2D array, priority queue) which are either natively available in many programming languages, or easy to implement from built-in language features.
 
 ## Katz Centrality
 
@@ -1187,7 +1187,7 @@ where $n = \sum_{i}{n_{i+}}$. The likelihood ratio test statistic
 
 \begin{equation}
 \label{eq:chi_square}
-G = 2\sum_{ij}{n_{ij} ln \left(\frac{n_{ij}}{E_{ij}} \right)}
+G = 2\sum_{ij}{n_{ij} \log \left(\frac{n_{ij}}{E_{ij}} \right)}
 \end{equation}
 
 asymptotically converges to a $\chi^{2}$ distribution with $(I - 1)(J - 1)$ degrees of freedom, where I and J are the number of rows and columns respectively in the contingency table.
