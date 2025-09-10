@@ -297,7 +297,7 @@ knitr::include_graphics("AdjCentrality.png", rel_path = TRUE)
 
 ## Temporal Katz Centrality
 
-Temporal Katz Centrality, proposed by @grindrod2011communicability, follows fairly straightforwardly from \@ref(eq:katz). Denote by $A_{t}$ the adjacency matrix for the snapshot at time t. For a temporal network with snapshots at times $1, 2, 3, ..., T - 1, T$, the Temporal Katz Centrality is defined by the matrix product
+Temporal Katz Centrality, proposed by @grindrod2011communicability, follows fairly straightforwardly from \ref{eq:katz}. Denote by $A_{t}$ the adjacency matrix for the snapshot at time t. For a temporal network with snapshots at times $1, 2, 3, ..., T - 1, T$, the Temporal Katz Centrality is defined by the matrix product
 
 \begin{equation}
 \label{eq:tempkatz}
@@ -364,7 +364,7 @@ Figures 2 and 3 show snapshots of the network at the two time points
 \end{tikzpicture}
 ```
 
-Figure 4 shows the temporal network represented as a directed graph.
+Figure 6 shows the temporal network represented as a directed graph.
 
 ```{r, engine = "tikz", echo = FALSE, fig.cap = "A simple temporal network represented as a digraph. The temporal shortest path from a to b is shown in red."}
 \begin{tikzpicture}
@@ -436,14 +436,14 @@ $$P_{p}(\textit{u}_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, \textit{u}}/(g - 1)
 
 where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity prestige, or TPP for short. The temporal proximity prestige can be normalized by dividing by i.
 
-Kim and Anderson [2012] proposed temporal closeness, a similar metric which considers all time intervals $[t, i], t \in [0, i - 1]$.
+Kim and Anderson [2012] proposed temporal closeness, a similar metric which considers all time intervals $[t, i] : t \in [0, i - 1]$.
 
 \begin{equation}
 \label{eq:tc}
 C_{i,j} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{j, t}(\upsilon, \textit{u})}}} \tag{3.}
 \end{equation}
 
-When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn \@ref(eq:tc) into a prestige measure, we simply reverse the direction of the paths to get:
+When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn \ref{eq:tc} into a prestige measure, we simply reverse the direction of the paths to get:
 
 $$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\textit{u}, \upsilon)}}} \tag{4.}$$
 We will call this the temporal prestige. The temporal prestige can be normalized by dividing by $(|\textit{V}| - 1)(j - i)$. 
@@ -567,7 +567,7 @@ s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}
 
 Denote by $\mathbf{B}_{i}(t)$ the transition matrix obtained by taking $\mathbf{B}(t)$, and setting all entries in the i'th row to zero, except the diagonal entry (which is necessarily one). The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the absorption rank for individual i, at time t. The absorption rank of individual i is interpreted as the probability that a random walk through the temporal network passes through i.
 
-If we assume a constant transmission probability, p, for all contacts, \@ref(eq:absorb) reduces to:
+If we assume a constant transmission probability, p, for all contacts, \ref{eq:absorb} reduces to:
 
 \begin{equation}
 \label{eq:absorb_const}
@@ -660,10 +660,39 @@ Stochastic simulations typically follow the standard Markovian framework, in whi
 
 ### Algorithms
 
-For simulation, we use the event-based algorithm first proposed by @kiss2017mathematics, and described in detail by @holme2021fast. In this algorithm, contacts are conveniently stored in adjacency list format (each node is represented by a data structure with a list of neighbours). For each neighbour, a sorted list of contact times (and associated transmission probabilities) is stored. All infection events are stored in a min-heap ordered by infection time. At each step, the earliest infection is removed and processed. This continues until no infection events remain in the heap. When node i is infected, we iterate through the list of neighbours and sample an infection time for each neighbour, adding the event to the heap as we go. If we assume a constant transmission probability, the index of the first infectious contact follows a geometric distribution. We can sample this index by
+Simulations were carried out using the event-based algorithm first proposed by @kiss2017mathematics, and described in detail by @holme2021fast. To understand this algorithm, we will first consider a naive approach:
 
-$$\lceil \frac{log(1 - X)}{log(1 - \beta)} \rceil$$
+\large Naive Algorithm \normalsize
+
+1. Initialize all starting nodes as infectious.
+
+2. Initialize all non-starting nodes as susceptible.
+
+3. Go through the contacts in increasing order of time.
+
+4. Whenever a node gets infected, change it's state to infectious.
+
+5. Stop the simulation when there are no more contacts or no more nodes can be infected.
+
+Now consider two nodes, i and j, and suppose that i is infected at $t = 0$. There could be thousands of contacts between i and j, however only one of these contacts is contagious.  Clearly we can avoid many unnecessary iterations if we find the first infectious contact in a single step. Now suppose that all contacts are assumed to have a constant transmission probability of $\beta$. Then, the index of the first infectious contact between i and j follows a geometric distribution. The probability that the k'th contact is infectious is given by
+
+$$\beta(1 - \beta)^{k - 1}$$
+One can sample k by
+
+\begin{equation}
+\label{eq:sample}
+\lceil \frac{log(1 - X)}{log(1 - \beta)} \rceil
+\end{equation}
+
 where $\beta$ is the fixed transmission probability and $X \sim Uniform(0, 1)$.
+
+The event-based algorithm relies on several user-defined data structures:
+
+Node: A data structure with a unique id and an infection time (**t_inf**) attribute. In addition, each node contains a list of neighbours and a list of contact times (sorted in increasing order) for each neighbor, as well as a list of associated transmission probabilities if necessary. Note that the contact times must be sorted in increasing order to enable a bisection search (the significance of this will become clear).
+
+Heap: A min-heap data structure for storing node id's of infected nodes, ordered by earliest infection time, with $\mbox{O}(\log(\mbox{n}))$ *up-heap* and *down-heap* operations, where $n$ is the number of elements in the heap. A min-heap is conceptually a tree where the root node is the lowest order element, which in this case is the earliest unprocessed infection event. The exact implementation of the heap is unimportant, however the min-heap property must be restored, whenever a node is added or removed, via the *up-heap* and *down-heap* operations.
+
+At the beginning of the simulation, **t_inf** is set to T (i.e. the stopping time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. This is repeated until the heap is empty. When an infected node is processed, it's neighbours are considered in turn. Suppose node i is infected at time $\mbox{t\_inf}_{i} = 20$, and node j is a neighbour of node i. If $\mbox{t\_inf}_{j} < 20$ then node j is skipped. Otherwise, a bisection search is carried out to find the earliest contact time, $t$, such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes i and j, and we sample an integer, k, by \ref{eq:sample}. If $k \geq m$ then we continue, otherwise we add node j to the heap and update $\mbox{t\_inf}_{j}$.
 
 ## Results
 
