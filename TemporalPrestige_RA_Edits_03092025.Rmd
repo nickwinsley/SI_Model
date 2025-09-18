@@ -1,0 +1,1154 @@
+---
+title: "TemporalPrestige"
+author: "Nicholas Winsley"
+date: "2025-03-19"
+output:
+  pdf_document:
+    toc: true
+  html_document:
+    toc: true
+    df_print: paged
+bibliography: references.bib
+linestretch: 1.5
+fontsize: 12pt
+header-includes:
+- \usepackage{tikz}
+- \usepackage{pgfplots}
+- \usepackage{algorithm2e}
+- \usepackage{pifont}
+- \DeclareUnicodeCharacter{2713}{\checkmark}
+- \DeclareUnicodeCharacter{2717}{\ding{55}}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_knit$set(root.dir = getwd())
+```
+
+# Introduction
+
+Epidemiology is a subject of much contemporary relevance with the recent COVID-19 pandemic highlighting the importance of effective methods for combating the spread of disease, particularly in the early stages of a pandemic. One effective method is contact tracing, which aims to identify close personal contacts of an infected case. By uncovering close contact events, contact tracing can be used to identify people at high risk of infection and foresee future growth or contraction of the epidemic. This can help inform interventions (e.g. quarantining, disease tests, vaccination). Traditionally, contact tracing has focused on confirmed cases, which are reported to authorities. When a new case is reported, an official asks the patient to recall all recent contacts, and these recent contacts can then be followed up with or notified. Although this method has been shown to be effective (@fetzer2021measuring), it is labor-intensive and does not give a complete picture. Recently, digital contact tracing (DCT) has emerged as a cost-effective (albeit in some ways unreliable) alternative to conventional contact tracing methods. In some of its most recent forms, DCT uses portable bluetooth devices which detect close contacts between carriers of the device (e.g., @chambers2021c). In addition, DCT can provide indicators of proximity between the interacting individuals and duration of the contact event. With the emergence of DCT technology, early prophylactic identification and quarantining of high-risk individuals could be practicable in the future. This study investigates statistical methods for the identification of high-risk individuals, using DCT data.
+
+Governments typically wish to intervene for individuals who are most instrumental in the spread of a disease or most susceptible to adverse effects of contracting the disease. Although both groups of individuals could be considered as "high risk", our focus will be on individuals who have a greater influence on the spread of a disease and use "high risk" to refer to this group.  Here, risk is a combination of the likelihood of a particular individual becoming contagious due to prior contacts and the likelihood of the individual spreading the illness via future contacts. In practice, future contacts are not known.   Consequently, this study will primarily focus on the likelihood of becoming infected in identifying high-risk individuals.  (We note that the methods presented here are easily adapted for individuals who are more susceptible.)  **Ryan note: This sounds more like a description of "high-risk" being those who are most susceptible than those who are more likely to spread the disease.  Also, while I get your point on "future contacts", in our simulations we have information on how many individuals would be infected if a particular individuals was our seed, and we are implicitly assuming that the temporal network essentially maintains a similar structure in the future.**
+
+The contacts that individuals have over time can be represented using a temporal network, or graph, where each contact event is recorded as the triple $(i, j, t)$, where $i$ and $j$ denote the interacting individuals and $t$ denotes the time of the interaction. Note that we assume that $(i, j, t)$ is semantically no different than $(j, i, t)$ (i.e., contacts are symmetric).  Corresponding to each contact event $(i, j, t)$ is some associated measure of risk for that event.  For the DCT data we consider, this measure of risk is simply a function of the proximity and duration of the interaction, but it could include other factors (e.g., disease status of or disease prevention measures taken by the individuals) if these were recorded in the contact tracing.
+
+Statistical methods are often used (in combination with contact tracing) to identify high-risk individuals in a network. This study utilises two common methods for the analysis of contact tracing data: social network analysis and simulation.  Social network analysis (SNA) is an interdisciplinary approach for the study of entities and their relationships with each other. SNA involves constructing a network to model a real-world situation of interest and calculating metrics or fitting models to understand key aspects of the network structure. When considering network metrics, these can be broadly categorized into two types: population-level (or group-level) measures and individual-level measures. This study is primarily concerned with individual-level measures, focusing specifically on centrality, a measure which is meant to capture the influence of a particular individual within a network. Prestige (sometimes called status or rank) is a similar individual-level measure specific to directed networks, which only considers incoming edges/contacts.  (In the context of a directed network, centrality is based on outgoing edges/contacts.) Although SNA has been used in many fields since its creation in the 1930s, it's value in epidemiology only became apparent in 1985, when @klovdahl1985social applied SNA to AIDS data.
+
+Simulation is an effective method for ascertaining properties of a temporal network. Some classical models have been deterministic (e.g., the differential equation model of @kermack1927contribution is a notable example). However, deterministic models typically rely on simplifying assumptions and thus do not capture the full granularity of the network. Compartmental models are a popular simulation approach in which the population is divided into groups, and individuals transition between groups over time. The susceptible-infected-recovered (SIR) model is a quintessential compartmental model in which all individuals are initially susceptible, and individuals may become infected due to contact with a contagious individual.  **Ryan note: Should provide a citation for SIR model.** Once infected, individuals transition to the recovered state at a predictable recovery rate, where they stay for the remainder of the simulation. Recovery rates are typically sampled from a probability distribution, which may be estimable by exogenous information (e.g. medical knowledge, recovery rates for similar diseases). Key metrics are averaged over many simulations to approximate a true underlying distribution. A plethora of summary metrics have been applied to simulated epidemics. @macdonald1952analysis introduced the reproductive number, which is defined as the number of cases resulting from a single infection. @holme2018objective used the time for the disease to go extinct (i.e., no new cases can occur).
+
+This study aims to address several key research questions:
+
+1. Can we make simplifying assumptions to reduce computation time of simulations?
+
+2. Which centrality measures are most effective when applied to epidemiology?
+
+3. How can we extend these measures to cases where contact risk varies?
+
+Simulation is important for answering questions 2. and 3. as it provides a sort of "ground-truth" against which centrality measures can be compared.  **Ryan note: Not sure you really need this last sentence.  Simulation is being used for all three questions.**
+
+# Data
+
+In 2020, the New Zealand Ministry of Health (MoH) commissioned a pilot study of the CovidCard, a portable device which used bluetooth technology to record contacts between carriers of the device. Adults 19 years of age or older who live in Ngontotahā West and East were recruited to participate in a seven-day study. Additionally, people who live outside these boundaries but work within the Ngontotahā Village were also permitted to take part in the trial. Ngontotahā was chosen because it met several key criteria, namely compactness, geographical isolation, small population size and high sociodemographic diversity. In total, 1,191 people participated in the study. At the end of the trial period, a subset of 158 participants from the main trial were contacted by MoH case investigators to establish contacts that they had over the trial period using a modified version of the MoH case investigation protocol. Work carried out by @admiraal2022case compared the CovidCard to conventional case investigation methods and found a greater rate of reciprocal interactions identified by the CovidCard.  In short, the study concluded that the CovidCard is a highly effective supplementary contact tracing approach, and we use CovidCard data to compare existing network centrality metrics as well as develop novel alternatives.
+
+The CovidCard is a bluetooth device developed for detecting close-contact events between carriers. Each card advertises it's presence and detects signals from other cards. Algorithms evaluate the radio signal strength indicator (RSSI) of close-contacts in real-time, and the signal strength is aggregated over 15 minute time intervals. The raw RSSI values are transformed into distance estimates by the path loss model, proposed by @seidel1992914, for which
+
+$$RSSI \propto -20\log_{10}(distance)$$
+Noise in distance estimates is subsequently reduced by signal processing methods, most commonly Kalman Filters.
+
+Each interval was classified as either < 1 meter, < 2 meter and < 4 meter proximity, and the total number of intervals belonging to each class was summed over a two-hour period. The cards can hold up to 128 contact events in short-term cache memory at any given time, of which some are recorded in long-term flash memory. An interaction was recorded in flash memory if it was longer than 2 minutes in duration, and the RSSI exceeded -62dBm (roughly corresponding to a distance of less than 4 meters). For more details on the CovidCard, see @admiraal2022case.
+
+The last day of the trial period saw an anomalously high number of close-contacts, most likely because participants congregated at a single location for card collection.  **Ryan note:  Actually, because all cards were collected at the same location, so cards were probably just thrown in a box together.** For this reason, contact events which occurred on the last day of the trial were omitted. Participants who could not be cross-verified by case investigation were removed. If two cards registered the same contact event, and gave conflicting proximity values, one of the proximity values was arbitrarily removed. Contact dates were converted to numeric times by calculating the time elapsed (in hours) between the contact date and the start of the trial. Some cards were collected before the last day of the trial, resulting in an anomalous number of contacts during card collection. For this reason, all contact events which occurred on the day in which they were uploaded were removed. Data on the proximity classes was processed to form non-overlapping categories. For instance, the number of 15-intervals with a distance less than 4 metres, $n_{< 4}$, was transformed by subtracting $n_{< 2}$ and $n_{< 1}$ to get $n_{\geq 3, < 4}$; the total number of 15-minute intervals between 3 and 4 metres. By doing this, we get a categorical variable on which further statistical models are based.
+
+# Methods
+
+## Network Measures of Centrality
+
+We first describe key measures for networks, in particular focusing on measures of centrality and prestige, or rank.  Centrality and rank are meant to represent the influence of a given node in a graph, although the exact meaning of a "central"  or "prestigious" node varies depending on the context.
+
+### Degree centrality
+
+Degree centrality is a simple metric for static networks where we only consider the number of neighbors of a given node (i.e., other nodes for which a given node shares an edge/contact). Let $A$ denote the adjacency matrix for a static network (i.e., $A_{ij}$ = 1 if $i$ and $j$ are neighbours and 0 otherwise). Then degree centrality is defined as:
+
+\begin{equation}
+\label{eq:degree}
+C_{D}(i) = \sum_{j = 1}^{N}{A_{ij}}
+\end{equation}
+
+Degree centrality is simple and easily calculated, however it does not incorporate knowledge of the entire network structure. Improving this point is the motivation for our next centrality measure.  **Ryan note: What is degree centrality meant to capture/reflect in terms of "importance" of a node?**
+
+### Closeness centrality
+
+For undirected graphs, @bavelas1950communication proposed closeness centrality
+
+\begin{equation}
+\label{eq:close}
+C_{c}(i) = \frac{N - 1}{\sum_{j \neq i}d(i, j)}
+\end{equation}
+
+where $N$ is the network size (i.e., number of nodes) and $d(\textit{u}, \upsilon)$ is the distance of the shortest path between $j$ and $i$. As an example, for the network shown in Figure 1, the closeness centrality of node E is $\frac{4}{1 + 1 + 2 + 3} = \frac{4}{7}$. Closeness centrality can be interpreted as the efficiency with which a node can access all other nodes in a network.
+
+```{r, engine = "tikz", fig.cap = "A simple undirected graph", echo = FALSE}
+\begin{tikzpicture}
+
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
+\tikzset{edge/.style = {->,> = latex}}
+
+\node[vertex] (a1) at (0,-1) {$A$};
+\node[vertex] (b1) at (0.5,1) {$B$};
+\node[vertex] (c1) at (3,3) {$C$};
+\node[vertex] (d1) at (-1,5) {$D$};
+\node[vertex] (e1) at (3,7) {$E$};
+
+\draw[thick] (a1) -- (b1);
+\draw[thick] (a1) -- (c1);
+\draw[thick] (a1) -- (d1);
+\draw[thick] (e1) -- (c1);
+\draw[thick] (d1) -- (e1);
+
+\end{tikzpicture}
+```
+
+### Betweenness centrality
+
+In some situations, the effect of removing a node on transmission through a network may be highly important (for instance, when quarantining individuals during a pandemic). This is the primary motivation behind betweenness centrality [@freeman1977set], which is defined as
+
+\begin{equation}
+  \label{eq:between}
+  C_{B}(i) = \frac{1}{(N - 1)(N - 2)}\sum_{j \neq k \neq i}\frac{\sigma_{j, k}(i)}{\sigma_{j, j}}
+\end{equation}
+
+where $\sigma_{j, k}$ is the number of shortest paths (geodesics) between $j$ and $k$, and $\sigma_{j, k}(i)$ is the number of such paths that pass through $i$. The denominator term $(N - 1)(N - 2)$ is a normalising constant, ensuring that betweenness centrality values range between 0 and 1.
+
+### Percolation centrality
+
+In practice, additional information around the "percolation state" of nodes may be known. For instance, in epidemiology we may know that certain individuals are infected. To incorporate knowledge of percolation state into centrality metrics, @piraveenan2013percolation proposed percolation centrality:
+
+\begin{equation}
+  \label{eq:perc}
+  C_{P}^{t}(i) = \frac{1}{(N - 1)(N - 2)}\sum_{j \neq k \neq i}\frac{\sigma_{j, k}(i)}{\sigma_{j, k}}\frac{x_{j}^{t}}{\left(\sum_{\ell = 1}^{N}{x_{\ell}^{t}}\right) - x_{i}^{t}}
+\end{equation}
+
+where $x_{\ell}^{t}$ is the percolation state of node $\ell$ at time $t$ and $\sigma_{j, k}$ and $\sigma_{j, k}(i)$ are as defined for betweenness centrality. The percolation state ranges from 0 to 1 with 1 meaning that the individual is certainly infected and 0 meaning that the individual is certainly uninfected. A value between 0 and 1 could be used to represent a probability of infection or a proportion of a township which is infected.
+
+### Adjusted percolation centrality
+
+We propose a variant of percolation centrality which we will call adjusted percolation centrality. Adjusted percolation centrality only considers paths which do not pass through any percolated nodes. By doing this, it ensures that ineffectual paths are not considered (i.e., node $k$ can only become percolated due to node $j$ being percolated and not due to some already percolated intermediary node on the path).  We define an unpercolated path as a path where no incident nodes are percolated except for the origin and terminal nodes, which may have any percolation state. Then adjusted percolation centrality is given by
+
+\begin{equation}
+  \label{eq:adj}
+  C_{AP}^{t}(i) = \frac{1}{M_{P}}\sum_{s \neq v \neq r}\frac{\sigma_{j, k}^{P}(i)}{\sigma_{j, k}^{P}}\frac{x_{j}^{t}}{\left(\sum_{\ell = 1}^{N}{x_{\ell}^{t}}\right) - x_{i}^{t}}
+\end{equation}
+
+where $M_{P}$ is the number of dyads (or pairs of nodes) $(a, b)$ where there is an unpercolated path between $a$ and $b$, and $\sigma_{j, k}^{P}$ is the number of shortest unpercolated paths between nodes $j$ and $k$.
+
+### Katz centrality
+
+Closeness and betweenness centrality focus on shortest paths (geodesics), but the path by which a disease is transmitted need not be the shortest path. Katz centrality [@katz1953new] is an alternative centrality measure which considers all paths between nodes and is given by
+
+\begin{equation}
+  \label{eq:katz}
+  C_{K}(i) = \sum_{j = 1}^{N}{\left(\alpha{A} + \alpha^{2}A^{2} + \alpha^{3}A^{3} + \ldots\right)_{ji}}
+\end{equation}
+
+where $A$ denotes the adjacency matrix and $0 \leq \alpha \leq 1$. $A^{n}$ is simply the $n$-step adjacency matrix for the network, and $\alpha^{n}$ decreases exponentially with $n$, meaning that longer paths are downweighted. The infinite sum $\left(\alpha{A} + \alpha^{2}A^{2} + \ldots\right)$ converges when $\alpha \leq \frac{1}{\rho(A)}$, where $\rho(A)$ is the spectral radius of $A$ (i.e., the largest absolute value of any of its eigenvalues). Under this condition, the sum converges to $(I - \alpha{A})^{-1} - I$, where $I$ denotes the $N \times N$ identity matrix. If we are only interested in paths of length $n$ or less, we can adjust the formula accordingly to get $\left(I - \alpha^{n + 1}A^{n + 1})(I - \alpha{A})^{-1}\right) - I$. This result is convenient for temporal networks, where a finite number of steps in each snapshot is often assumed.
+
+### Temporal Katz centrality
+
+Temporal Katz centrality, proposed by @grindrod2011communicability, is a relatively straightforward extension of \@ref(eq:katz). Let $A_{t}$ denote the adjacency matrix at time $t$. For a temporal network with snapshots at times $1, 2, 3, \ldots, T - 1, T$, the temporal Katz centrality is given by the matrix product
+
+\begin{equation}
+\label{eq:tempkatz}
+  C_{TK}(i) = (I - \alpha{A_{1}})^{-1}(I - \alpha{A_{2}})^{-1}...(I - \alpha{A_{T - 1}})^{-1}(I - \alpha{A_{T}})^{-1} 
+\end{equation}
+
+The centrality for a given node is likewise calculated by the row sum of this matrix product.
+
+## Time-ordered networks
+
+Generalisation of conventional centrality measures to temporal networks requires a high-granularity representation of the network as a graph. @kempe2000connectivity proposed a graph where the edge weights are contact times.  However, this model fails to account for differential rates of transmission. @kim2012temporal proposed a more general solution using a time-ordered directed graph. Consider a network of $N$ nodes for which $M$ edges are observed over $T$ time points. Without loss of generality, discretise the contact times to get a list, $t = (0, 1, 2, \ldots, T)$. We can construct a time-ordered graph where each node appears $T + 1$ times. Denote by $i_{t}$ the node $i$ at time t. In this graph, a directed edge from $i_{t}$ to $j_{t + 1}$ only exists if $j = i$ or there is a contact between $i$ and $j$ at time $t$. We can construct this graph for any temporal network without loss of information. In practice, computational constraints may require aggregation of contact times and thus loss of information.
+
+To illustrate this idea, consider a simple temporal network with five nodes ($a$, $b$, $c$, $d$, $e$) and contacts observed at two time points, as shown in Table \@ref(tab:Table1).  Figures 2 and 3 show snapshots of the network at these two time points.
+
+Origin node | Terminal node | Time point
+--- | --- | --- | ---
+$a$ | $b$ | 1
+$b$ | $d$ | 2
+$a$ | $c$ | 2
+$d$ | $e$ | 1
+
+Table (\#tab:Table1): Temporal network of five nodes observed at two time points. 
+
+
+```{r, engine = "tikz", echo = FALSE, fig.cap = "Snapshot of the network when $t$ = 1"}
+\begin{tikzpicture}
+
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
+\tikzset{edge/.style = {->,> = latex}}
+
+\node[vertex] (a) at (0,0) {$a$};
+\node[vertex] (b) at (0, 2) {$b$};
+\node[vertex] (c) at (2, 0) {$c$};
+\node[vertex] (d) at (2, 2) {$d$};
+\node[vertex] (e) at (1, 1) {$e$};
+
+\draw[thick] (a) -- (b);
+\draw[thick] (d) -- (e);
+
+\end{tikzpicture}
+```
+
+```{r, engine = "tikz", echo = FALSE, fig.cap = "Snapshot of the network when $t$ = 2"}
+\begin{tikzpicture}
+
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
+\tikzset{edge/.style = {->,> = latex}}
+
+\node[vertex] (a) at (0,0) {$a$};
+\node[vertex] (b) at (0, 2) {$b$};
+\node[vertex] (c) at (2, 0) {$c$};
+\node[vertex] (d) at (2, 2) {$d$};
+\node[vertex] (e) at (1, 1) {$e$};
+
+\draw[thick] (b) -- (d);
+\draw[thick] (a) -- (c);
+
+\end{tikzpicture}
+```
+
+This can be represent using a time-ordered direct network, as shown in Figure 4.
+
+```{r, engine = "tikz", echo = FALSE, fig.cap = "A simple temporal network represented as a digraph. The temporal shortest path from $a$ to $b$ is shown in red."}
+\begin{tikzpicture}
+
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
+\tikzset{edge/.style = {->,> = latex}}
+
+\node[vertex] (a1) at (0,-1) {$a_{1}$};
+\node[vertex] (b1) at (0,1) {$b_{1}$};
+\node[vertex] (c1) at (0,3) {$c_{1}$};
+\node[vertex] (d1) at (0,5) {$d_{1}$};
+\node[vertex] (e1) at (0,7) {$e_{1}$};
+
+\draw[dashed] (1,-2)--(1,8);
+
+\node[vertex] (a2) at (2,-1) {$a_{2}$};
+\node[vertex] (b2) at (2,1) {$b_{2}$};
+\node[vertex] (c2) at (2,3) {$c_{2}$};
+\node[vertex] (d2) at (2,5) {$d_{2}$};
+\node[vertex] (e2) at (2,7) {$e_{2}$};
+
+\draw[dashed] (3,-2)--(3,8);
+
+\node[vertex] (a3) at (4,-1) {$a_{3}$};
+\node[vertex] (b3) at (4,1) {$b_{3}$};
+\node[vertex] (c3) at (4,3) {$c_{3}$};
+\node[vertex] (d3) at (4,5) {$d_{3}$};
+\node[vertex] (e3) at (4,7) {$e_{3}$};
+
+\draw[edge] (a1) to (a2);
+\draw[edge] (a2) to (a3);
+\draw[edge] (b1) to (b2);
+\draw[edge] (b2) to (b3) [red];
+\draw[edge] (b1) to (a2);
+\draw[edge] (a2) to (c3);
+\draw[edge] (c1) to (c2);
+\draw[edge] (c2) to (c3);
+\draw[edge] (a1) to (b2) [red];
+\draw[edge] (c2) to (a3);
+\draw[edge] (d1) to (d2);
+\draw[edge] (d2) to (d3);
+\draw[edge] (e1) to (e2);
+\draw[edge] (e2) to (e3);
+\draw[edge] (d1) to (e2);
+\draw[edge] (e1) to (d2);
+\draw[edge] (d2) to (b3);
+\draw[edge] (b2) to (d3);
+
+%\node at (0,-2) {t = 1};
+%\node at (2,-2) {t = 2};
+%\node at (4,-2) {t = 3};
+\node at (1,-2.25) {t = 1};
+\node at (3,-2.25) {t = 2};
+
+\end{tikzpicture}
+```
+
+The distance of the temporal shortest path length over time interval [$a$, $b$], denoted by $d_{a,b}(i, j)$ is defined as the smallest $d = b - n$, where $a \leq n \leq b$ and there is a path from $i_{n}$ to $j_{b}$. Thus, in Figure 1, the shortest path distance $d_{1,3}(a, b)$ is two, with the temporal shortest path being $a_{1} \longrightarrow b_{2} \longrightarrow b_{3}$. By representing a temporal network as a high-granularity digraph, we can generalise conventional measures of prestige and centrality to temporal networks.
+
+### Proximity prestige
+
+This study is primarily concerned with the likelihood of infection, as estimating transmission requires future contact tracing data, which is usually not known. Likelihood of infection is roughly analogous to the idea of prestige, also known as rank. We will use the terms "prestige" and "rank" interchangeably throughout this paper. In a directional network, a prestigious node is the object of many in-ties (i.e., has many incoming connections). In the context of a directed network, this is a distinct concept from centrality, which relates to out-ties (i.e., outgoing connections). 
+
+Many conventional measures of centrality are ill-defined in directional graphs, owing to the fact that directional graphs are not necessarily strongly-connected. Due to this limitation, we usually only consider nodes in the influence domain of a given node (i.e., the set of all nodes that can be reached from the node [when considering measures of centrality] or the set of all nodes that can reach the node [when considering measures of prestige]). @lin1976foundations proposed proximity prestige, defined as
+\begin{equation}
+  \label{eq:proxprest}
+  P_{P}(i) = \frac{I_{i}/(N - 1)}{\sum{d(j, i)}/I_{i}}
+\end{equation}
+where $I_{i}$ is the size of the influence domain of node $i$, and $N$ is the network size.  Intuitively, this is the proportion of the network covered by the influence domain, divided by the average distance from other nodes to nodes $i$ over the influence domain. When the influence domain is empty, the proximity prestige is defined to be 0.
+
+### Temporal proximity prestige
+
+For temporal networks, we propose a modified version of proximity prestige given by
+
+\begin{equation}
+TPP_{[0, b]}(i) = \sum_{0 \leq t < b}\frac{I_{t, b, i}/(N - 1)}{\sum_{j \in I_{t,b,i}}{d_{t, b}(j, i)}/I_{t, b, i}}
+\end{equation}
+where $I_{t, b, i}$ is the influence domain of $i$ over the time interval [0, $b$]. We will call this the temporal proximity prestige up to time $b$. The temporal proximity prestige can be normalized by dividing by $b$.
+
+### Temporal closeness
+
+@kim2012temporal proposed temporal closeness centrality, a similar metric which considers all time intervals $[t, b], t \in [0, b - 1]$.
+
+\begin{equation}
+\label{eq:tc}
+TC_{[a,b]}(i) = \sum_{a \leq t < b}{\sum_{j}{\frac{1}{d_{t, b}(i, j)}}}
+\end{equation}
+
+When $i$ is unreachable from $j$ over $[t, b]$, $d_{t, b}(j, i) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that, as we are considering a directed network, $d_{t,b}(j, i)$ is not equivalent to $d_{t,b}(i, j)$. To turn \@ref(eq:tc) into a prestige measure, we simply reverse the direction of the paths to get
+
+\begin{equation}
+\label{eq:tcp}
+TP_{[a, b]}^{P}(i) = \sum_{a \leq t < b}{\sum_{j}{\frac{1}{d_{t,b}(j, i)}}}
+\end{equation}
+We will call this the temporal prestige. The temporal prestige can be normalized by dividing by $(N - 1)(b - a)$. 
+
+
+### Multiplicative Temporal Closeness Rank
+
+When each edge is associated with a probability of transmission $w$, as may be the case in epidemiological models, the probability of a path may be of greater interest than the temporal length.  (A longer path with greater probability of transmissions at each step may be more effective at spreading a disease than a shorter path with lower probabilities.) In this case, we can generalise existing methods by considering a directed network where the edge weights are the natural logarithm of the probability. Figure 5 shows a graph of this kind.  **Ryan note: Why do you have values of positive 2 and 3 for a couple of these log-transformed edge weights?**
+
+```{r, engine = "tikz", echo = FALSE, fig.cap = "A simple temporal network represented as a digraph"}
+\begin{tikzpicture}
+
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
+\tikzset{edge/.style = {->,> = latex}}
+
+\node[vertex] (a1) at (0,-1) {$a_{1}$};
+\node[vertex] (b1) at (0,1) {$b_{1}$};
+\node[vertex] (c1) at (0,3) {$c_{1}$};
+
+\draw[dashed] (1,-2)--(1,4);
+
+\node[vertex] (a2) at (2,-1) {$a_{2}$};
+\node[vertex] (b2) at (2, 1) {$b_{2}$};
+\node[vertex] (c2) at (2, 3) {$c_{2}$};
+
+\draw[dashed] (3,-2)--(3,4);
+
+\node[vertex] (a3) at (4,-1) {$a_{3}$};
+\node[vertex] (b3) at (4,1) {$b_{3}$};
+\node[vertex] (c3) at (4,3) {$c_{3}$};
+
+\draw[->, thick] (a1) -> node[near start, below] {0} (a2);
+\draw[->, thick] (a2) -> node[near start, below] {0} (a3);
+\draw[->, thick] (b1) -> node[near start, below] {0} (b2);
+\draw[->, thick] (b2) -> node[near start, below] {0} (b3);
+\draw[->, thick] (c1) -> node[near start, below] {0} (c2);
+\draw[->, thick] (c2) -> node[near start, below] {0} (c3);
+\draw[->, thick] (a1) -> node[near start, below] {3} (b2);
+\draw[->, thick] (c2) -> node[near start, below] {2} (a3);
+
+%\node at (0,-2) {t = 1};
+%\node at (2,-2) {t = 2};
+%\node at (4,-2) {t = 3};
+\node at (1,-2.25) {t = 1};
+\node at (3,-2.25) {t = 2};
+
+\end{tikzpicture}
+```
+
+The probability of transmission from an individual to themself is assumed to be 1, and hence the natural logarithm becomes 0. Consider a path $P$ starting at $j_{a}$ and ending at $i_{b}$. The probability of this path is equal to $\prod_{k = a}^{b}{E_{k}}$, where $E$ is the list of transmission probabilities of path $P$. The probability of path $P$ can be calculated by:
+
+$$e^{\sum_{w \in E}{log(w)}}$$
+It can be shown that for the representation in Figure 5, all highest-probability paths to $i_{b}$ can be calculated in $O\left(bN^{2}\right)$ time using a modified version of the reversed evolution network (REN) algorithm proposed by @hanke2017clone. Algorithm 1 shows the pseudocode for the REN algorithm.
+
+
+\begin{algorithm}
+\DontPrintSemicolon
+\SetAlgoLined
+\KwResult{Multiplicative Closeness Rank}
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+\Input{Data file with each row representing a contact and a probability of transmission}
+\Output{Temporal Prestige for a given node}
+\BlankLine
+contacts <- List of contact times sorted in increasing order. Each contact time is a data structure with a map of nodes to out-neighbours.\;
+\While{Data file has next line}{
+  Read line\;
+  Add line to contacts using bisection search\;
+}
+tcp <- Temporal closeness prestige\;
+reachable <- Set of reachable nodes\;
+Add target node to reachable\;
+sums <- Map of node id to log of the highest probability path (obtained by summing edge weights)\;
+back <- Pointer to final contact time in contacts list\;
+\While{back is not null}{
+  temp <- Map of updated path lengths for this iteration\;
+  \ForEach{node in reachable}{
+      out-neighbours <- back.out-neighbours[node]\;
+      \ForEach{neighbour in out-neighbours}{
+          Add neighbour to reachable set\;
+          weight <- Edge weight of connection between node and neighbour\;
+          temp[neighbour] = Max(temp[neighbour], sums[node] + weight)\;
+      }
+  }
+  \ForEach{node in reachable}{
+    sums[node] = Max(temp[node], sums[node])\;
+    mcr += $exp{sums[node]}$\;
+  }
+  Decrement back pointer\;
+}
+Return tcp\;
+\caption{Modified version of the REN algorithm.}
+\end{algorithm}
+
+
+### Absorption Rank
+
+@rocha2014random proposed TempoRank, an extension of the illustrious Google PageRank algorithm to temporal networks. TempoRank considers the stationary distribution of a random walk through the temporal network. However, TempoRank does not generalize well to epidemiological modelling, where infection may be a permanent state. Intuitively, some sort of aggregation over all previous contacts would be preferred. In this section, we propose an aggregate metric for temporal networks. Without loss of generality, we will consider a temporal network consisting of $N$ nodes and contact times $t = 1, 2, 3, \ldots, T$. Let $p_{ijk}(t)$ denote the probability of transmission for the $k^{\scriptsize{\mbox{th}}}$ contact between individual $i$ and individual $j$ at time $t$. Let $n_{ij}(t)$ denote the number of contacts between $i$ and $j$ at time $t$. Define the transition probability matrix $\mathbf{B}$ for each contact time $t$ as
+
+\begin{equation}
+\label{eq:absorb}
+\mathbf{B}_{ij}(t) = \left\{\begin{matrix}
+  1 & i = j, s_{i}(t) = 0 \\
+  0 & i \neq j, s_{ij}(t) = 0 \\
+  \prod_{m \in N, m \neq i}{\prod_{k = 1}^{n_{im}(t)}{(1 - p_{imk}(t))}} & i = j, s_{i}(t) > 0 \\
+  (1 - \mathbf{B}_{ii}(t))(s_{ij}(t)/s_{i}(t)) & i \neq j, s_{ij}(t) > 0  \\
+\end{matrix}
+\right.
+\end{equation}
+
+where $s_{ij}(t)$ and $s_{i}(t)$ are defined as:
+
+\begin{equation}
+\label{eq:si}
+s_{ij}(t) = 1 - \prod_{k = 1}^{n_{ij}(t)}{(1 - p_{ijk}(t))}
+\end{equation}
+
+\begin{equation}
+\label{eq:s}
+s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}
+\end{equation}
+
+**Ryan note: You really need to give some insight into what $s_{i}(t)$ and $s_{ij}(t)$ represent.**
+
+
+Denote by $\mathbf{B}_{i}(t)$ the transition matrix obtained by taking $\mathbf{B}(t)$, and setting all entries in the $i^{\scriptsize{\mbox{th}}}$ row to zero, except the diagonal entry (which is necessarily one). The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ is the absorption rank for individual $i$ at time $t$. The absorption rank of individual $i$ is interpreted as the probability that a random walk through the temporal network passes through $i$.
+
+If we assume a constant transmission probability $p$ for all contact events, \@ref(eq:absorb) reduces to:
+
+\begin{equation}
+\label{eq:absorb_const}
+\mathbf{B}_{ij}(t) = \left\{\begin{matrix}
+  1 & i = j, s_{i}(t) = 0 \\
+  0 & i \neq j, s_{ij}(t) = 0 \\
+  \prod_{m \in N, m \neq i}{(1 - p)^{n_{ij}(t)}} & i = j, s_{i}(t) > 0 \\
+  (1 - \mathbf{B}_{ii}(t))(s_{ij}(t)/s_{i}(t)) & i \neq j, s_{ij}(t) > 0  \\
+\end{matrix}
+\right.
+\end{equation}
+
+where $s_{ij}(t)$ is defined as:
+
+\begin{equation}
+\label{eq:si_adj}
+s_{ij}(t) = 1 - (1 - p)^{n_{ij}(t)}
+\end{equation}
+
+and $s_{i}(t)$ is similarly defined as:
+
+\begin{equation}
+\label{eq:s_adj}
+s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}
+\end{equation}
+
+In practice, $p$ may be estimable from domain-specific knowledge, but the value of $p$ is generally not particularly important.  **Ryan comment: Why not?  Simply in terms of preserving ranks?**  However, values close to 0 or 1 may cause the output values to cluster together, making differences difficult to detect.  **Ryan note: You're going to need to clarify this last sentence.  Differences in...?**
+
+<!-- ## Example -->
+
+<!-- A simple example network of five nodes is shown in Example_Network.csv. For simplicity, a constant transmission probability was used for all contact events. In total, 500 simulations were run on this network. The absorption centrality and the number of times infected were calculated for the final contact time. Table 1 shows the correlation between the absorption centrality and the probability of infection by the end of the simulation. -->
+
+
+<!-- # ```{r, table.cap = "Pearson Correlation between temporal absorption centrality and proportion of times infected over 500 simulations", echo = FALSE} -->
+<!-- # corr = c() -->
+<!-- #  -->
+<!-- # df = read.csv("Results1.csv") -->
+<!-- # df = df[, 1:5] -->
+<!-- #  -->
+<!-- # colnames(df) = c("Node1", "Node2", "Node3", "Node4", "Node5") -->
+<!-- #  -->
+<!-- # prop = c() -->
+<!-- #  -->
+<!-- # for (col in colnames(df)) { -->
+<!-- #   prop = c(prop, sum(df[,col] <= 254) / 500) -->
+<!-- # } -->
+<!-- #  -->
+<!-- # centrality = read.csv("AbsorptionCentrality1.csv") -->
+<!-- #  -->
+<!-- # colnames(centrality) = c("Node", "Centrality") -->
+<!-- #  -->
+<!-- # res = rev(centrality$Centrality) -->
+<!-- #  -->
+<!-- # corr = c(corr, cor(x = prop, y = res, method = "pearson")) -->
+<!-- # ``` -->
+<!-- #  -->
+<!-- # ```{r, table.cap = "Pearson Correlation between temporal absorption centrality and number of times infected over 500 simulations", echo = FALSE} -->
+<!-- #  -->
+<!-- # df = read.csv("Results2.csv") -->
+<!-- # df = df[, 1:5] -->
+<!-- #  -->
+<!-- # colnames(df) = c("Node1", "Node2", "Node3", "Node4", "Node5") -->
+<!-- #  -->
+<!-- # prop = c() -->
+<!-- #  -->
+<!-- # for (col in colnames(df)) { -->
+<!-- #   prop = c(prop, sum(df[,col] <= 254) / 500) -->
+<!-- # } -->
+<!-- #  -->
+<!-- # centrality = read.csv("AbsorptionCentrality2.csv") -->
+<!-- #  -->
+<!-- # colnames(centrality) = c("Node", "Centrality") -->
+<!-- #  -->
+<!-- # res = rev(centrality$Centrality) -->
+<!-- #  -->
+<!-- # corr = c(corr, cor(x = prop, y = res, method = "pearson")) -->
+<!-- #  -->
+<!-- # data = data.frame(Correlation = corr) -->
+<!-- #  -->
+<!-- # rownames(data) = c("p = 0.2", "p = 0.1") -->
+<!-- # ``` -->
+<!-- #  -->
+<!-- # ```{r, echo = FALSE} -->
+<!-- # knitr::kable(data, caption = "Pearson correlation between temporal absorption centrality and infected proportion over 500 simulations") -->
+<!-- # ``` -->
+
+
+## Network-Based Disease Transmission Simulation
+
+Here, we describe a novel approach for network-based disease transmission modelling using static networks, which we treat as "ground truth" to validate adjusted percolation centrality.  **Ryan note: I think it makes sense to have this with your simulations section and not have this described as being used simply "to validate adjusted percolation centrality".  It's an approach for efficiently simulating a dynamic network.  I think we might want to discuss what you mean by "static" network in this case, as I've most commonly seen "static" used to describe a network with unchanging/fixed nodes and edges.  In this case, the set of nodes is the same, but the edges are technically changing with time.** A social network is modeled by a static graph, where each node represents an individual, and each edge represents an ongoing, time-independent relationship between two individuals. It is assumed that contacts between any two individuals $i$ and $j$ follow a Poisson process with a rate parameter of $\lambda_{ij}$, and each contact has a constant probability $\beta$ of being infectious.  Then the sojourn times (i.e., time between contacts) of contacts between $i$ and $j$ follow an exponential distribution with a rate of $\lambda_{ij}$, and the sojourn times of *infectious* contacts between any two nodes $i$ and $j$ follow independent exponential distributions with a fixed rate parameter of $\beta\lambda_{ij}$. Due to the memoryless property of the exponential distribution, the time until the next infectious contact, conditional on the current time, follows the same distribution. By these assumptions, epidemics can be efficiently simulated in the most general case without prior knowledge of contacts. **Ryan note: What exactly do you mean by this last sentence?  Surely it would be prudent to estimate $\lambda_{ij}$ from temporal network data if available.**
+
+Cconsider a simulation ending at time $T$, which starts with a set of infected nodes. We iterate through all neighbours of each infected node, and sample a time until the next infectious contact, adding it to a sorted list of infection times as we go. At each subsequent step, the smallest infection time is selected from the list. If this time is greater than $T$, the simulation stops. Otherwise, we sample an infection time for each neighbour of the infected node. If the sampled infection time for a given node is greater than its current infection time, it is ignored. 
+
+Figure \@ref(fig:netsim) shows an example static graph representing a small social network, where the edge weights (shown next to edges) correspond to the rate parameter $\beta\lambda_{ij}$ for an exponential distribution. Consider a simulation on this graph which terminates at the time $T$ = 100 and for which only node $A$ is initially infected. Suppose we sample infectious sojourn times $t$ = 60, 40, and 50 for neighbours $C$, $B$ and $D$, respectively. In the next step, the infection time of $C$ ($t$ = 40) is removed from the list, and the time $t$ = 70 is sampled for node $E$. Thus, the time to infection for $E$ is $t$ = 40 + 70 = 110. Then, the time to infection of node $D$ ($t$ = 50) is removed from the list, and each neighbour is considered in turn. Suppose we sample an infectious sojourn time of 70 for node $E$, hence the new infection time is $t$ = 50 + 70 = 120 which is greater than 110, thus it is ignored. Likewise, suppose the time $t = 40$ is sampled for the infectious sojourn time from $D$ to $B$. The new infection time for $B$ is $t$ = 50 + 40 = 90 which is greater than 60, thus it is ignored.
+
+```{r netsim, engine = "tikz", echo = FALSE, fig.cap = "A simple social network represented as a static graph"}
+\begin{tikzpicture}
+
+\tikzset{vertex/.style = {shape=circle,draw,minimum size=1.5em}}
+\tikzset{edge/.style = {->,> = latex}}
+
+\node[vertex, label = below:{$t$ = 0}] (a1) at (0,-1) {$A$};
+\node[vertex, label = right:{$t$ = 60}] (b1) at (1,3) {$B$};
+\node[vertex, label = right:{$t$ = 40}] (c1) at (3,3) {$C$};
+\node[vertex, label = left:{$t$ = 50}] (d1) at (-1,5) {$D$};
+\node[vertex, label = right:{$t$ = 110}] (e1) at (3,7) {$E$};
+
+\draw[thick] (a1) -- node[near start, right] {2} (b1);
+\draw[thick] (a1) -- node[near start, right] {3} (c1);
+\draw[thick] (a1) -- node[near start, right] {4} (d1);
+\draw[thick] (e1) -- node[near start, right] {2} (c1);
+\draw[thick] (d1) -- node[near start, below] {1} (e1);
+\draw[thick] (d1) -- node[near start, below] {3} (b1);
+
+\end{tikzpicture}
+```
+
+In general, contact rate parameters $\lambda_{ij}$ may be estimable from contact tracing data, and the constant probability of infection may be estimable from incidence data. It should be clear that this method is not a replacement for simulations on contact tracing data, and should only be used as a crude alternative for extremely large datasets where it is plausible that the time between contact events follows an exponential distribution.
+
+**Ryan note: Is this the only case where you've used this simulation approach?  If so, then I think that the last sentence in the preceding paragraph is followed by something along the lines of, "Although we demonstrate how this simulation approach can be used, we turn our attention to approaches that are less restrictive in their assumptions...."**
+
+The Erdos-Renyi model [@erdos1960evolution] with $p$ = 0.4, 0.45, and 0.5 (i.e., an edge is constructed between any pair of nodes with constant probability $p$) was used to generate 100 random networks of 40 nodes for each value of $p$.  For each simulated network, we ensured that the network was connected so as to ensure that all measures of centrality could potentially be calculated.  In each network, four randomly selected nodes were initially infected.  **Ryan note: Further details required.  What are you using for contact rates and probability of infection?** The importance of a given node was tested empirically by calculating the difference in average reproductive number between graphs which included and excluded the node in question.  **Ryan note: You should be defining the reproductive number and giving a citation here or somewhere previously.  (Personally, I think it makes sense to clearly define what measures you will consider for simulated networks and then explaining that the goal is to see which measures of centrality most strongly correlate with these measures.)** A high difference in reproductive numbers indicates that the node is instrumental in the spread of the disease.  Figure \@ref(fig:perccent) shows the results for the three considered edge inclusion probabilities ($p$ = 0.4, 0.45, and 0.5). Both variants of percolation centrality showed similar levels of correlations with the empirical measure of importance.  **Ryan note: What is the takeaway message that we are meant to get from this?  Why does this matter?  Also, for the graph have your vertical axis be 'r' and your legend title be "Centrality measure".**
+
+```{r perccent, echo = FALSE, fig.cap = "Correlation between the difference of reproductive numbers and the two variants of percolation centrality for different edge inclusion probabilities"}
+#setwd("C:\\Users\\nickw\\Downloads\\SI_Model")
+knitr::include_graphics("AdjCentrality.png", rel_path = TRUE)
+```
+
+## Simulation
+
+Stochastic simulations typically follow the standard Markovian framework in which we assume transmission depends only on the current state of the network. The contact times can be thought of as discrete snapshots of the network, and it is assumed that during each snapshot, only one "hop" can occur. In other words, if we have two contacts events $(i, k, t)$ and $(k, j, t)$ at time $t$, node $i$ cannot infect node $j$ via node $k$ at time $t$. The standard Markovian framework typically employs simplifying assumptions to ensure ease of implementation. The susceptible-infected-recovered (SIR) compartmental model is a common implementation which assumes that all individuals are susceptible at the beginning, and, once infected, they remain infectious for a recovery period. Once recovered, individuals cannot be infected again. Other common implementations of the compartmental model include the susceptible-infected (SI) model (i.e., no recovery) and the susceptible-infected-susceptible (SIS) model (i.e., recovery does not proffer immunity).
+
+### Algorithms
+
+Here, we describe simulation algorithms for the SIR model.  Simulations were carried out using the event-based algorithm first proposed by @kiss2017mathematics and described in detail by @holme2021fast. To understand this algorithm, we first describe a naive approach:
+
+**Naive Algorithm**
+
+1. Initialize all starting, or "seed", nodes as infectious.
+
+2. Initialize all non-starting nodes as susceptible.
+
+3. Traverse the contacts in increasing order of time.
+
+4. Whenever a node becomes infected, change its state to infectious.
+
+5. Stop the simulation when there are no more contacts or no more nodes can be infected.
+
+Now consider two nodes, $i$ and $j$, and suppose that $i$ is infected at time $t = 0$. There could theoretically be thousands of contacts between $i$ and $j$, however, only one of these contacts is infectious.  Clearly we can avoid many unnecessary iterations if we find the first infectious contact in a single step. Now suppose that all contacts are assumed to have a constant transmission probability of $\beta$. Then the index of the first infectious contact between $i$ and $j$ follows a geometric distribution. The probability that the $k^{\scriptsize{\mbox{th}}}$ contact is infectious is given by
+
+$$\beta(1 - \beta)^{k - 1}$$
+One can sample $k$ by
+
+\begin{equation}
+\label{eq:sample}
+\left\lceil \frac{\log(1 - X)}{\log(1 - \beta)} \right\rceil
+\end{equation}
+
+where $\beta$ is the fixed transmission probability and $X \sim \mbox{Uniform}(0, 1)$.
+
+The event-based algorithm relies on several user-defined data structures:
+
+* **Node:** A data structure with a unique identifier (ID) and an infection time (**t_inf**) attribute. In addition, each node contains a list of neighbours and a list of contact times (sorted in increasing order) for each neighbour, as well as a list of associated transmission probabilities if necessary. Note that the contact times must be sorted in increasing order to enable a bisection search. (The significance of this will become clear later.)
+* **Heap:** A min-heap data structure for storing node IDs of infected nodes, ordered by earliest infection time, with $\mbox{O}(\log(n))$ "up-heap" and "down-heap" operations, where $n$ is the number of elements in the heap. A min-heap is conceptually a tree where the root node is the lowest order element, which in this case is the earliest unprocessed infection event. The exact implementation of the heap is unimportant, however the min-heap property must be restored, whenever a node is added or removed, via the *up-heap* and *down-heap* operations.
+
+At the beginning of the simulation, **t_inf** is set to $T$ (i.e., the end time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. This is repeated until the heap is empty. When an infected node is processed, its neighbours are considered in turn. Suppose node $i$ is infected at time $\mbox{t\_inf}_{i} = 20$, and node $j$ is a neighbour of node $i$. If $\mbox{t\_inf}_{j} < 20$ then node $j$ is skipped. Otherwise, a bisection search is carried out to find the earliest contact time $t$ such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes $i$ and $j$, and we sample an integer $k$ by (\ref{eq:sample}). If $k \geq m$ then we continue, otherwise we add node $j$ to the heap and update $\mbox{t\_inf}_{j}$.
+
+**Ryan note: How are you using the CovidCard data for these simulations?  There seems to be a sizeable gap here in clearly explaining how simulations work for the specific data you are using.  You should be explaining here that you are carrying out a total of 1,000 simulations where you treat each node as the seed node, leading to the 751,000 total simulations noted in the results section.  How many time points/steps are considered, and how does that relate to the underlying data?  How do you treat contact events (symmetric rather than directed)?  How is the transmission probability estimated for a contact event?  How are potential differences in the two sources of information for a contact event rectified?  Any descriptive statistics to provide an indication of what the underlying network data are like (e.g., network density, degree distribution, etc., and how those change over time?  Is the network connected? etc.**  
+
+## Results
+
+Five centrality measures were calculated for the CovidCard dataset, namely temporal closeness (TP) and temporal proximity prestige (TPP), absorption rank, temporal Katz centrality and temporal degree centrality. **Ryan comment: Why these five?  Explain.** For a fair comparison, all centrality measures were calculated by assuming constant transmission probabilities for every contact event. This was done because temporal Katz centrality does not generalise to varying transmission probabilities. These measures were correlated to the observed number of times each individual was infected over 751,000 simulations (shown in Figure 8).  **Ryan note: It does not appear that you have a caption that shows for this figure.  Additionally, you have six centrality measures here, not five.  (You will want to rotate the centrality names so that they can be read.  At the moment there is far too much overlap.)  Finally, do we actually care about Pearson correlation?**  The dataset contained 751 individuals in total, and 1000 simulations for each of the 751 possible starting node were carried out.
+
+```{r, results = 'hide', echo = FALSE, fig.cap = "Spearman rank correlations between centrality measures and observed likelihood of infection."}
+suppressPackageStartupMessages(library(dplyr))
+library(ggplot2)
+
+katz <- read.csv("Katz_Centrality.csv")
+katz <- katz %>% mutate(Centrality = round(Centrality, 6), TempDegree = round(TempDegree, 6))
+
+tpp <- read.csv("tpp.csv", header = FALSE)
+
+absorb <- read.csv("AbsorptionCentrality.csv")
+absorb <- absorb[rev(rownames(absorb)), ]
+
+colnames(absorb) <- c("Node", "Absorb")
+colnames(tpp) <- c("Node", "TP", "TPP")
+
+katz$Node = round(katz$Node, 0)
+
+
+tbc_data <- read.csv("tbc.csv")
+
+tbc <- round(tbc_data$tbc, 9)
+
+results = read.csv("Results.csv")
+results = results[1:751, 1:751]
+
+results[] = lapply(results, function(x) ifelse(x > 1000, 0, x))
+
+probs = apply(results, 2, mean)/1000
+
+corKatz = cor(probs, katz$Centrality, method = "spearman")
+corDeg = cor(probs, katz$TempDegree, method = "spearman")
+corAbs = cor(probs, absorb$Absorb, method = "spearman")
+corTp = cor(probs, tpp$TP, method = "spearman")
+corTpp = cor(probs, tpp$TPP, method = "spearman")
+corTbc = cor(probs, tbc, method = "spearman")
+
+correlations = c(corKatz, corDeg, corAbs, corTp, corTpp, corTbc)
+
+names <- c("Katz Centrality", "Degree Centrality", "Absorption Centrality", "Temporal Closeness", "Temporal Proximity", "Temporal Betweenness Centrality")
+
+df <- data.frame(type = names, corr = correlations)
+
+df %>% ggplot(aes(x = type, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Spearman Rank Correlation")
+```
+```{r, echo = FALSE, fig.cap = "Pearson correlations between centrality measures and observed likelihood of infection."}
+corKatz = cor(probs, katz$Centrality)
+corDeg = cor(probs, katz$TempDegree)
+corAbs = cor(probs, absorb$Absorb)
+corTp = cor(probs, tpp$TP)
+corTpp = cor(probs, tpp$TPP)
+corTbc = cor(probs, tbc)
+
+correlations = c(corKatz, corDeg, corAbs, corTp, corTpp, corTbc)
+
+df <- data.frame(type = names, corr = correlations)
+
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Pearson Correlation")
+```
+
+The Spearman correlations are generally large, with absorption rank showing a larger correlation ($\rho \approx 0.8$) compared to other metrics.  **Ryan note: Can you provide any insight into why this may be the case?  Can you point to aspects of the network that would help to explain why certain measures performed better than others?** Conversely, the metrics generally showed lower Pearson correlations, especially Katz centrality. This suggests that the metrics should not be used for prediction, rather they should be used for ranking the relative importance of individuals within the same network. TP and TPP performed similarly with regards to ranking individuals, however TPP outperformed TP in terms of Pearson correlation.
+
+```{r, echo = FALSE, fig.cap = "Correlations between the five centrality measures."}
+library(ggcorrplot)
+
+data <- data.frame(TP = tpp$TP, TPP = tpp$TPP, Absorb = absorb$Absorb, Katz = katz$Centrality, Degree = katz$TempDegree, TBC = tbc)
+
+corr <- cor(data)
+
+ggcorrplot(corr, lab = TRUE)
+```
+
+Figure 8 shows the Pearson correlations between the five metrics. **Ryan note: Again, we have six measures.** With the exception of proximity rank and closeness rank,  **Ryan note: Aim for consistency in how you are referring to these measures, otherwise your reader may get confused.** the measures show low dependence with many weak correlations. This suggests that the measures could be tapping into different effects, and our rankings could be improved by combining many metrics as predictors in a regression model.  **Ryan note: Good.  This helps properly motivate your next section.**
+
+### Model Selection
+
+```{r, echo = FALSE, fig.cap = "Standardized residuals of the model plotted against theoretical quantiles of the normal distribution."}
+data$likelihood = probs
+
+model = lm(likelihood ~ TP + TPP + Absorb + Katz + Degree + TBC, data = data)
+
+residuals <- residuals(model)
+
+qqnorm(residuals)
+qqline(residuals)
+```
+
+Figure 9 shows the Q-Q plot for a linear regression model predicting the observed likelihood of infection, with the five centrality metrics as predictors. The relationship is clearly non-linear, with a large number of extreme values for the residuals. A transformation of the output variable may satisfy the linearity assumption, particularly if the distribution is skewed.
+
+```{r, echo = FALSE, fig.cap = "Pairwise relationships between the centrality metrics and the output variable (likelihood)", message = FALSE}
+library(GGally)
+
+ggpairs(data)
+```
+
+Looking at the pairwise relationships (shown in Figure 10), the assumptions of linear regression clearly cannot be satisfied. The output variable (plotted in the bottom-right corner) is bimodal and not amenable to common transformations (e.g. log, square root, polynomial etc). Machine Learning and Artifical Intelligence are often used for regression when the distribution of the data is non-standard. We use three machine learning methods - Gradient Boosting Regression, Decision Trees and Polynomial Regression - to predict the likelihood of infection from the six centrality metrics. 
+
+Polynomial Regression is based on a similar concept to linear regression, however it allows for powers greater than one in the regression equation (e.g. $y = \beta_{1}X + \beta_{2}X^{2}$). Closed-form solutions are rarely known, so the coefficients must be "learned" by numerical optimization methods. Decision Trees split the data into progressively smaller subgroups using decision rules (e.g. X > 40), and each group (sometimes called a leaf node) is assigned a predicted value. The prediction for a given observation is then the predicted value of it's respective leaf node, which is determined by the decision rules. At each branch of the tree, the optimal decision rule is found by minimizing a splitting criteria (e.g. Sum of Squared Errors (SSE), Mean Squared Error (MSE) etc). Gradient Boosting Regression takes a weighted average of predictions for many decision trees. This may result in better predictions, especially when the number of predictors is large or the data is very noisy.
+
+The data was split into training and test sets, comprising 75% and 25% of the data respectively. The models were trained on the training set and evaluated on the test set. Hyper parameters were optimized by 10-fold cross validation. 
+
+```{r, echo = FALSE, fig.cap = "Predicted vs Actual values after training Gradient Boosting model and applying to test set.", cache = TRUE, warning = FALSE, message = FALSE}
+library(rsample)
+library(Matrix)
+suppressPackageStartupMessages(library(xgboost))
+
+set.seed(1374)
+
+data_split <- initial_split(data, prop = 0.75)
+
+train <- training(data_split)
+
+train[] = lapply(train, as.numeric)
+
+xTrain = train[, -which(names(train) %in% c("likelihood"))]
+
+# pca <- prcomp(xTrain, scale. = TRUE)
+
+# rotation <- pca$rotation
+
+# xTrain = as.matrix(xTrain) %*% rotation
+
+# xTrain <- xgb.DMatrix(data = matrix(train[, -which(names(data) == "likelihood")]))
+# yTrain <- xgb.DMatrix(data = matrix(train$likelihood))
+
+test <- testing(data_split)
+
+xTest <- test[, -which(names(test) %in% c("likelihood"))]
+names(xTest) <- names(xTrain)
+
+# xTest = as.matrix(xTest) %*% rotation
+
+yTest <- test$likelihood
+
+params = list(objective = "reg:absoluteerror", eval_metric = "rmse")
+
+dtrain = xgb.DMatrix(data = data.matrix(xTrain), label = data.matrix(train$likelihood))
+
+cv_results <- xgb.cv(params = params, data = dtrain, nfold = 10, nrounds = 500, early_stopping_rounds = 150, verbose = FALSE)
+
+best_round = cv_results$best_iteration
+
+model = xgb.train(params = params, data = dtrain, nrounds = best_round)
+
+y_pred = predict(model, newdata = xgb.DMatrix(data.matrix(xTest)))
+
+corXG <- cor(y_pred, yTest, method = "spearman")
+
+df <- data.frame(predicted = y_pred, actual = yTest)
+
+df %>% ggplot(aes(x = predicted, y = actual)) + geom_point() + geom_smooth(color = "blue")
+```
+
+```{r, echo = FALSE}
+library(rsample)
+library(rpart)
+library(rpart.plot)
+
+decTree <- rpart(likelihood ~ ., data = train)
+```
+
+```{r, echo = FALSE}
+y_pred = predict(decTree, newdata = xTest)
+
+corTree = cor(y_pred, yTest, method = "spearman")
+
+plot(y_pred, test$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Decision Tree.")
+```
+
+```{r, echo = FALSE, cache = TRUE}
+library(mltools)
+
+x <- data[, -which(names(data) == "likelihood")]
+
+y <- data$likelihood
+degree <- 7
+
+polynomial_optimizer <- function(par) {
+  prediction <- numeric(nrow(data))
+  for (i in 1:length(par)){
+    col = as.vector(x[, ((i - 1) %/% degree) + 1])
+    power = (i %% degree) + 1
+    
+    prediction = prediction + col * (par[i]^power)
+  }
+  
+  rmse(prediction, y)
+}
+
+polynomial_predictor <- function(params) {
+  
+  prediction <- numeric(nrow(data))
+  for (i in 1:length(params)){
+    col = as.vector(data[, ((i - 1) %/% degree) + 1])
+    power = (i %% degree) + 1
+    
+    prediction = prediction + col * (params[i]^power)
+  }
+  
+  prediction
+  
+}
+
+parameters = rep(0.1, times = 15)
+
+model <- optim(par = parameters, fn = polynomial_optimizer, method = "L-BFGS-B", control = list(maxit = 1000))
+
+coefs = model$par
+
+y_pred = polynomial_predictor(coefs)
+
+corPoly <- cor(y_pred, y, method = "spearman")
+
+plot(y_pred, data$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Polynomial Regression")
+```
+
+```{r, echo = FALSE, fig.lab = "Spearman rank correlations between predictions and observations for three machine learning algorithms."}
+correlations = c(corPoly, corTree, corXG)
+
+names = c("Polynomial Regression", "Decision Tree Regression", "XGBoost Regression")
+
+df <- data.frame(type = names, corr = correlations)
+
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Spearman Correlation")
+```
+
+```{r, echo = FALSE, fig.lab = "Pearson correlations between predictions and observations for three machine learning algorithms."}
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Pearson Correlation")
+```
+
+Figures 11-13 show the predicted values plotted against observed values for the three algorithms. Figures 14 and 15 show the Spearman and Pearson correlations. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank.
+
+### Feature Selection
+
+If some predictors in a model are unimportant, we risk losing model performance due to the "Curse of Dimensionality". Large numbers of unimportant predictors may result in increased overfitting and difficulty with finding meaningful patterns in the data. The process of selecting a good set of predictors is called feature selection.
+
+```{r, echo = FALSE, table.cap = "Feature importance scores of the six features in the decision tree."}
+scores <- decTree$variable.importance
+
+barplot(scores, main = "Variable Importance")
+```
+
+Katz centrality, Degree Centrality and Absorption Centrality had significantly higher importance rankings than other predictors. However, correlated predictors (for instance, TP and TPP) may have attenuated importance rankings due to multicollinearity (high correlation between features). For this reason, iterative feature selection methods (i.e. testing many combinations of features systematically) are often used in lieu of feature importance scores.
+
+We test all possible combinations of two or more features by 5-fold cross validation. Each model was tested with four different values of the complexity parameter, a regularization criterion which limits the complexity of the tree in order to prevent over-fitting. Models were evaluated by the Mean Squared Error (MSE) metric, and the five best-performing models were tested against a holdout set.
+
+```{r, echo = FALSE, message = FALSE}
+library(caret)
+
+split <- initial_split(data, prop = 0.75)
+
+train <- training(split)
+
+test <- testing(split)
+
+xTest <- test[, -which(names(test) %in% c("TPP", "TBC", "likelihood"))]
+
+yTest <- test$likelihood
+
+train <- train[, -which(names(train) %in% c("TPP", "TBC"))]
+
+tree <- rpart(likelihood ~ ., data = train)
+```
+
+```{r, echo = FALSE, cache = TRUE}
+# Load the "doParallel" package for parallel processing.
+library(doParallel)
+# Load the "foreach" package for splitting loops across multiple cores.
+library(foreach)
+
+library(pander)
+
+registerDoParallel(cores = 4)
+
+all.comb <- expand.grid(var1 = c(0, 1), var2 = c(0, 1), var3 = c(0, 1), var4 = c(0, 1), var5 = c(0, 1), var6 = c(0, 1))[-1, ]
+```
+
+```{r, echo = FALSE, cache = TRUE, warning = FALSE}
+set.seed(485434)
+
+all.comb <- all.comb[rowSums(all.comb) > 1,]
+
+var.indices <- which(!(names(data) == "likelihood"))
+
+data.shuffled <- data[sample(1:nrow(data), nrow(data)), ]
+
+data.shuffled <- as.data.frame(lapply(data.shuffled, as.numeric))
+
+names(data.shuffled) <- names(data)
+
+folds <- 5
+
+MSE.extract <- function(x) {
+  return(as.numeric(min(x$results$RMSE)) ^ 2)
+}
+
+cp_vals <- data.frame(cp = c(0.0001, 0.001, 0.006, 0.01))
+
+fitControl <- trainControl(method = "cv", number = folds)
+
+all.models.fit.cv <- foreach(i = 1 : nrow(all.comb), .packages = "caret") %dopar%
+  {
+    model.equation <- as.formula(paste("likelihood ~ ", paste(names(data)[var.indices][all.comb[i, ] == 1], collapse = " + ")))
+    train(model.equation, data = data.shuffled, method = "rpart", trControl = fitControl, metric = "RMSE", tuneGrid = cp_vals)
+  }
+
+MSE.rep.cv <- sapply(all.models.fit.cv, MSE.extract)
+
+MSE.ordered <- order(MSE.rep.cv)
+
+# Construct a matrix in which to store information on which variables are included in the 10 best models.
+best.models <- matrix(NA, nrow = 5, ncol = length(var.indices), dimnames = list(NULL, names(data[var.indices])))
+```
+
+```{r, echo = FALSE}
+for (i in 1:5)
+{
+  for (j in 1:ncol(best.models)) {
+    
+    if (all.comb[MSE.ordered[i], j] == 1) {
+      best.models[i, j] = names(data[var.indices])[j]
+    }
+    
+    else {
+      best.models[i, j] = "N/A"
+    }
+    
+  }
+}
+
+fun <- function(row) {
+  ifelse(row == "N/A", "\u2717", "\u2713")
+}
+
+new_names <- c("MSE", colnames(best.models))
+
+best.models <- apply(best.models, 1, fun)
+
+best.models <- matrix(best.models, nrow = 5)
+
+best.models <- cbind(round(as.numeric(unlist(MSE.rep.cv[MSE.ordered[1:5]])), 6), best.models)
+
+colnames(best.models) <- new_names
+
+pander::pander(best.models, caption = "Five best performing feature combinations and their MSE")
+```
+
+The best-performing model used Absorption Rank, Temporal Katz Centrality and Degree Centrality. As expected, Absorption Centrality was included in all five models, however the inclusion of Temporal Proximity Prestige did not exclude Temporal Prestige. Figure 12 compares the Root Mean Squared Error (RMSE) of the final model to that of the individual predictors. Katz Centrality and Temporal Prestige were omitted due to extremely large RMSE values.
+
+```{r, echo = FALSE, message = FALSE, cache = TRUE, fig.lab = "Predicted values vs Observed values for the decision tree", warnings = FALSE}
+library(ggplot2)
+
+split <- initial_split(data, prop = 0.75)
+
+train <- training(split)
+
+test <- testing(split)
+
+xTest <- test[, -which(names(test) == "likelihood")]
+
+yTest <- test$likelihood
+
+optimal_cp <- all.models.fit.cv[[MSE.ordered[1]]]$bestTune[1]
+
+tree <- rpart(likelihood ~ TPP + Absorb + Katz + TBC, data = train, cp = optimal_cp)
+
+predictions <- predict(tree, newdata = xTest)
+
+df <- data.frame(x = predictions, y = yTest)
+
+df %>% ggplot(aes(x = x, y = y)) + geom_point() + xlab("Predicted Values") + ylab("Observed Values") + ggtitle("Comparison of predictions from best model against observed values")
+```
+
+```{r, echo = FALSE, fig.cap = "Comparison of RMSE for final decision tree and individual predictors", warning = FALSE}
+suppressPackageStartupMessages(library(Metrics))
+
+full_rmse <- min(all.models.fit.cv[[MSE.ordered[1]]]$results$RMSE)
+abs_rmse <- rmse(data$Absorb, data$likelihood)
+katz_rmse <- rmse(data$Katz, data$likelihood)
+deg_rmse <- rmse(data$Degree, data$likelihood)
+tp_rmse <- rmse(data$TP, data$likelihood)
+tpp_rmse <- rmse(data$TPP, data$likelihood)
+tbc_rmse <- rmse(data$TBC, data$likelihood)
+
+rmse_vec <- c(full_rmse, abs_rmse, deg_rmse, tpp_rmse, tbc_rmse)
+
+names(rmse_vec) <- c("Final Model", "Absorb", "Degree", "TPP", "TBC")
+
+barplot(rmse_vec, main = "Comparison of RMSE for final decision tree and individual predictors", xlab = "Predictor", ylab = "RMSE", col = "blue")
+```
+
+Clearly, the Decision Tree model has the lowest RMSE, followed closely by Absorption Rank and Temporal Betweenness Centrality. It should be clear that RMSE rankings are only meaningful in the context of prediction, and these results should be interpreted accordingly. When ranking the relative importance of nodes in a network, other metrics should be given greater importance (e.g. Spearman Rank Correlation).
+
+```{r, echo = FALSE}
+
+corPear <- cor(predictions, yTest, method = "spearman")
+corSpear <- cor(predictions, yTest, method = "pearson")
+
+
+
+cors <- c(corPear, corSpear)
+
+names(cors) <- c("Pearson Correlation", "Spearman Correlation")
+
+barplot(cors, main = "Correlation for final model")
+```
+
+
+### Constant Transmission Probability
+
+The constant transmission probability assumption is often used in the literature, most likely because it greatly speeds up the simulation algorithm. Probabilities were estimated by using proximity categories, which we will call classes, as predictors in a generalized linear model. The number of 15-time intervals spent in each class is given over the two hour observation period. Transmission probabilities were then calculated by a logistic regression model of the form:
+
+$$log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}c_{1} + \beta_{2}c_{2} + \beta_{3}c_{3}$$
+
+where $\pi(x)$ is the transmission probability of the contact and $c_{i}$ is the number of 15-minute time intervals spent in class i during the two hour observation period. The classes are indexed in increasing order of proximity (i.e. class 3 indicates greater proximity than class 2), therefore the coefficients were chosen to satisfy the constraint $\beta_{3} > \beta_{2} > \beta_{1}$. One may treat the classes as levels of an ordinal variable and assume a proportional relationship, which reduces the model to:
+
+$$log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}(c_{1} + 2c_{2} + 3c_{3})$$
+
+However, this simplified model was rejected due to insufficient evidence to suggest a proportional relationship.
+
+To test the constant transmission probability assumption, we compare the observed probability of infection for 751 individuals for two different algorithms (run on the same temporal network). In the first algorithm, the probability of transmission is calculated separately for every contact. In the second algorithm, we assume that for two nodes i and j, the probability of transmission is a constant value $p_{ij}$, regardless of the duration and proximity of the contact event, and this probability is estimated by averaging the event-specific probabilities $p_{ijt}$ (where t is a time index) over all time points. As in the first algorithm, event-specific probabilities are calculated by the same logistic regression model.
+
+In total, 1000 simulations were run for each algorithm. For each run, the indicator variable, $I_{i}$, is 1 if node i was infected, and 0 otherwise. The observed probability of infection for node i is the average of $I_{i}$ over all 1000 runs.
+
+Denote by $\hat{P^{\mathbf{1}}}$ the vector of observed probabilities for algorithm 1 (and likewise for algorithm 2). Thus, $\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}$ is the observed difference between the two algorithms for node i. Suppose we want to test whether this difference is equal to 0. The test statistic is
+
+$$Z = \frac{\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}}{\hat{P_{i}}(1 - \hat{P_{i}})(\frac{1}{1000} + \frac{1}{1000})}$$
+where $\hat{P_{i}}$ is the pooled proportion under the null hypothesis ($P_{i}^{\mathbf{1}} = P_{i}^{\mathbf{2}}$). This is a well-known test statistic which follows a standard normal distribution when the true proportions are equal. In order to test for equality of the vectors $P^{\mathbf{1}}$ and $P^{\mathbf{2}}$, we must adjust the significance level of each individual test to correct for multiple comparisons. Power and Type I error rate are two important factors which influence our choice of adjustment. Power is defined as the probability of falsely accepting the null hypothesis, whereas the Type I error rate is the probability of falsely rejecting the null hypothesis. Multiple comparison adjustments aim to reduce the family-wise Type I error rate by controlling the significance level of each individual comparison. We will discuss several common adjustment methods and their use cases:
+
+
+#### Bonferroni Correction:
+
+The Bonferroni correction, proposed by @dunn1961multiple, is an adjustment which controls the family-wise Type I error rate. For a given significance level $\alpha$, the Bonferroni correction guarantees a family-wise Type I error rate which is $\leq \alpha$. It does this by setting the test-wise significance level to $\frac{\alpha}{N}$, where N is the number of tests. The Bonferroni correction is ideal for this experiment because it makes no assumptions about independence between the individual tests. Note that the Bonferroni correction is conservative, meaning it lacks power for rejecting the null hypothesis.
+
+
+#### Holm's Method:
+
+Holm's method, proposed by @holm1979simple, is a powerful alternative to the Bonferroni correction. Holm's method tests the hypotheses iteratively, updating the p-value at each step. First, we sort the list of p-values in increasing order, and we begin the sequential significance tests from the lowest p-value. The algorithm starts with a significance level of $\frac{\alpha}{N}$. If the first result is non-significant, we test the second result with a significance level of $\frac{\alpha}{N - 1}$. In general, the i'th test statistic is tested with a significance level of $\frac{\alpha}{N - i + 1}$. Holm's method also guarantees a family-wise Type I error rate of $\leq \alpha$, however it offers greater power than the Bonferroni correction.
+
+
+#### Hochberg Procedure:
+
+The Hochberg procedure is similar to Holm's method, however it assumes non-negative correlation between tests. We begin by testing the largest p-value, adjusted for a single comparison. If the p-value is insignificant, we test the next largest p-value sequentially. In general, the i'th largest p-value is tested by adjusting for i comparisons. By doing this, we guarantee a greater power than Holm's method and the Bonferroni Correction.
+
+
+Pairwise comparisons were carried out with Fisher's Exact Test and p-values were simulated due to computational constraints. The Z-test was rejected due to the presence of proportions close to 0, which violated the $np > 5$ assumption. Multiple comparisons were controlled for by the three methods. The results are shown in Table 1.
+
+```{r, echo = FALSE}
+suppressPackageStartupMessages(library(gt))
+suppressPackageStartupMessages(library(rstatix))
+
+fixed <- read.csv("Variable_Probability_Results.csv")
+variable <- read.csv("Fixed_Probability_Results.csv")
+
+fixed_prob <- colSums(fixed)
+var_prob <- colSums(variable)
+
+p_vals <- c()
+
+n <- c(1000, 1000)
+
+for (i in 1:length(fixed_prob)) {
+  sums <- matrix(c(fixed_prob[i], nrow(fixed) - fixed_prob[i], var_prob[i], nrow(variable) - var_prob[i]), nrow = 2)
+  p_vals <- c(p_vals, fisher_test(sums, alternative = "two.sided", conf.level = 0.95, simulate.p.value = TRUE)$p)
+}
+
+p_bonf <- p.adjust(p_vals, method = "bonferroni")
+p_holm <- p.adjust(p_vals, method = "holm")
+p_hochberg <- p.adjust(p_vals, method = "hochberg")
+
+rej_bonf <- as.integer(sum(p_bonf < 0.05))
+rej_holm <- as.integer(sum(p_holm < 0.05))
+rej_hochberg <- as.integer(sum(p_hochberg < 0.05))
+
+bonf <- c(rej_bonf, round(rej_bonf/751, 5))
+holm <- c(rej_holm, round(rej_holm/751, 5))
+hochberg <- c(rej_hochberg, round(rej_hochberg/751, 5))
+
+df <- data.frame(Bonferroni = bonf, Holm = holm, Hochberg = hochberg)
+
+new_names <- c("Row Label", colnames(df))
+
+df <- as.data.frame(t(rbind(colnames(df), df)))
+
+colnames(df) <- c("Method", "Number of Rejections", "Proportion of Rejections")
+
+df %>% gt() %>% tab_header(title = "Table 1: Number of rejections for each method")
+```
+
+The null hypothesis was rejected 24 times for all multiple comparison adjustments, which suggests that the constant transmission probability assumption is invalid. It is worth noting that the Bonferroni Correction is extremely conservative for 751 comparisons, therefore this result provides strong evidence of a difference between the algorithms. @alger2020scientific promotes the use of multiple experiments to increase the reliability of a conclusion. Accordingly, we use a goodness of fit test to support the hypothesis that applying the constant transmission probability assumption produces different results.
+
+### Goodness-of-fit test
+
+In this section, we test the constant transmission probability assumption by a likelihood ratio test. First, we sum $I_{i}$ over all runs to get the total times infected, $n_{i}$. By doing this for every node, we obtain a contingency table of the form:
+
+\begin{table}[hbtp]
+  \begin{tabular}{lccccc}
+  Node & 1 & 2 & 3 & 4 & ... \\
+  
+  \hline
+  
+  Algorithm 1 (Constant Transmission) & $n_{11}$ & $n_{12}$ & $n_{13}$ & $n_{14}$ & ... \\
+  
+  \hline
+  
+  Algorithm 2 (Varying Transmission) & $n_{21}$ & $n_{22}$ & $n_{23}$ & $n_{24}$ & ... \\
+  
+  \hline
+  
+  \end{tabular}
+\end{table}
+
+Where $n_{ij}$ is the number of times node j is infected for algorithm i. Denote by $n_{i+}$ the i'th row sum, and similarly by $n_{+j}$ the j'th column sum. Under the assumption of independence between the two variables, algorithm and node, the expected value of the cell count, $E_{ij}$, is given by:
+
+$$E_{ij} = \frac{n_{i+}n_{+j}}{n}$$
+where $n = \sum_{i}{n_{i+}}$. The likelihood ratio test statistic 
+
+\begin{equation}
+\label{eq:chi_square}
+G = 2\sum_{ij}{n_{ij} \log \left(\frac{n_{ij}}{E_{ij}} \right)}
+\end{equation}
+
+asymptotically converges to a $\chi^{2}$ distribution with $(I - 1)(J - 1)$ degrees of freedom, where I and J are the number of rows and columns respectively in the contingency table.
+
+```{r, echo = FALSE, messages = FALSE}
+library(broom)
+library(knitr)
+
+suppressPackageStartupMessages(library(DescTools))
+
+table <- rbind(matrix(colSums(fixed), nrow = 1), matrix(colSums(variable), nrow = 1))
+
+result <- GTest(table)
+
+output <- tidy(result)
+
+kable(output, caption = "Likelihood Ratio Test Results", digits = 20)
+```
+
+The likelihood ratio test (Table 2) corroborates the conclusion that the two algorithms produce different outcomes, with $p-value < 1 \times 10^{-20}$.
+
+
+## References
+
+
