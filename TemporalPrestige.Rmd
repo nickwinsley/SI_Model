@@ -54,7 +54,7 @@ Simulation is important for answering questions 2. and 3. as it provides a sort 
 
 ## Background
 
-In 2020, the New Zealand Ministry of Health (MoH) commissioned a pilot study of the "CovidCard", a portable device which used bluetooth technology to record contacts between carriers of the device. Adults 19 years of age or older who live in Ngontotahā West and East were recruited to participate in a seven-day study. Additionally, people who live outside these boundaries but work within the Ngontotahā Village were also permitted to take part in the trial. Ngontotahā was chosen because it met several key criteria, namely compactness, geographical isolation, small population size and high sociodemographic diversity. In total, 1,191 people participated in the study. At the end of the trial period, a subset of 158 participants from the main trial were contacted by MoH case investigators to establish contacts that they had over the trial period using a modified version of the MoH case investigation protocol. The study compared the CovidCard to conventional case investigation methods, and found a greater rate of reciprocal interactions identified by the CovidCard. In short, the study concluded that the CovidCard is a highly effective contact tracing approach. We use this data to compare existing centrality metrics, and develop novel alternatives.
+In 2020, the New Zealand Ministry of Health (MoH) commissioned a pilot study of the "CovidCard", a portable device which used bluetooth technology to record contacts between carriers of the device. Adults 19 years of age or older who live in Ngontotahā West and East were recruited to participate in a seven-day study. Additionally, people who live outside these boundaries but work within the Ngontotahā Village were also permitted to take part in the trial. Ngontotahā was chosen because it met several key criteria, namely compactness, geographical isolation, small population size and high sociodemographic diversity. In total, 1,191 people participated in the study. At the end of the trial period, a subset of 158 participants from the main trial were contacted by MoH case investigators to establish contacts that they had over the trial period using a modified version of the MoH case investigation protocol. The study compared the CovidCard to conventional case investigation methods and found a greater rate of reciprocal interactions identified by the CovidCard, indicating that the CovidCard is an effective contact tracing method. We use data obtained via the CovidCard to compare and validate existing centrality metrics, and develop novel alternatives.
 
 ## Data Description
 
@@ -68,6 +68,21 @@ Each interval was classified as either < 1 meter, < 2 meter and < 4 meter proxim
 ## Data Preparation
 
 The last day of the trial period saw an anomalously high number of close-contacts, most likely because participants congregated at a single location for card collection. For this reason, contact events which occurred on the last day of the trial were omitted. Participants who could not be cross-verified by case investigation were removed. If two cards registered the same contact event, and gave conflicting proximity values, one of the proximity values was arbitrarily removed. Contact dates were converted to numeric times by calculating the time elapsed (in hours) between the contact date and the start of the trial. Some cards were collected before the last day of the trial, resulting in an anomalous number of contacts during card collection. For this reason, all contact events which occurred on the day in which they were uploaded were removed. Data on the proximity classes was processed to form non-overlapping categories. For instance, the number of 15-intervals with a distance less than 4 metres, $n_{< 4}$, was transformed by subtracting $n_{< 2}$ and $n_{< 1}$ to get $n_{\geq 3, < 4}$; the total number of 15-minute intervals between 3 and 4 metres. By doing this, we get a categorical variable on which further statistical models are based.
+
+## Estimation of Transmission Probility
+
+Probabilities were estimated by using proximity categories as predictors in a generalized linear model. The number of 15-time intervals spent in each class is given over the two hour observation period. Transmission probabilities were then calculated by a logistic regression model of the form:
+
+\begin{equation}
+\label{eq:logistic}
+log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}c_{1} + \beta_{2}c_{2} + \beta_{3}c_{3}
+\end{equation}
+
+where $\pi(x)$ is the transmission probability of the contact and $c_{i}$ is the number of 15-minute time intervals spent in class i during the two hour observation period. The classes are indexed in increasing order of proximity (i.e. class 3 indicates greater proximity than class 2), therefore the coefficients were chosen to satisfy the constraint $\beta_{3} > \beta_{2} > \beta_{1}$. One may treat the classes as levels of an ordinal variable and assume a proportional relationship, which reduces the model to:
+
+$$log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}(c_{1} + 2c_{2} + 3c_{3})$$
+
+However, this simplified model was rejected due to insufficient evidence to suggest a proportional relationship. In practice, transmission probabilities can be estimated by exogenous information (for instance, clinical knowledge or self-reported infections paired with contact tracing data). It should be clear that \ref{eq:logistic} functions as a proof of concept, and clinical experts should be consulted in real-world applications.
 
 ## Centrality
 
@@ -308,7 +323,7 @@ The centrality for a given node is likewise calculated by the row sum of this ma
 
 ## Time-Ordered Networks
 
-Generalization of conventional centrality measures to temporal networks requires a high-granularity representation of the network as a graph. @kempe2000connectivity proposed a graph where the edge weights are contact times, however this model fails to account for differential rates of transmission. @kim2012temporal proposed a more general solution using a time-ordered directed graph. Consider a network of N nodes for which M edges are observed over T time points. Without loss of generality, discretize the contact times to get a list, $\textit{t} = (0, 1, 2, \cdots, T)$. We can construct a time-ordered graph where each node appears T + 1 times. Denote by $\upsilon_{t}$ the node $\upsilon$ at time t. In this graph, a directed edge from $\upsilon_{t}$ to $\textit{u}_{t + 1}$ only exists if $\upsilon = \textit{u}$ or there is a contact between $\upsilon$ and $\textit{u}$ at time t. We can construct this graph for any temporal network without loss of information. In practice, computational constraints may require aggregation of contact times and thus loss of information.
+Generalization of conventional centrality measures to temporal networks requires a high-granularity representation of the network as a graph. @kempe2000connectivity proposed a graph where the edge weights are contact times, however this model fails to account for differential rates of transmission. @kim2012temporal proposed a more general solution using a time-ordered directed graph. Consider a network of N nodes for which M edges are observed over T time points. Without loss of generality, rank the contact times to get a list, $\textit{t} = (0, 1, 2, \cdots, T)$. It should be clear that contact times may have decimal values, though we represent time by discrete integer values to simplify notation. In practice, contact times are continuous random variables, however any sample of contact times can be ranked to get a list of discrete "snapshots" sorted by time. By doing this, we can construct a time-ordered graph where each node appears T + 1 times. Denote by $\upsilon_{t}$ the node $\upsilon$ at time t. In this graph, a directed edge from $\upsilon_{t}$ to $\textit{u}_{t + 1}$ only exists if $\upsilon = \textit{u}$ or there is a contact between $\upsilon$ and $\textit{u}$ at time t. We can construct this graph for any temporal network without loss of information. In practice, computational constraints may require aggregation of contact times and thus loss of information.
 
 To illustrate this idea, consider a simple temporal network with five individuals, as shown in Table 1. 
 
@@ -688,15 +703,15 @@ where $\beta$ is the fixed transmission probability and $X \sim Uniform(0, 1)$.
 
 The event-based algorithm relies on several user-defined data structures:
 
-Node: A data structure with a unique id and an infection time (**t_inf**) attribute. In addition, each node contains a list of neighbours and a list of contact times (sorted in increasing order) for each neighbor, as well as a list of associated transmission probabilities if necessary. Note that the contact times must be sorted in increasing order to enable a bisection search (the significance of this will become clear).
+Node: A data structure with a unique id and an infection time (**t_inf**) attribute. In addition, each node contains a list of neighbours and a list of contact times (sorted in increasing order) for each neighbor, as well as a list of associated transmission probabilities if necessary. The contact times must be sorted in increasing order to enable a bisection search (the significance of this will become clear).
 
 Heap: A min-heap data structure for storing node id's of infected nodes, ordered by earliest infection time, with $\mbox{O}(\log(\mbox{n}))$ *up-heap* and *down-heap* operations, where $n$ is the number of elements in the heap. A min-heap is conceptually a tree where the root node is the lowest order element, which in this case is the earliest unprocessed infection event. The exact implementation of the heap is unimportant, however the min-heap property must be restored, whenever a node is added or removed, via the *up-heap* and *down-heap* operations.
 
-At the beginning of the simulation, **t_inf** is set to T (i.e. the stopping time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. This is repeated until the heap is empty. When an infected node is processed, it's neighbours are considered in turn. Suppose node i is infected at time $\mbox{t\_inf}_{i} = 20$, and node j is a neighbour of node i. If $\mbox{t\_inf}_{j} < 20$ then node j is skipped. Otherwise, a bisection search is carried out to find the earliest contact time, $t$, such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes i and j, and we sample an integer, k, by \ref{eq:sample}. If $k \geq m$ then we continue, otherwise we add node j to the heap and update $\mbox{t\_inf}_{j}$.
+At the beginning of the simulation, **t_inf** is set to T (i.e. the stopping time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. This is repeated until the heap is empty. When an infected node is processed, it's neighbours are considered in turn. Suppose node i is infected at time $\mbox{t\_inf}_{i} = 20$, and node j is a neighbour of node i. If $\mbox{t\_inf}_{j} < 20$ then node j is skipped. Otherwise, a bisection search is carried out to find the earliest contact time, $t$, such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes i and j, and we sample an integer, k, by Equation (\ref{eq:sample}). If $k \geq m$ then we continue, otherwise we add node j to the heap and update $\mbox{t\_inf}_{j}$.
 
 ## Results
 
-Five measures were calculated for the CovidCard dataset, namely Temporal Closeness (denoted by TP) and Proximity Rank (denoted by TPP), Absorption Rank, Temporal Katz Centrality and Temporal Degree Centrality. For a fair comparison, all centrality measures were calculated by assuming constant transmission probabilities for every contact event. This was done because Temporal Katz Centrality does not generalize to varying transmission probabilities. These measures were correlated to the observed number of times each individual was infected over 751,000 simulations (shown in Figure 8). The dataset contained 751 individuals in total, and 1000 simulations for each of the 751 possible starting node were carried out.
+Six centrality measures were calculated for the CovidCard dataset, namely Temporal Closeness (denoted by TC) and Proximity Rank (denoted by TP), Absorption Rank, Temporal Katz Centrality, Temporal Degree Centrality and Temporal Betweenness Centrality. For a fair comparison, all centrality measures were calculated by assuming constant transmission probabilities for every contact event. This was done because Temporal Katz Centrality does not generalize to varying transmission probabilities. These measures were correlated to the observed number of times each individual was infected over 751,000 simulations (shown in Figure 8). The dataset contained 751 individuals in total, and 1000 simulations were carried out for each of the 751 possible starting nodes.
 
 ```{r, results = 'hide', echo = FALSE, fig.cap = "Spearman rank correlations between centrality measures and observed likelihood of infection."}
 suppressPackageStartupMessages(library(dplyr))
@@ -711,7 +726,7 @@ absorb <- read.csv("AbsorptionCentrality.csv")
 absorb <- absorb[rev(rownames(absorb)), ]
 
 colnames(absorb) <- c("Node", "Absorb")
-colnames(tpp) <- c("Node", "TP", "TPP")
+colnames(tpp) <- c("Node", "TC", "TP")
 
 katz$Node = round(katz$Node, 0)
 
@@ -730,8 +745,8 @@ probs = apply(results, 2, mean)/1000
 corKatz = cor(probs, katz$Centrality, method = "spearman")
 corDeg = cor(probs, katz$TempDegree, method = "spearman")
 corAbs = cor(probs, absorb$Absorb, method = "spearman")
-corTp = cor(probs, tpp$TP, method = "spearman")
-corTpp = cor(probs, tpp$TPP, method = "spearman")
+corTp = cor(probs, tpp$TC, method = "spearman")
+corTpp = cor(probs, tpp$TP, method = "spearman")
 corTbc = cor(probs, tbc, method = "spearman")
 
 correlations = c(corKatz, corDeg, corAbs, corTp, corTpp, corTbc)
@@ -746,8 +761,8 @@ df %>% ggplot(aes(x = type, y = corr)) + geom_bar(stat = "identity") + xlab("Cen
 corKatz = cor(probs, katz$Centrality)
 corDeg = cor(probs, katz$TempDegree)
 corAbs = cor(probs, absorb$Absorb)
-corTp = cor(probs, tpp$TP)
-corTpp = cor(probs, tpp$TPP)
+corTp = cor(probs, tpp$TC)
+corTpp = cor(probs, tpp$TP)
 corTbc = cor(probs, tbc)
 
 correlations = c(corKatz, corDeg, corAbs, corTp, corTpp, corTbc)
@@ -762,7 +777,7 @@ The Spearman Correlations are generally large, with Absorption Rank showing a la
 ```{r, echo = FALSE, fig.cap = "Correlations between the five centrality measures."}
 library(ggcorrplot)
 
-data <- data.frame(TP = tpp$TP, TPP = tpp$TPP, Absorb = absorb$Absorb, Katz = katz$Centrality, Degree = katz$TempDegree, TBC = tbc)
+data <- data.frame(TC = tpp$TC, TP = tpp$TP, Absorb = absorb$Absorb, Katz = katz$Centrality, Degree = katz$TempDegree, TBC = tbc)
 
 corr <- cor(data)
 
@@ -776,7 +791,7 @@ Figure 8 shows the Pearson correlations between the five metrics. With the excep
 ```{r, echo = FALSE, fig.cap = "Standardized residuals of the model plotted against theoretical quantiles of the normal distribution."}
 data$likelihood = probs
 
-model = lm(likelihood ~ TP + TPP + Absorb + Katz + Degree + TBC, data = data)
+model = lm(likelihood ~ TC + TP + Absorb + Katz + Degree + TBC, data = data)
 
 residuals <- residuals(model)
 
@@ -952,11 +967,11 @@ train <- training(split)
 
 test <- testing(split)
 
-xTest <- test[, -which(names(test) %in% c("TPP", "TBC", "likelihood"))]
+xTest <- test[, -which(names(test) %in% c("TP", "TBC", "likelihood"))]
 
 yTest <- test$likelihood
 
-train <- train[, -which(names(train) %in% c("TPP", "TBC"))]
+train <- train[, -which(names(train) %in% c("TP", "TBC"))]
 
 tree <- rpart(likelihood ~ ., data = train)
 ```
@@ -1044,7 +1059,7 @@ colnames(best.models) <- new_names
 pander::pander(best.models, caption = "Five best performing feature combinations and their MSE")
 ```
 
-The best-performing model used Absorption Rank, Temporal Katz Centrality and Degree Centrality. As expected, Absorption Centrality was included in all five models, however the inclusion of Temporal Proximity Prestige did not exclude Temporal Prestige. Figure 12 compares the Root Mean Squared Error (RMSE) of the final model to that of the individual predictors. Katz Centrality and Temporal Prestige were omitted due to extremely large RMSE values.
+The best-performing model used Absorption Rank, Temporal Katz Centrality and Degree Centrality. As expected, Absorption Centrality was included in all five models, however the inclusion of Temporal Proximity Prestige did not exclude Temporal Prestige. Figure 12 compares the Root Mean Squared Error (RMSE) of the final model to that of the individual predictors. Katz Centrality and Temporal Closeness were omitted due to extremely large RMSE values.
 
 ```{r, echo = FALSE, message = FALSE, cache = TRUE, fig.lab = "Predicted values vs Observed values for the decision tree", warnings = FALSE}
 library(ggplot2)
@@ -1061,7 +1076,7 @@ yTest <- test$likelihood
 
 optimal_cp <- all.models.fit.cv[[MSE.ordered[1]]]$bestTune[1]
 
-tree <- rpart(likelihood ~ TPP + Absorb + Katz + TBC, data = train, cp = optimal_cp)
+tree <- rpart(likelihood ~ TP + Absorb + Katz + TBC, data = train, cp = optimal_cp)
 
 predictions <- predict(tree, newdata = xTest)
 
@@ -1077,13 +1092,13 @@ full_rmse <- min(all.models.fit.cv[[MSE.ordered[1]]]$results$RMSE)
 abs_rmse <- rmse(data$Absorb, data$likelihood)
 katz_rmse <- rmse(data$Katz, data$likelihood)
 deg_rmse <- rmse(data$Degree, data$likelihood)
-tp_rmse <- rmse(data$TP, data$likelihood)
-tpp_rmse <- rmse(data$TPP, data$likelihood)
+tp_rmse <- rmse(data$TC, data$likelihood)
+tpp_rmse <- rmse(data$TP, data$likelihood)
 tbc_rmse <- rmse(data$TBC, data$likelihood)
 
 rmse_vec <- c(full_rmse, abs_rmse, deg_rmse, tpp_rmse, tbc_rmse)
 
-names(rmse_vec) <- c("Final Model", "Absorb", "Degree", "TPP", "TBC")
+names(rmse_vec) <- c("Final Model", "Absorb", "Degree", "TP", "TBC")
 
 barplot(rmse_vec, main = "Comparison of RMSE for final decision tree and individual predictors", xlab = "Predictor", ylab = "RMSE", col = "blue")
 ```
@@ -1107,15 +1122,7 @@ barplot(cors, main = "Correlation for final model")
 
 ### Constant Transmission Probability
 
-The constant transmission probability assumption is often used in the literature, most likely because it greatly speeds up the simulation algorithm. Probabilities were estimated by using proximity categories, which we will call classes, as predictors in a generalized linear model. The number of 15-time intervals spent in each class is given over the two hour observation period. Transmission probabilities were then calculated by a logistic regression model of the form:
-
-$$log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}c_{1} + \beta_{2}c_{2} + \beta_{3}c_{3}$$
-
-where $\pi(x)$ is the transmission probability of the contact and $c_{i}$ is the number of 15-minute time intervals spent in class i during the two hour observation period. The classes are indexed in increasing order of proximity (i.e. class 3 indicates greater proximity than class 2), therefore the coefficients were chosen to satisfy the constraint $\beta_{3} > \beta_{2} > \beta_{1}$. One may treat the classes as levels of an ordinal variable and assume a proportional relationship, which reduces the model to:
-
-$$log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}(c_{1} + 2c_{2} + 3c_{3})$$
-
-However, this simplified model was rejected due to insufficient evidence to suggest a proportional relationship.
+The constant transmission probability assumption is often used in the literature, most likely because it greatly speeds up the simulation algorithm.
 
 To test the constant transmission probability assumption, we compare the observed probability of infection for 751 individuals for two different algorithms (run on the same temporal network). In the first algorithm, the probability of transmission is calculated separately for every contact. In the second algorithm, we assume that for two nodes i and j, the probability of transmission is a constant value $p_{ij}$, regardless of the duration and proximity of the contact event, and this probability is estimated by averaging the event-specific probabilities $p_{ijt}$ (where t is a time index) over all time points. As in the first algorithm, event-specific probabilities are calculated by the same logistic regression model.
 
