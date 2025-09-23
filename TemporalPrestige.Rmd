@@ -29,7 +29,7 @@ knitr::opts_knit$set(root.dir = getwd())
 
 Epidemiology is a subject of much contemporary relevance. The recent Covid-19 pandemic highlighted the importance of effective methods for combating the spread of disease. With the emergence of automated contact tracing technology, prophylactic identification and isolation of high-risk individuals could be practicable in the future. This study investigates methods for the identification of high-risk individuals in a temporal network.
 
-We will begin by defining what is meant by "high-risk" in this context. Government's intervene for individuals who are most instrumental in the spread of a disease. Therefore, risk is a combination of the likelihood of a particular individual becoming contagious due to prior contacts, and the likelihood of the individual spreading the illness via future contacts. In practice, future contacts are not known, therefore this study will primarily focus on the risk of infection.
+We will begin by defining what is meant by "high-risk" in this context. Government's intervene for individuals who are most instrumental in the spread of a disease. Therefore, risk is a combination of the likelihood of a particular individual becoming contagious due to prior contacts (susceptibility), and the likelihood of the individual spreading the illness via future contacts (transmission). In practice, future contacts are not known, therefore this study will primarily focus on susceptibility.
 
 Social networks can be modeled as a number of close personal contacts, each paired with a measure of proximity. Each contact is written as (i, j, t), where i and j are the interacting individuals, and t is the time of the interaction (note that (i, j, t) is semantically no different from (j, i, t)). This representation is called a temporal network, and it is frequently used in the study of epidemics. In practice, contact events are identified by using contact tracing.
 
@@ -97,7 +97,7 @@ Degree centrality is a simple metric for static networks where we only consider 
 C_{D}(i) = \sum_{j = 1}^{N}{A_{ij}}
 \end{equation}
 
-Degree centrality is simple and easily calculable, however it does not incorporate knowledge of the entire network structure. Improving this point is the motivation for our next centrality measure.
+Degree centrality is simple and easy to calculate, however it does not incorporate knowledge of the entire network structure. Improving this point is the motivation for our next centrality measure.
 
 ## Closeness Centrality
 
@@ -256,7 +256,7 @@ Set all entries in dist to n\;
 }
 \end{algorithm}
 
-At present, the gold standard for calculating betweenness centrality, Brandes' algorithm (@brandes2001faster), has a runtime complexity of $O(V^{2} + VE)$, where $V$ is the number of nodes and $E$ is the number of edges in the network. The novel algorithm we propose has a runtime complexity of $O(V(V - 1)(V - 2)) \approx O(V^{3})$, which can be reduced to approximately $O(VE + V^{2})$ if we only calculate the centrality for a small number of nodes. Conversely, Brandes' algorithm requires $V^{2} + VE$ iterations regardless of the number of nodes we require centrality calculations for. Moreover, this novel approach is accessible and it utilizes simple data structures (e.g. matrix, 2D array, priority queue) which are either natively available in many programming languages, or easy to implement from built-in language features.
+Currently, the gold standard for calculating betweenness centrality, Brandes' algorithm (@brandes2001faster), has a runtime complexity of $O(V^{2} + VE)$, where $V$ is the number of nodes and $E$ is the number of edges in the network. The novel algorithm we propose has a runtime complexity of $O(V(V - 1)(V - 2)) \approx O(V^{3})$, which can be reduced to approximately $O(VE + V^{2})$ if we only calculate the centrality for a small number of nodes. Conversely, Brandes' algorithm requires $V^{2} + VE$ iterations regardless of the number of nodes we require centrality calculations for. Moreover, this novel approach is accessible and it utilizes simple data structures (e.g. matrix, 2D array, priority queue) which are either natively available in many programming languages, or easy to implement from built-in language features.
 
 ## Katz Centrality
 
@@ -271,7 +271,7 @@ where A is the adjacency matrix and $0 <= \alpha < 1$. $A^{n}$ is simply the n-s
 
 ## Epidemic Simulations for Static Networks
 
-This section describes a novel approach to epidemic modelling using static networks, which I use as a "ground truth" to validate Adjusted Percolation Centrality. A social network is modeled by a static graph, where each node represents an individual, and each edge represents an ongoing, time-independent relationship between two individuals. It is assumed that contacts between any two individuals i and j follows a Poisson Process with a rate parameter of $\lambda_{ij}$, and each contact has a constant probability, $\beta$, of being infectious. The sojourn times (period between contacts) of contacts between i and j follow an exponential distribution with a rate of $\lambda$.
+This section describes a novel approach to epidemic modelling using static networks, which I use as a "ground truth" to validate Adjusted Percolation Centrality. A social network is modeled by a static graph, where each node represents an individual, and each edge represents an ongoing, time-independent relationship between two individuals. It is assumed that contacts between any two individuals i and j follow a Poisson Process with a rate parameter of $\lambda_{ij}$, and each contact has a constant probability, $\beta$, of being infectious. The sojourn times (period between contacts) of contacts between i and j follow an exponential distribution with a rate of $\lambda$.
 
 **Lemma 1: Let Y follow a Poisson Process with rate $\lambda$, and X be the Markov process where for each arrival in Y, X includes the  arrival with probability p. Then X is a Poisson Process with a rate parameter of $p\lambda$.**
 
@@ -440,16 +440,16 @@ Define the distance of the temporal shortest path length over time interval [i, 
 
 ## Temporal Closeness Rank
 
-This study is primarily concerned with the likelihood of infection, as estimating transmission requires future contact tracing data, which is usually not known. Likelihood of infection is roughly analogous to the idea of prestige (also known as rank). I will use the terms prestige and rank interchangeably throughout this paper. In a directional network, a prestigious node is the object of many ties i.e. has many incoming connections. This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are ill-defined in directional graphs, owing to the fact that directional graphs are not necessarily strongly-connected. Due to this limitation, we usually only consider nodes in the influence domain of node i i.e. the set of all nodes from whom $n_{i}$ is reachable. @lin1976foundations proposed the following measure for directional relations, called the proximity prestige:
+This study is primarily concerned with the likelihood of infection, as estimating transmission requires future contact tracing data, which is usually not known. Likelihood of infection is roughly analogous to the idea of prestige (also known as rank). The terms prestige and rank are used interchangeably throughout this paper. In a directional network, a node with high rank is the object of many ties i.e. has many incoming connections. This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are undefined in directional graphs, as directional graphs may not be strongly-connected. Due to this limitation, we usually only consider nodes in the influence domain of node i i.e. the set of all nodes from whom $n_{i}$ is reachable. @lin1976foundations proposed the following measure for directional graphs, called the proximity prestige:
 
 $$P_{p}(n_{i}) = \frac{I_{i}/(g - 1)}{\sum{d(n_{j}, n_{i})}/I_{i}} \tag{1.}$$
-where $I_{i}$ is the size of the influence domain of node i, and g is the total number of nodes in the network.Intuitively, this is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity prestige is defined to be 0.
+where $I_{i}$ is the size of the influence domain of node i, and g is the total number of nodes in the network. Proximity prestige is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity prestige is defined to be 0.
 
 For temporal networks, I propose a modified version
 
 $$P_{p}(\textit{u}_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, \textit{u}}/(g - 1)}{\sum_{\upsilon \in I_{t,i,\textit{u}}}{d_{t, i}(\upsilon, \textit{u})}/I_{t, i, \textit{u}}} \tag{5.}$$
 
-where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity prestige, or TPP for short. The temporal proximity prestige can be normalized by dividing by i.
+where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity prestige, or TP for short. The temporal proximity prestige can be normalized by dividing by i.
 
 Kim and Anderson [2012] proposed temporal closeness, a similar metric which considers all time intervals $[t, i] : t \in [0, i - 1]$.
 
@@ -509,7 +509,7 @@ When each edge is associated with a probability of transmission, as may be the c
 The probability of transmission from an individual to them self is assumed to be one, and hence the natural log becomes 0. Consider a path, P, starting at $\upsilon_{i}$ and ending at $\textit{u}_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P. The probability of path P can be calculated by:
 
 $$e^{\sum_{w \in E}{log(w)}}$$
-It can be shown that for the representation in Figure 2, all highest-probability paths to $\textit{u}_{i}$ can be calculated in $O(i|V|^{2})$ time using a modified version of the Reversed Evolution Network (abbreviated as REN) algorithm proposed by @hanke2017clone. Algorithm 1 shows the psuedocode for this algorithm.
+It can be shown that for the representation in Figure 2, all highest-probability paths to $\textit{u}_{i}$ can be calculated in $O(i|V|^{2})$ time using a modified version of the Reversed Evolution Network (REN) algorithm proposed by @hanke2017clone. Algorithm 1 shows the psuedocode for this algorithm.
 
 
 \begin{algorithm}
@@ -687,7 +687,7 @@ Simulations were carried out using the event-based algorithm first proposed by @
 
 4. Whenever a node gets infected, change it's state to infectious.
 
-5. Stop the simulation when there are no more contacts or no more nodes can be infected.
+5. Stop the simulation when no more nodes can be infected.
 
 Now consider two nodes, i and j, and suppose that i is infected at $t = 0$. There could be thousands of contacts between i and j, however only one of these contacts is contagious.  Clearly we can avoid many unnecessary iterations if we find the first infectious contact in a single step. Now suppose that all contacts are assumed to have a constant transmission probability of $\beta$. Then, the index of the first infectious contact between i and j follows a geometric distribution. The probability that the k'th contact is infectious is given by
 
@@ -705,9 +705,12 @@ The event-based algorithm relies on several user-defined data structures:
 
 Node: A data structure with a unique id and an infection time (**t_inf**) attribute. In addition, each node contains a list of neighbours and a list of contact times (sorted in increasing order) for each neighbor, as well as a list of associated transmission probabilities if necessary. The contact times must be sorted in increasing order to enable a bisection search (the significance of this will become clear).
 
-Heap: A min-heap data structure for storing node id's of infected nodes, ordered by earliest infection time, with $\mbox{O}(\log(\mbox{n}))$ *up-heap* and *down-heap* operations, where $n$ is the number of elements in the heap. A min-heap is conceptually a tree where the root node is the lowest order element, which in this case is the earliest unprocessed infection event. The exact implementation of the heap is unimportant, however the min-heap property must be restored, whenever a node is added or removed, via the *up-heap* and *down-heap* operations.
+Heap: A min-heap data structure for storing node id's of infected nodes, ordered by earliest infection time, with $\text{O}(\log(\text{n}))$ *up-heap* and *down-heap* operations, where $n$ is the number of elements in the heap. A min-heap is conceptually a tree where the root node is the lowest order element, which in this case is the earliest unprocessed infection event. The exact implementation of the heap is unimportant, however the min-heap property must be restored, whenever a node is added or removed, via the *up-heap* and *down-heap* operations.
 
-At the beginning of the simulation, **t_inf** is set to T (i.e. the stopping time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. This is repeated until the heap is empty. When an infected node is processed, it's neighbours are considered in turn. Suppose node i is infected at time $\mbox{t\_inf}_{i} = 20$, and node j is a neighbour of node i. If $\mbox{t\_inf}_{j} < 20$ then node j is skipped. Otherwise, a bisection search is carried out to find the earliest contact time, $t$, such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes i and j, and we sample an integer, k, by Equation (\ref{eq:sample}). If $k \geq m$ then we continue, otherwise we add node j to the heap and update $\mbox{t\_inf}_{j}$.
+At the beginning of the simulation, **t_inf** is set to T (i.e. the stopping time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. When an infected node is processed, it's neighbours are considered in turn. Suppose node i is infected at time $\text{t\_inf}_{i} = 20$, and node j is a neighbour of node i. If $\text{t\_inf}_{j} < 20$ then node j is skipped. Otherwise, a bisection search is carried out to find the earliest contact time, $t$, such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes i and j, and we sample an integer, k, by Equation (\ref{eq:sample}). If $k \geq m$ then we continue, otherwise we add node j to the heap and update $\text{t\_inf}_{j}$. Note that an infectious contact involving node $i$ at time $t$ is only stored if $\text{t\_inf}_{i} > t$.
+
+This process is repeated until no more nodes can be infected. The runtime of the event-based algorithm is proportional to the number of nodes in the network, whereas the runtime of the naive algorithm is proportional to the number of contact events. The event-based algorithm is recommended for dense networks with many contacts, where computational efficiency is required.
+
 
 ## Results
 
@@ -755,7 +758,7 @@ names <- c("Katz Centrality", "Degree Centrality", "Absorption Centrality", "Tem
 
 df <- data.frame(type = names, corr = correlations)
 
-df %>% ggplot(aes(x = type, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Spearman Rank Correlation")
+df %>% ggplot(aes(x = type, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Spearman Rank Correlation") + scale_x_discrete(labels = c("Absorption", "Degree", "Katz", "TBC", "TC", "TP"))
 ```
 ```{r, echo = FALSE, fig.cap = "Pearson correlations between centrality measures and observed likelihood of infection."}
 corKatz = cor(probs, katz$Centrality)
@@ -769,10 +772,10 @@ correlations = c(corKatz, corDeg, corAbs, corTp, corTpp, corTbc)
 
 df <- data.frame(type = names, corr = correlations)
 
-df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Pearson Correlation")
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Pearson Correlation") + scale_x_discrete(labels = c("Absorption", "Degree", "Katz", "TBC", "TC", "TP"))
 ```
 
-The Spearman Correlations are generally large, with Absorption Rank showing a larger correlation ($\rho \approx 0.8$) compared to other metrics. Conversely, the metrics generally showed lower Pearson correlations, especially Katz centrality. This suggests that the metrics should not be used for prediction, rather they should be used for ranking the relative importance of individuals within the same network. TP and TPP performed similarly with regards to ranking individuals, however TPP outperformed TP in terms of Pearson Correlation.
+The Spearman Correlations are generally large, with Absorption Rank showing a larger correlation ($\rho \approx 0.8$) compared to other metrics. Conversely, the metrics generally showed lower Pearson correlations, especially Katz centrality. This suggests that the metrics should not be used for prediction, rather they should be used for ranking the relative importance of individuals within the same network. TC and TP performed similarly in terms of ranking individuals, however TP outperformed TC in terms of Pearson Correlation.
 
 ```{r, echo = FALSE, fig.cap = "Correlations between the five centrality measures."}
 library(ggcorrplot)
@@ -784,7 +787,7 @@ corr <- cor(data)
 ggcorrplot(corr, lab = TRUE)
 ```
 
-Figure 8 shows the Pearson correlations between the five metrics. With the exception of Proximity Rank and Closeness Rank, the metrics are mostly independent, with many weak or negative correlations. This suggests that the metrics are tapping into different effects, and our rankings could be improved by combining many metrics as predictors in a regression model.
+Figure 8 shows the Pearson correlations between the five metrics. Except for Proximity Rank and Closeness Rank, the metrics are mostly independent, with many weak or negative correlations. This suggests that the metrics are tapping into different effects, and our rankings could be improved by combining many metrics as predictors in a regression model.
 
 ### Model Selection
 
@@ -1131,17 +1134,17 @@ In total, 1000 simulations were run for each algorithm. For each run, the indica
 Denote by $\hat{P^{\mathbf{1}}}$ the vector of observed probabilities for algorithm 1 (and likewise for algorithm 2). Thus, $\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}$ is the observed difference between the two algorithms for node i. Suppose we want to test whether this difference is equal to 0. The test statistic is
 
 $$Z = \frac{\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}}{\hat{P_{i}}(1 - \hat{P_{i}})(\frac{1}{1000} + \frac{1}{1000})}$$
-where $\hat{P_{i}}$ is the pooled proportion under the null hypothesis ($P_{i}^{\mathbf{1}} = P_{i}^{\mathbf{2}}$). This is a well-known test statistic which follows a standard normal distribution when the true proportions are equal. In order to test for equality of the vectors $P^{\mathbf{1}}$ and $P^{\mathbf{2}}$, we must adjust the significance level of each individual test to correct for multiple comparisons. Power and Type I error rate are two important factors which influence our choice of adjustment. Power is defined as the probability of falsely accepting the null hypothesis, whereas the Type I error rate is the probability of falsely rejecting the null hypothesis. Multiple comparison adjustments aim to reduce the family-wise Type I error rate by controlling the significance level of each individual comparison. We will discuss several common adjustment methods and their use cases:
+where $\hat{P_{i}}$ is the pooled proportion under the null hypothesis ($P_{i}^{\mathbf{1}} = P_{i}^{\mathbf{2}}$). This is a well-known test statistic which follows a standard normal distribution when the true proportions are equal. In order to test for equality of the vectors $P^{\mathbf{1}}$ and $P^{\mathbf{2}}$, we must adjust the significance level of each individual test to correct for multiple comparisons. Power and Type I error rate are two important factors which influence our choice of adjustment. Power is defined as the probability of falsely accepting the null hypothesis, whereas the Type I error rate is the probability of falsely rejecting the null hypothesis. Multiple comparison adjustments aim to reduce the family-wise Type I error rate by controlling the significance level of each individual comparison. We discuss several common adjustment methods and their use cases:
 
 
 #### Bonferroni Correction:
 
-The Bonferroni correction, proposed by @dunn1961multiple, is an adjustment which controls the family-wise Type I error rate. For a given significance level $\alpha$, the Bonferroni correction guarantees a family-wise Type I error rate which is $\leq \alpha$. It does this by setting the test-wise significance level to $\frac{\alpha}{N}$, where N is the number of tests. The Bonferroni correction is ideal for this experiment because it makes no assumptions about independence between the individual tests. Note that the Bonferroni correction is conservative, meaning it lacks power for rejecting the null hypothesis.
+The Bonferroni correction, proposed by @dunn1961multiple, is an adjustment which controls the family-wise Type I error rate. For a given significance level $\alpha$, the Bonferroni correction guarantees a family-wise Type I error rate which is $\leq \alpha$. It does this by setting the test-wise significance level to $\frac{\alpha}{N}$, where N is the number of tests. The Bonferroni correction makes no assumptions about dependency between tests, however it is less powerful than other methods.
 
 
 #### Holm's Method:
 
-Holm's method, proposed by @holm1979simple, is a powerful alternative to the Bonferroni correction. Holm's method tests the hypotheses iteratively, updating the p-value at each step. First, we sort the list of p-values in increasing order, and we begin the sequential significance tests from the lowest p-value. The algorithm starts with a significance level of $\frac{\alpha}{N}$. If the first result is non-significant, we test the second result with a significance level of $\frac{\alpha}{N - 1}$. In general, the i'th test statistic is tested with a significance level of $\frac{\alpha}{N - i + 1}$. Holm's method also guarantees a family-wise Type I error rate of $\leq \alpha$, however it offers greater power than the Bonferroni correction.
+Holm's method, proposed by @holm1979simple, is a powerful alternative to the Bonferroni correction. Holm's method tests the hypotheses iteratively, updating the p-value at each step. First, we sort the list of p-values in increasing order, and we begin the sequential significance tests from the lowest p-value. The algorithm starts with a significance level of $\frac{\alpha}{N}$. If the first result is non-significant, we test the second result with a significance level of $\frac{\alpha}{N - 1}$. In general, the i'th test statistic is tested with a significance level of $\frac{\alpha}{N - i + 1}$. Holm's method guarantees a family-wise Type I error rate of $\leq \alpha$ and it has greater power than the Bonferroni correction.
 
 
 #### Hochberg Procedure:

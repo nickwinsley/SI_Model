@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  19 SEP 2025 18:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  23 SEP 2025 18:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1260,7 +1260,7 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.
-pdf  used on input line 813.
+pdf  used on input line 812.
 (pdftex.def)             Requested size: 143.81209pt x 177.4743pt.
 
 
@@ -1269,25 +1269,25 @@ pdfTeX warning (ext4): destination with the same identifier (name{equation.9})
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.885 \begin{equation}
+l.884 \begin{equation}
                       
 pdfTeX warning (ext4): destination with the same identifier (name{equation.9}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.885 \begin{equation}
+l.884 \begin{equation}
                       
 pdfTeX warning (ext4): destination with the same identifier (name{equation.9}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.885 \begin{equation}
+l.884 \begin{equation}
                       
 pdfTeX warning (ext4): destination with the same identifier (name{equation.9}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.885 \begin{equation}
+l.884 \begin{equation}
                       
 
 [20 <./TemporalPrestige_files/figure-latex/unnamed-chunk-7-1.pdf>]
@@ -1305,7 +1305,7 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-8-1.
-pdf  used on input line 1061.
+pdf  used on input line 1067.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 <TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf, id=340, 469.755pt x
  325.215pt>
@@ -1313,10 +1313,10 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (t
 ype pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-9-1.
-pdf  used on input line 1062.
+pdf  used on input line 1068.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1061--1063
+Underfull \hbox (badness 10000) in paragraph at lines 1067--1069
 [][]
  []
 
@@ -1331,7 +1331,7 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-10-1
-.pdf  used on input line 1075.
+.pdf  used on input line 1081.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 <TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf, id=356, 469.755pt 
 x 325.215pt>
@@ -1339,7 +1339,7 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-11-1
-.pdf  used on input line 1090.
+.pdf  used on input line 1096.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
@@ -1348,13 +1348,13 @@ Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-11-1
 [28 <./TemporalPrestige_files/figure-latex/unnamed-chunk-10-1.pdf>]
 
 [29 <./TemporalPrestige_files/figure-latex/unnamed-chunk-11-1.pdf>]
-<TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf, id=388, 469.755pt 
+<TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf, id=389, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-12-1
-.pdf  used on input line 1104.
+.pdf  used on input line 1110.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
@@ -1365,7 +1365,7 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-13-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-13-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-13-1
-.pdf  used on input line 1142.
+.pdf  used on input line 1148.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 <TemporalPrestige_files/figure-latex/unnamed-chunk-15-1.pdf, id=401, 469.755pt 
 x 325.215pt>
@@ -1373,28 +1373,29 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-15-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-15-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-15-1
-.pdf  used on input line 1147.
+.pdf  used on input line 1153.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<TemporalPrestige_files/figure-latex/unnamed-chunk-16-1.pdf, id=402, 469.755pt 
+
+
+[31 <./TemporalPrestige_files/figure-latex/unnamed-chunk-13-1.pdf>]
+<TemporalPrestige_files/figure-latex/unnamed-chunk-16-1.pdf, id=416, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-16-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-16-1
-.pdf  used on input line 1149.
+.pdf  used on input line 1155.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[31 <./TemporalPrestige_files/figure-latex/unnamed-chunk-15-1.pdf>]
-
-[32 <./TemporalPrestige_files/figure-latex/unnamed-chunk-13-1.pdf>]
+[32 <./TemporalPrestige_files/figure-latex/unnamed-chunk-15-1.pdf>]
 <TemporalPrestige_files/figure-latex/unnamed-chunk-17-1.pdf, id=427, 469.755pt 
 x 325.215pt>
 File: TemporalPrestige_files/figure-latex/unnamed-chunk-17-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-17-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-17-1
-.pdf  used on input line 1151.
+.pdf  used on input line 1157.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
@@ -1405,7 +1406,7 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-18-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-18-1
-.pdf  used on input line 1153.
+.pdf  used on input line 1159.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
@@ -1416,7 +1417,7 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-19-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-19-1
-.pdf  used on input line 1170.
+.pdf  used on input line 1176.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
@@ -1429,7 +1430,7 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-24-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-24-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-24-1
-.pdf  used on input line 1250.
+.pdf  used on input line 1256.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 <TemporalPrestige_files/figure-latex/unnamed-chunk-25-1.pdf, id=470, 469.755pt 
 x 325.215pt>
@@ -1437,7 +1438,7 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-25-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-25-1
-.pdf  used on input line 1254.
+.pdf  used on input line 1260.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
@@ -1448,7 +1449,7 @@ File: TemporalPrestige_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file (
 type pdf)
 <use TemporalPrestige_files/figure-latex/unnamed-chunk-26-1.pdf>
 Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-26-1
-.pdf  used on input line 1266.
+.pdf  used on input line 1272.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
@@ -1461,12 +1462,12 @@ Package pdftex.def Info: TemporalPrestige_files/figure-latex/unnamed-chunk-26-1
 [41]
 
 [42]
-Overfull \hbox (6.70908pt too wide) in paragraph at lines 1435--1436
+Overfull \hbox (6.70908pt too wide) in paragraph at lines 1440--1441
  []\T1/lmr/m/n/12 (-20) parameter
  []
 
 
-Overfull \hbox (6.70908pt too wide) in paragraph at lines 1447--1448
+Overfull \hbox (6.70908pt too wide) in paragraph at lines 1452--1453
  []\T1/lmr/m/n/12 (-20) parameter
  []
 
@@ -1483,11 +1484,11 @@ L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 37126 strings out of 473523
- 846480 string characters out of 5714631
+ 37128 strings out of 473523
+ 846500 string characters out of 5714631
  1333834 words of memory out of 5000000
  59316 multiletter control sequences out of 15000+600000
- 646653 words of font info for 193 fonts, out of 8000000 for 9000
+ 646740 words of font info for 194 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,21n,93p,1015b,681s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
@@ -1511,7 +1512,7 @@ ic/lm/lmsy6.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/publi
 c/lm/lmsy8.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public
 /amsfonts/symbols/msam10.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/zapfding/uzdr.pfb>
-Output written on TemporalPrestige.pdf (45 pages, 1160865 bytes).
+Output written on TemporalPrestige.pdf (45 pages, 1161060 bytes).
 PDF statistics:
  766 PDF objects out of 1000 (max. 8388607)
  212 named destinations out of 1000 (max. 500000)
