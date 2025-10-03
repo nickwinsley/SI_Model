@@ -961,7 +961,7 @@ barplot(scores, main = "Variable Importance")
 
 Katz centrality, Degree Centrality and Absorption Centrality had significantly higher importance rankings than other predictors. However, correlated predictors (for instance, TP and TPP) may have attenuated importance rankings due to multicollinearity (high correlation between features). For this reason, iterative feature selection methods (i.e. testing many combinations of features systematically) are often used in lieu of feature importance scores.
 
-We test all possible combinations of two or more features by 5-fold cross validation. Each model was tested with four different values of the complexity parameter, a regularization criterion which limits the complexity of the tree in order to prevent over-fitting. Models were evaluated by the Mean Squared Error (MSE) metric, and the five best-performing models were tested against a holdout set.
+We test all possible combinations of two or more features by 5-fold cross validation using decision tree regression. Each model was tested with four different values of the complexity parameter (0.0001, 0.001, 0.006, 0.01), a regularization criterion which limits the complexity of the tree in order to prevent over-fitting. Models were evaluated by the Mean Squared Error (MSE) metric, and the five best-performing models are shown in Table 1.
 
 ```{r, echo = FALSE, message = FALSE}
 library(caret)
@@ -987,7 +987,7 @@ library(doParallel)
 # Load the "foreach" package for splitting loops across multiple cores.
 library(foreach)
 
-library(pander)
+suppressPackageStartupMessages(library(pander))
 
 registerDoParallel(cores = 4)
 
@@ -1006,6 +1006,16 @@ data.shuffled <- data[sample(1:nrow(data), nrow(data)), ]
 data.shuffled <- as.data.frame(lapply(data.shuffled, as.numeric))
 
 names(data.shuffled) <- names(data)
+
+sample_size <- floor(0.85 * nrow(data.shuffled))
+
+indices <- sample(1:nrow(data.shuffled), size = sample_size, replace = F)
+
+holdout <- data.shuffled[-indices, ]
+
+names(holdout) <- names(data.shuffled)
+
+data.shuffled <- data.shuffled[indices, ]
 
 folds <- 5
 
@@ -1032,6 +1042,8 @@ best.models <- matrix(NA, nrow = 5, ncol = length(var.indices), dimnames = list(
 ```
 
 ```{r, echo = FALSE}
+suppressPackageStartupMessages(library(Metrics))
+
 for (i in 1:5)
 {
   for (j in 1:ncol(best.models)) {
@@ -1061,12 +1073,72 @@ best.models <- cbind(round(as.numeric(unlist(MSE.rep.cv[MSE.ordered[1:5]])), 6),
 
 colnames(best.models) <- new_names
 
-pander::pander(best.models, caption = "Five best performing feature combinations and their MSE")
+pander::pander(best.models, caption = "Five best performing feature combinations in cross-validation and their MSE")
 ```
 
-The best-performing model used Absorption Rank, Temporal Katz Centrality and Degree Centrality. As expected, Absorption Centrality was included in all five models, however the inclusion of Temporal Proximity Prestige did not exclude Temporal Prestige. Figure 12 compares the Root Mean Squared Error (RMSE) of the final model to that of the individual predictors. Katz Centrality and Temporal Closeness were omitted due to extremely large RMSE values.
+```{r, echo = FALSE}
+stanDev <- sd(MSE.rep.cv)
 
-```{r, echo = FALSE, message = FALSE, cache = TRUE, fig.lab = "Predicted values vs Observed values for the decision tree", warnings = FALSE}
+nums <- 1:length(MSE.rep.cv)
+
+indices <- nums[MSE.rep.cv <= MSE.rep.cv[MSE.ordered[1]] + stanDev]
+
+holdoutMSE <- rep(NA, length(indices))
+
+X = holdout[,-c(names(holdout) == "likelihood")]
+
+names(X) <- names(holdout)[var.indices]
+
+Y = holdout$likelihood
+
+i = 1
+
+for (ind in indices){
+  holdoutMSE[i] <- rmse(predict(all.models.fit.cv[[ind]], newdata = X[, predictors(all.models.fit.cv[[ind]])]), Y)^{2}
+  i = i + 1
+}
+
+bestModels <- order(holdoutMSE)[1:5]
+
+best.models <- matrix(NA, nrow = 5, ncol = length(var.indices), dimnames = list(NULL, names(data[var.indices])))
+
+for (i in 1:5)
+{
+  for (j in 1:ncol(best.models)) {
+    
+    if (all.comb[bestModels[i], j] == 1) {
+      best.models[i, j] = names(data[var.indices])[j]
+    }
+    
+    else {
+      best.models[i, j] = "N/A"
+    }
+    
+  }
+}
+
+fun <- function(row) {
+  ifelse(row == "N/A", "\u2717", "\u2713")
+}
+
+new_names <- c("MSE", colnames(best.models))
+
+best.models <- apply(best.models, 1, fun)
+
+best.models <- matrix(best.models, nrow = 5)
+
+best.models <- cbind(round(as.numeric(unlist(holdoutMSE[bestModels[1:5]])), 6), best.models)
+
+colnames(best.models) <- new_names
+
+pander::pander(best.models, caption = "Five best-performing feature combinations on the holdout set and their MSE")
+```
+
+The best-performing model in the cross-validation phase used Absorption Rank, Temporal Katz Centrality and Degree Centrality. As expected, Absorption Centrality was included in all five models, however the inclusion of Temporal Proximity Prestige did not exclude Temporal Prestige. The standard deviation of cross-validation MSE scores was calculated for all feature combinations, and the MSE on the holdout set was calculated for all models within one standard deviation of the lowest model. Table 2 shows the five best-performing feature combinations on the holdout set. The best-performing model on the holdout set included Temporal Closeness Rank (TC), Katz Centrality and Degree Centrality as predictors, although these results should be interpreted with caution, as the holdout set comprised only 15% of the data set, therefore we would expect considerable sampling error (which potentially explains why the MSE estimates for the best-performing models on the holdout set are much lower than during cross-validation).
+
+Each centrality metric was fitted in a simple linear regression model with one predictor, and the results were compared against the final decision tree model. Figure 12 compares the proportion of variance ($R^{2}$) in likelihood of infection explained by each centrality metric and the final decision tree chosen during cross-validation. 
+
+```{r, echo = FALSE, message = FALSE, cache = TRUE, fig.lab = "Predicted values vs Observed values for the decision tree", warnings = FALSE, output = FALSE}
 library(ggplot2)
 
 split <- initial_split(data, prop = 0.75)
@@ -1093,19 +1165,21 @@ df %>% ggplot(aes(x = x, y = y)) + geom_point() + xlab("Predicted Values") + yla
 ```{r, echo = FALSE, fig.cap = "Comparison of RMSE for final decision tree and individual predictors", warning = FALSE}
 suppressPackageStartupMessages(library(Metrics))
 
-full_rmse <- min(all.models.fit.cv[[MSE.ordered[1]]]$results$RMSE)
-abs_rmse <- rmse(data$Absorb, data$likelihood)
-katz_rmse <- rmse(data$Katz, data$likelihood)
-deg_rmse <- rmse(data$Degree, data$likelihood)
-tp_rmse <- rmse(data$TC, data$likelihood)
-tpp_rmse <- rmse(data$TP, data$likelihood)
-tbc_rmse <- rmse(data$TBC, data$likelihood)
+sstY <- sum((y - mean(y))^{2})
 
-rmse_vec <- c(full_rmse, abs_rmse, deg_rmse, tpp_rmse, tbc_rmse)
+full_rmse <- 1 - (min(all.models.fit.cv[[MSE.ordered[1]]]$results$RMSE)^{2}/sstY)
+abs_rmse <- summary(lm(likelihood ~ Absorb, data = data))$r.squared
+katz_rmse <- summary(lm(likelihood ~ Katz, data = data))$r.squared
+deg_rmse <- summary(lm(likelihood ~ Degree, data = data))$r.squared
+tp_rmse <- summary(lm(likelihood ~ TC, data = data))$r.squared
+tpp_rmse <- summary(lm(likelihood ~ TP, data = data))$r.squared
+tbc_rmse <- summary(lm(likelihood ~ TBC, data = data))$r.squared
 
-names(rmse_vec) <- c("Final Model", "Absorb", "Degree", "TP", "TBC")
+rmse_vec <- c(full_rmse, abs_rmse, deg_rmse, katz_rmse, tp_rmse, tpp_rmse, tbc_rmse)
 
-barplot(rmse_vec, main = "Comparison of RMSE for final decision tree and individual predictors", xlab = "Predictor", ylab = "RMSE", col = "blue")
+names(rmse_vec) <- c("Final Model", "Absorb", "Degree", "TP", "TBC", "TC", "Katz")
+
+barplot(rmse_vec, main = "R squared for final decision tree and six predictors", xlab = "Model", ylab = "R squared", col = "blue")
 ```
 
 Clearly, the Decision Tree model has the lowest RMSE, followed closely by Absorption Rank and Temporal Betweenness Centrality. It should be clear that RMSE rankings are only meaningful in the context of prediction, and these results should be interpreted accordingly. When ranking the relative importance of nodes in a network, other metrics should be given greater importance (e.g. Spearman Rank Correlation).
@@ -1114,8 +1188,6 @@ Clearly, the Decision Tree model has the lowest RMSE, followed closely by Absorp
 
 corPear <- cor(predictions, yTest, method = "spearman")
 corSpear <- cor(predictions, yTest, method = "pearson")
-
-
 
 cors <- c(corPear, corSpear)
 
