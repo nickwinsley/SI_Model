@@ -82,7 +82,7 @@ where $\pi(x)$ is the transmission probability of the contact and $c_{i}$ is the
 
 $$log\left(\frac{\pi(x)}{(1 - \pi(x))}\right) = \alpha + \beta_{1}(c_{1} + 2c_{2} + 3c_{3})$$
 
-However, this simplified model was rejected due to insufficient evidence to suggest a proportional relationship. In practice, transmission probabilities can be estimated by exogenous information (for instance, clinical knowledge or self-reported infections paired with contact tracing data). It should be clear that \ref{eq:logistic} functions as a proof of concept, and clinical experts should be consulted in real-world applications.
+However, this simplified model was rejected due to insufficient evidence to suggest a proportional relationship. In practice, transmission probabilities can be estimated by exogenous information (for instance, clinical knowledge or self-reported infections paired with contact tracing data). It should be clear that Equation \ref{eq:logistic} functions as a proof of concept, and clinical experts should be consulted in real-world applications.
 
 ## Centrality
 
@@ -108,7 +108,7 @@ For undirected graphs, @bavelas1950communication proposed closeness centrality
 C_{c}(\textit{u}) = \frac{N - 1}{\sum_{\upsilon \neq \textit{u}}d(\textit{u}, \upsilon)}
 \end{equation}
 
-where N is the number of nodes and $d(\textit{u}, \upsilon)$ is the distance of the shortest path between $\upsilon$ and $\textit{u}$. Thus, referring to Figure 1, the closeness centrality of node E is $\frac{4}{1 + 1 + 2 + 3} = \frac{4}{7}$. Closeness centrality can be interpreted as the efficiency with which a node can access all other nodes in a network.
+where N is the number of nodes and $d(\textit{u}, \upsilon)$ is the distance of the shortest path between $\upsilon$ and $\textit{u}$. Thus, referring to Figure 1, the closeness centrality of node E is $\frac{4}{1 + 1 + 2 + 3} = \frac{4}{7}$. Closeness centrality can be roughly interpreted as the efficiency of reaching all other nodes in a network.
 
 ```{r, engine = "tikz", fig.cap = "A simple undirected graph", echo = FALSE}
 \begin{tikzpicture}
@@ -267,7 +267,7 @@ Betweenness and Closeness centrality focus on shortest paths, which potentially 
   C_{K}(i) = \sum_{j = 1}^{n}{(I + \alpha{A} + \alpha^{2}A^{2} + \alpha^{3}A^{3} + ...)_{ij}}
 \end{equation}
 
-where A is the adjacency matrix and $0 <= \alpha < 1$. $A^{n}$ is simply the n-step adjacency matrix for the network, and $\alpha^{n}$ decreases as n grows, therefore longer paths are down weighted. For a technical reason, the infinite sum ($I + \alpha{A} + ...$) converges when $\alpha <= \frac{1}{\rho(A)}$ where $\rho(A)$ is the spectral radius of A i.e. the largest absolute value of any of it's eigenvalues. Under this condition, the sum converges to $(I - \alpha{A})^{-1}$. If we are only interested in the first n steps, we adjust the formula accordingly to get $(I - \alpha^{n + 1}A^{n + 1})(I - \alpha{A})^{-1}$. This result is convenient for temporal networks, where a finite number of steps in each snapshot is often assumed.
+where A is the adjacency matrix and $0 <= \alpha < 1$. $A^{n}$ is simply the n-step adjacency matrix for the network, and $\alpha^{n}$ decreases as n grows, therefore longer paths are down weighted. For a technical reason, the infinite sum ($I + \alpha{A} + ...$) converges to $(I - \alpha{A})^{-1}$ when $\alpha <= \frac{1}{\rho(A)}$ where $\rho(A)$ is the spectral radius of A i.e. the largest absolute value of any of it's eigenvalues. If we are only interested in the first n steps, we adjust the formula to get $(I - \alpha^{n + 1}A^{n + 1})(I - \alpha{A})^{-1}$. This result is convenient for temporal networks, where a finite number of steps in each snapshot is often assumed.
 
 ## Epidemic Simulations for Static Networks
 
@@ -443,13 +443,13 @@ Define the distance of the temporal shortest path length over time interval [i, 
 This study is primarily concerned with the likelihood of infection, as estimating transmission requires future contact tracing data, which is usually not known. Likelihood of infection is roughly analogous to the idea of prestige (also known as rank). The terms prestige and rank are used interchangeably throughout this paper. In a directional network, a node with high rank is the object of many ties i.e. has many incoming connections. This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are undefined in directional graphs, as directional graphs may not be strongly-connected. Due to this limitation, we usually only consider nodes in the influence domain of node i i.e. the set of all nodes from whom $n_{i}$ is reachable. @lin1976foundations proposed the following measure for directional graphs, called the proximity prestige:
 
 $$P_{p}(n_{i}) = \frac{I_{i}/(g - 1)}{\sum{d(n_{j}, n_{i})}/I_{i}} \tag{1.}$$
-where $I_{i}$ is the size of the influence domain of node i, and g is the total number of nodes in the network. Proximity prestige is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity prestige is defined to be 0.
+where $I_{i}$ is the size of the influence domain of node i, and g is the total number of nodes in the network. Proximity prestige is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity rank is defined to be 0.
 
 For temporal networks, I propose a modified version
 
 $$P_{p}(\textit{u}_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, \textit{u}}/(g - 1)}{\sum_{\upsilon \in I_{t,i,\textit{u}}}{d_{t, i}(\upsilon, \textit{u})}/I_{t, i, \textit{u}}} \tag{5.}$$
 
-where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity prestige, or TP for short. The temporal proximity prestige can be normalized by dividing by i.
+where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity rank, or TP for short. The temporal proximity rank can be normalized by dividing by i.
 
 Kim and Anderson [2012] proposed temporal closeness, a similar metric which considers all time intervals $[t, i] : t \in [0, i - 1]$.
 
@@ -461,7 +461,7 @@ C_{i,j} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{j, t}
 When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn \ref{eq:tc} into a prestige measure, we simply reverse the direction of the paths to get:
 
 $$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\textit{u}, \upsilon)}}} \tag{4.}$$
-We will call this the temporal prestige. The temporal prestige can be normalized by dividing by $(|\textit{V}| - 1)(j - i)$. 
+We will call this the temporal closeness rank. The temporal closeness rank can be normalized by dividing by $(|\textit{V}| - 1)(j - i)$. 
 
 
 ## Multiplicative Temporal Closeness Rank
@@ -524,7 +524,7 @@ contacts <- List of contact times sorted in increasing order. Each contact time 
   Read line\;
   Add line to contacts using bisection search\;
 }
-tcp <- Temporal closeness prestige\;
+tcp <- Temporal closeness rank\;
 reachable <- Set of reachable nodes\;
 Add target node to reachable\;
 sums <- Map of node id to log of the highest probability path (obtained by summing edge weights)\;
@@ -580,7 +580,7 @@ s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}
 
 
 
-Denote by $\mathbf{B}_{i}(t)$ the transition matrix obtained by taking $\mathbf{B}(t)$, and setting all entries in the i'th row to zero, except the diagonal entry (which is necessarily one). The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the absorption rank for individual i, at time t. The absorption rank of individual i is interpreted as the probability that a random walk through the temporal network passes through i.
+Denote by $\mathbf{B}_{i}(t)$ the transition matrix obtained by taking $\mathbf{B}(t)$, and setting all entries (expect the diagonal entry) in the i'th row to zero. The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the absorption rank for individual i, at time t. The absorption rank of individual i is (roughly) interpreted as the probability that a random walk through the temporal network passes through i.
 
 If we assume a constant transmission probability, p, for all contacts, \ref{eq:absorb} reduces to:
 
@@ -789,7 +789,7 @@ corr <- cor(data)
 ggcorrplot(corr, lab = TRUE)
 ```
 
-Figure 8 shows the Pearson correlations between the five metrics. Except for Proximity Rank and Closeness Rank, the metrics are mostly independent, with many weak or negative correlations. This suggests that the metrics are tapping into different effects, and our rankings could be improved by combining many metrics as predictors in a regression model.
+Figure 8 shows the Pearson correlations between the five metrics. Except for Temporal Closeness Rank and Temporal Proximity Rank, the metrics are mostly independent, with many weak or negative correlations. This suggests that the metrics are tapping into different effects, and our rankings could be improved by combining many metrics as predictors in a regression model.
 
 ### Model Selection
 
@@ -816,7 +816,7 @@ Looking at the pairwise relationships (shown in Figure 10), the assumptions of l
 
 Polynomial Regression is based on a similar concept to linear regression, however it allows for powers greater than one in the regression equation (e.g. $y = \beta_{1}X + \beta_{2}X^{2}$). Closed-form solutions are rarely known, so the coefficients must be "learned" by numerical optimization methods. Decision Trees split the data into progressively smaller subgroups using decision rules (e.g. X > 40), and each group (sometimes called a leaf node) is assigned a predicted value. The prediction for a given observation is then the predicted value of it's respective leaf node, which is determined by the decision rules. At each branch of the tree, the optimal decision rule is found by minimizing a splitting criteria (e.g. Sum of Squared Errors (SSE), Mean Squared Error (MSE) etc). Gradient Boosting Regression takes a weighted average of predictions for many decision trees. This may result in better predictions, especially when the number of predictors is large or the data is very noisy.
 
-The data was split into training and test sets, comprising 75% and 25% of the data respectively. The models were trained on the training set and evaluated on the test set. Hyper parameters were optimized by 10-fold cross validation. 
+The data was split into training and test sets, comprising 75% and 25% of the data respectively. Hyper parameters were optimized by cross-validation on the training set and evaluated on the test set. 
 
 ```{r, echo = FALSE, fig.cap = "Predicted vs Actual values after training Gradient Boosting model and applying to test set.", cache = TRUE, warning = FALSE, message = FALSE}
 library(rsample)
@@ -865,6 +865,10 @@ y_pred = predict(model, newdata = xgb.DMatrix(data.matrix(xTest)))
 
 corXG <- cor(y_pred, yTest, method = "spearman")
 
+SST <- sum((yTest - mean(yTest))^{2})/length(yTest)
+
+rXG <- 1 - mse(y_pred, yTest)/SST
+
 df <- data.frame(predicted = y_pred, actual = yTest)
 
 df %>% ggplot(aes(x = predicted, y = actual)) + geom_point() + geom_smooth(color = "blue")
@@ -874,14 +878,19 @@ df %>% ggplot(aes(x = predicted, y = actual)) + geom_point() + geom_smooth(color
 library(rsample)
 library(rpart)
 library(rpart.plot)
+suppressPackageStartupMessages(library(Metrics))
 
 decTree <- rpart(likelihood ~ ., data = train)
 ```
 
 ```{r, echo = FALSE}
+SST <- sum((yTest - mean(yTest))^{2})/length(yTest)
+
 y_pred = predict(decTree, newdata = xTest)
 
 corTree = cor(y_pred, yTest, method = "spearman")
+
+rTree <- 1 - mse(y_pred, yTest)/SST
 
 plot(y_pred, test$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Decision Tree.")
 ```
@@ -928,7 +937,10 @@ coefs = model$par
 
 y_pred = polynomial_predictor(coefs)
 
+SST <- sum((y - mean(y))^{2})/length(y)
+
 corPoly <- cor(y_pred, y, method = "spearman")
+rPoly <- 1 - mse(y_pred, y)/SST
 
 plot(y_pred, data$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Polynomial Regression")
 ```
@@ -940,18 +952,22 @@ names = c("Polynomial Regression", "Decision Tree Regression", "XGBoost Regressi
 
 df <- data.frame(type = names, corr = correlations)
 
-df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Spearman Correlation")
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue") + xlab("Centrality Measure") + ylab("Spearman Correlation")
 ```
 
-```{r, echo = FALSE, fig.lab = "Pearson correlations between predictions and observations for three machine learning algorithms."}
-df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Pearson Correlation")
+```{r, echo = FALSE, fig.lab = "Pearson correlations between predictions and observations for three machine learning algorithms.", output = FALSE, eval = FALSE}
+
+df$corr <- c(rPoly, rTree, rXG)
+
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("R-Squared")
 ```
 
-Figures 11-13 show the predicted values plotted against observed values for the three algorithms. Figures 14 and 15 show the Spearman and Pearson correlations. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank.
+Figures 11-13 show the predicted values plotted against observed values for the three algorithms. Figures 14 and 15 show the Spearman and Pearson correlations. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank, therefore we subsequently use decision trees for all further modelling.
+
 
 ### Feature Selection
 
-If some predictors in a model are unimportant, we risk losing model performance due to the "Curse of Dimensionality". Large numbers of unimportant predictors may result in increased overfitting and difficulty with finding meaningful patterns in the data. The process of selecting a good set of predictors is called feature selection.
+If some predictors in a model are unimportant, we risk losing model performance due to the "Curse of Dimensionality". Large numbers of unimportant predictors may result in increased over fitting and difficulty with finding meaningful patterns in the data. The process of selecting a good set of predictors is called feature selection.
 
 ```{r, echo = FALSE, table.cap = "Feature importance scores of the six features in the decision tree."}
 scores <- decTree$variable.importance
@@ -961,7 +977,7 @@ barplot(scores, main = "Variable Importance")
 
 Katz centrality, Degree Centrality and Absorption Centrality had significantly higher importance rankings than other predictors. However, correlated predictors (for instance, TP and TPP) may have attenuated importance rankings due to multicollinearity (high correlation between features). For this reason, iterative feature selection methods (i.e. testing many combinations of features systematically) are often used in lieu of feature importance scores.
 
-We test all possible combinations of two or more features by 5-fold cross validation using decision tree regression. Each model was tested with four different values of the complexity parameter (0.0001, 0.001, 0.006, 0.01), a regularization criterion which limits the complexity of the tree in order to prevent over-fitting. Models were evaluated by the Mean Squared Error (MSE) metric, and the five best-performing models are shown in Table 1.
+We test all possible combinations of two or more features by 5-fold cross validation using decision tree regression. Each model was tested with four different values of the complexity parameter (0.0001, 0.001, 0.006, 0.01), a regularization criterion which limits the complexity of the tree in order to prevent over-fitting. Models were evaluated by the Mean Squared Error (MSE) metric with an estimated standard error, and the five best-performing models are shown in Table 1.
 
 ```{r, echo = FALSE, message = FALSE}
 library(caret)
@@ -1044,6 +1060,69 @@ best.models <- matrix(NA, nrow = 5, ncol = length(var.indices), dimnames = list(
 ```{r, echo = FALSE}
 suppressPackageStartupMessages(library(Metrics))
 
+calcSE <- function(model) {
+  MSE <- model$resample$RMSE^{2}
+  return(sd(MSE))
+}
+
+for (i in 1:5)
+{
+  for (j in 1:ncol(best.models)) {
+    
+    if (all.comb[MSE.ordered[i], j] == 1) {
+      best.models[i, j] = names(data[var.indices])[j]
+    }
+    
+    else {
+      best.models[i, j] = "N/A"
+    }
+    
+  }
+}
+
+fun <- function(row) {
+  ifelse(row == "N/A", "\u2717", "\u2713")
+}
+
+new_names <- c("MSE", "Standard Error", colnames(best.models))
+
+best.models <- apply(best.models, 1, fun)
+
+best.models <- matrix(best.models, nrow = 5)
+
+mseSD <- sapply(all.models.fit.cv[MSE.ordered[1:5]], calcSE)
+
+best.models <- cbind(round(as.numeric(unlist(MSE.rep.cv[MSE.ordered[1:5]])), 6), round(mseSD, 6), best.models)
+
+colnames(best.models) <- new_names
+
+pander::pander(best.models, caption = "Five best performing feature combinations in cross-validation and their MSE")
+```
+
+```{r, echo = FALSE}
+stanDev <- sd(MSE.rep.cv)
+
+nums <- 1:length(MSE.rep.cv)
+
+indices <- nums[MSE.rep.cv <= MSE.rep.cv[MSE.ordered[1]] + stanDev]
+
+holdoutMSE <- rep(NA, 5)
+
+X = holdout[,-c(names(holdout) == "likelihood")]
+
+names(X) <- names(holdout)[var.indices]
+
+Y = holdout$likelihood
+
+i = 1
+
+for (ind in MSE.ordered[1:5]){
+  holdoutMSE[i] <- mse(predict(all.models.fit.cv[[ind]], newdata = X[, predictors(all.models.fit.cv[[ind]])]), Y)
+  i = i + 1
+}
+
+best.models <- matrix(NA, nrow = 5, ncol = length(var.indices), dimnames = list(NULL, names(data[var.indices])))
+
 for (i in 1:5)
 {
   for (j in 1:ncol(best.models)) {
@@ -1069,79 +1148,21 @@ best.models <- apply(best.models, 1, fun)
 
 best.models <- matrix(best.models, nrow = 5)
 
-best.models <- cbind(round(as.numeric(unlist(MSE.rep.cv[MSE.ordered[1:5]])), 6), best.models)
+best.models <- cbind(round(as.numeric(unlist(holdoutMSE)), 6), best.models)
 
 colnames(best.models) <- new_names
 
-pander::pander(best.models, caption = "Five best performing feature combinations in cross-validation and their MSE")
+pander::pander(best.models, caption = "MSE of five best-performing feature combinations on the holdout set")
 ```
 
-```{r, echo = FALSE}
-stanDev <- sd(MSE.rep.cv)
+The best-performing model in the cross-validation phase used Absorption Rank, Temporal Katz Centrality and Degree Centrality. As expected, Absorption Centrality was included in all five models, however the inclusion of Temporal Proximity Prestige did not exclude Temporal Prestige. The standard deviation of cross-validation MSE scores was calculated for all feature combinations, and the MSE on the holdout set was calculated for all models within one standard deviation of the lowest model. Table 2 shows the MSE on the holdout set. All models showed lower MSE estimates during cross-validation, which potentially indicates over-fitting. MSE estimates are typically lower during cross-validation for several reasons, including information leakage, wherein the validation set influences hyperparameter choices, leading to bias. It should be clear that the holdout set MSE is not used for ranking models, and it exclusively functions as an unbiased estimate of the MSE. 
 
-nums <- 1:length(MSE.rep.cv)
-
-indices <- nums[MSE.rep.cv <= MSE.rep.cv[MSE.ordered[1]] + stanDev]
-
-holdoutMSE <- rep(NA, length(indices))
-
-X = holdout[,-c(names(holdout) == "likelihood")]
-
-names(X) <- names(holdout)[var.indices]
-
-Y = holdout$likelihood
-
-i = 1
-
-for (ind in indices){
-  holdoutMSE[i] <- rmse(predict(all.models.fit.cv[[ind]], newdata = X[, predictors(all.models.fit.cv[[ind]])]), Y)^{2}
-  i = i + 1
-}
-
-bestModels <- order(holdoutMSE)[1:5]
-
-best.models <- matrix(NA, nrow = 5, ncol = length(var.indices), dimnames = list(NULL, names(data[var.indices])))
-
-for (i in 1:5)
-{
-  for (j in 1:ncol(best.models)) {
-    
-    if (all.comb[bestModels[i], j] == 1) {
-      best.models[i, j] = names(data[var.indices])[j]
-    }
-    
-    else {
-      best.models[i, j] = "N/A"
-    }
-    
-  }
-}
-
-fun <- function(row) {
-  ifelse(row == "N/A", "\u2717", "\u2713")
-}
-
-new_names <- c("MSE", colnames(best.models))
-
-best.models <- apply(best.models, 1, fun)
-
-best.models <- matrix(best.models, nrow = 5)
-
-best.models <- cbind(round(as.numeric(unlist(holdoutMSE[bestModels[1:5]])), 6), best.models)
-
-colnames(best.models) <- new_names
-
-pander::pander(best.models, caption = "Five best-performing feature combinations on the holdout set and their MSE")
-```
-
-The best-performing model in the cross-validation phase used Absorption Rank, Temporal Katz Centrality and Degree Centrality. As expected, Absorption Centrality was included in all five models, however the inclusion of Temporal Proximity Prestige did not exclude Temporal Prestige. The standard deviation of cross-validation MSE scores was calculated for all feature combinations, and the MSE on the holdout set was calculated for all models within one standard deviation of the lowest model. Table 2 shows the five best-performing feature combinations on the holdout set. The best-performing model on the holdout set included Temporal Closeness Rank (TC), Katz Centrality and Degree Centrality as predictors, although these results should be interpreted with caution, as the holdout set comprised only 15% of the data set, therefore we would expect considerable sampling error (which potentially explains why the MSE estimates for the best-performing models on the holdout set are much lower than during cross-validation).
-
-Each centrality metric was fitted in a simple linear regression model with one predictor, and the results were compared against the final decision tree model. Figure 12 compares the proportion of variance ($R^{2}$) in likelihood of infection explained by each centrality metric and the final decision tree chosen during cross-validation. 
+The data is split into training and test sets comprising 60% and 40% of the data respectively. Each centrality metric was fitted on the training set by a simple linear regression model with one predictor. A decision tree was fitted on the training set by using the best-performing hyperparameters and feature set chosen during cross-validation. Figure 12 compares the proportion of variance ($R^{2}$) of likelihood of infection explained by each centrality metric and the decision tree when applied to the test set. 
 
 ```{r, echo = FALSE, message = FALSE, cache = TRUE, fig.lab = "Predicted values vs Observed values for the decision tree", warnings = FALSE, output = FALSE}
 library(ggplot2)
 
-split <- initial_split(data, prop = 0.75)
+split <- initial_split(data, prop = 0.6)
 
 train <- training(split)
 
@@ -1164,25 +1185,27 @@ df %>% ggplot(aes(x = x, y = y)) + geom_point() + xlab("Predicted Values") + yla
 
 ```{r, echo = FALSE, fig.cap = "Comparison of RMSE for final decision tree and individual predictors", warning = FALSE}
 suppressPackageStartupMessages(library(Metrics))
+suppressPackageStartupMessages(library(modelr))
 
-sstY <- sum((y - mean(y))^{2})
+SST <- sum((yTest - mean(yTest))^{2})/length(yTest)
 
-full_rmse <- 1 - (min(all.models.fit.cv[[MSE.ordered[1]]]$results$RMSE)^{2}/sstY)
-abs_rmse <- summary(lm(likelihood ~ Absorb, data = data))$r.squared
-katz_rmse <- summary(lm(likelihood ~ Katz, data = data))$r.squared
-deg_rmse <- summary(lm(likelihood ~ Degree, data = data))$r.squared
-tp_rmse <- summary(lm(likelihood ~ TC, data = data))$r.squared
-tpp_rmse <- summary(lm(likelihood ~ TP, data = data))$r.squared
-tbc_rmse <- summary(lm(likelihood ~ TBC, data = data))$r.squared
+
+full_rmse <- 1 - (Metrics::mse(predictions, yTest)/SST)
+abs_rmse <- rsquare(lm(likelihood ~ Absorb, data = train), data = test)
+katz_rmse <- rsquare(lm(likelihood ~ Katz, data = train), data = test)
+deg_rmse <- rsquare(lm(likelihood ~ Degree, data = train), data = test)
+tp_rmse <- rsquare(lm(likelihood ~ TC, data = train), data = test)
+tpp_rmse <- rsquare(lm(likelihood ~ TP, data = train), data = test)
+tbc_rmse <- rsquare(lm(likelihood ~ TBC, data = train), data = test)
 
 rmse_vec <- c(full_rmse, abs_rmse, deg_rmse, katz_rmse, tp_rmse, tpp_rmse, tbc_rmse)
 
-names(rmse_vec) <- c("Final Model", "Absorb", "Degree", "TP", "TBC", "TC", "Katz")
+names(rmse_vec) <- c("Tree", "Absorb", "Degree", "TP", "TBC", "TC", "Katz")
 
 barplot(rmse_vec, main = "R squared for final decision tree and six predictors", xlab = "Model", ylab = "R squared", col = "blue")
 ```
 
-Clearly, the Decision Tree model has the lowest RMSE, followed closely by Absorption Rank and Temporal Betweenness Centrality. It should be clear that RMSE rankings are only meaningful in the context of prediction, and these results should be interpreted accordingly. When ranking the relative importance of nodes in a network, other metrics should be given greater importance (e.g. Spearman Rank Correlation).
+The Decision Tree model showed the highest R-squared value, followed closely by Absorption Rank and Degree Centrality. It should be clear that these rankings are only meaningful in the context of prediction. When ranking the relative importance of nodes in a network, other metrics should be given greater importance (e.g. Spearman Rank Correlation).
 
 ```{r, echo = FALSE}
 
@@ -1193,7 +1216,7 @@ cors <- c(corPear, corSpear)
 
 names(cors) <- c("Pearson Correlation", "Spearman Correlation")
 
-barplot(cors, main = "Correlation for final model")
+barplot(cors, col = "blue", main = "Correlation for final model")
 ```
 
 
@@ -1306,7 +1329,7 @@ G = 2\sum_{ij}{n_{ij} \log \left(\frac{n_{ij}}{E_{ij}} \right)}
 asymptotically converges to a $\chi^{2}$ distribution with $(I - 1)(J - 1)$ degrees of freedom, where I and J are the number of rows and columns respectively in the contingency table.
 
 ```{r, echo = FALSE, messages = FALSE}
-library(broom)
+suppressPackageStartupMessages(library(broom))
 library(knitr)
 
 suppressPackageStartupMessages(library(DescTools))
