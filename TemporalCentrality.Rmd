@@ -433,7 +433,7 @@ Figure 6 shows the temporal network represented as a directed graph.
 \end{tikzpicture}
 ```
 
-Define the distance of the temporal shortest path length over time interval [i, j], denoted by $d_{i,j}(\upsilon, \textit{u})$, as the smallest $d = j - n$, where $i \leq n \leq j$ and there is a path from $\upsilon_{n}$ to $\textit{u}_{j}$. Thus, in Figure 1, the shortest path distance $d_{1,3}(a, b)$ is two, with the temporal shortest path being $a_{1}$-$b_{2}$-$b_{3}$. By representing a temporal network as a high-granularity digraph, we can now generalize conventional measures of prestige and centrality to temporal networks.
+Define the distance of the temporal shortest path length over time interval [i, j], denoted by $d_{i,j}(\upsilon, \textit{u})$, as the smallest $d = j - n$, where $i \leq n \leq j$ and there is a path from $\upsilon_{n}$ to $\textit{u}_{j}$. Thus, in Figure 1, the shortest path distance $d_{1,3}(a, b)$ is two, with the temporal shortest path being $a_{1}$-$b_{2}$-$b_{3}$. By representing a temporal network as a high-granularity digraph, we can now generalize conventional measures of centrality to temporal networks.
 
 
 ## Temporal Closeness Rank
@@ -441,7 +441,7 @@ Define the distance of the temporal shortest path length over time interval [i, 
 This study is primarily concerned with the likelihood of infection, as estimating transmission requires future contact tracing data, which is usually not known. Likelihood of infection is roughly analogous to the idea of prestige (also known as rank). The terms prestige and rank are used interchangeably throughout this paper. In a directional network, a node with high rank is the object of many ties i.e. has many incoming connections. This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are undefined in directional graphs, as directional graphs may not be strongly-connected. Due to this limitation, we usually only consider nodes in the influence domain of node i i.e. the set of all nodes from whom $n_{i}$ is reachable. @lin1976foundations proposed the following measure for directional graphs, called the proximity prestige:
 
 $$P_{p}(n_{i}) = \frac{I_{i}/(g - 1)}{\sum{d(n_{j}, n_{i})}/I_{i}} \tag{1.}$$
-where $I_{i}$ is the size of the influence domain of node i, and g is the total number of nodes in the network. Proximity prestige is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity rank is defined to be 0.
+where $I_{i}$ is the size of the influence domain of node i, and g is the total number of nodes in the network. Proximity prestige is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity prestige is defined to be 0.
 
 For temporal networks, I propose a modified version
 
@@ -494,8 +494,8 @@ When each edge is associated with a probability of transmission, as may be the c
 \draw[->, thick] (b2) -> node[near start, below] {0} (b3);
 \draw[->, thick] (c1) -> node[near start, below] {0} (c2);
 \draw[->, thick] (c2) -> node[near start, below] {0} (c3);
-\draw[->, thick] (a1) -> node[near start, below] {3} (b2);
-\draw[->, thick] (c2) -> node[near start, below] {2} (a3);
+\draw[->, thick] (a1) -> node[near start, below] {-3} (b2);
+\draw[->, thick] (c2) -> node[near start, below] {-2} (a3);
 
 \node at (0,-2) {t = 1};
 \node at (2,-2) {t = 2};
@@ -556,7 +556,7 @@ at time t, $\mathbf{B}(t)$, as:
 
 \begin{equation}
 \label{eq:absorb}
-\mathbf{B}_{i}(t) = \left\{\begin{matrix}
+\mathbf{B}_{ij}(t) = \left\{\begin{matrix}
   1 & i = j, s_{i}(t) = 0 \\
   0 & i \neq j, s_{ij}(t) = 0 \\
   \prod_{m \in N, m \neq i}{\prod_{k = 1}^{n_{im}(t)}{(1 - p_{imk}(t))}} & i = j, s_{i}(t) > 0 \\
@@ -579,7 +579,7 @@ s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}
 
 $s_{ij}(t)$ represents the probability that at least one contact between i and j at time t is contagious. Now consider the sum:
 
-$$\sum_{j = 1}^{N}{B_{ij}(t)} = B_{ii}(t) + (1 - B_{ii}(t))\sum_{j = 1, j \neq i}^{N}{\frac{s_{ij}}{s_{i}}} = 1$$
+$$\sum_{j = 1}^{N}{B_{ij}(t)} = B_{ii}(t) + (1 - B_{ii}(t))\sum_{j = 1, j \neq i}^{N}{\frac{s_{ij}(t)}{s_{i}(t)}} = 1$$
 Therefore $\mathbf{B}(t)$ is a transition probability matrix. Denote by $\mathbf{B}^{i}(t)$ the transition matrix obtained by setting all off-diagonal elements of the i'th row of $\mathbf{B}(t)$ to zero, and the diagonal element to one. The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the absorption rank for individual i, at time t. The absorption rank of individual i is (roughly) interpreted as the probability that a random walk passes through i.
 
 If we assume a constant transmission probability, p, for all contacts, \ref{eq:absorb} reduces to:
@@ -671,11 +671,11 @@ In practice, p may be estimable from domain-specific knowledge. A value of $p = 
 
 ## Simulation
 
-Stochastic simulations typically follow the standard Markovian framework, in which we assume transmission depends only on the current state of the network. The contact times can be thought of as discrete snapshots of the network, and it is assumed that during each snapshot, only one "hop" can occur. In other words, if we have two contacts (i, k, t) and (k, j, t), i cannot infect j (via k) at time t. The standard Markovian framework typically employs simplifying assumptions to ensure ease of implementation. The Susceptible-Infected-Recovered (SIR) model is a common implementation which assumes that all individuals are susceptible at the beginning, and once infected they remain infectious for a recovery period. Once recovered, individuals cannot be infected again. Other common implementations include the Susceptible-Infected (SI) model and the Susceptible-Infected-Susceptible (SIS) model.
+Stochastic simulations typically follow the standard Markovian framework, in which we assume transmission depends only on the current state of the network. The temporal network is represented by a list of snapshots of the network sorted by time, and it is assumed that during each snapshot, only one "hop" can occur. In other words, if we have two contacts (i, k, t) and (k, j, t), i cannot infect j (via k) at time t. The standard Markovian framework typically employs simplifying assumptions. The Susceptible-Infected-Recovered (SIR) model is a common implementation which assumes that all individuals are susceptible at the beginning, and once infected they remain infectious for a recovery period. Once recovered, individuals cannot be infected again. Other common implementations include the Susceptible-Infected (SI) model and the Susceptible-Infected-Susceptible (SIS) model.
 
 ### Algorithms
 
-Simulations were carried out using the event-based algorithm first proposed by @kiss2017mathematics, and described in detail by @holme2021fast. To understand this algorithm, we will first consider a naive approach:
+Simulations were carried out using the event-based algorithm proposed by @kiss2017mathematics, and described in detail by @holme2021fast. To understand this algorithm, we will first consider a naive approach:
 
 \large Naive Algorithm \normalsize
 
@@ -705,9 +705,13 @@ The event-based algorithm relies on several user-defined data structures:
 
 Node: A data structure with a unique id and an infection time (**t_inf**) attribute. In addition, each node contains a list of neighbours and a list of contact times (sorted in increasing order) for each neighbor, as well as a list of associated transmission probabilities if necessary. The contact times must be sorted in increasing order to enable a bisection search (the significance of this will become clear).
 
-Heap: A min-heap data structure for storing node id's of infected nodes, ordered by earliest infection time, with $\text{O}(\log(\text{n}))$ "*up-heap*" and "*down-heap*" operations, where $n$ is the number of elements in the heap. A min-heap is conceptually a tree where the root node is the lowest order element, which in this case is the earliest unprocessed infection event. The exact implementation of the heap is unimportant, however the min-heap property must be restored, whenever a node is added or removed, via the *up-heap* and *down-heap* operations.
+Heap: A min-heap data structure for storing node id's of infected nodes, ordered by earliest infection time, with $\text{O}(\log(\text{n}))$ "*up-heap*" and "*down-heap*" operations, where $n$ is the number of elements in the heap. A min-heap is conceptually a tree where the root node is the lowest order element for any subtree (including the entire tree), which in this case is the earliest unprocessed infection event. The exact implementation of the heap is unimportant, however the min-heap property must be restored, whenever a node is added or removed, via the *up-heap* and *down-heap* operations.
 
-At the beginning of the simulation, **t_inf** is set to T (the end time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. When an infected node is processed, it's neighbours are considered in turn. Suppose node i is infected at time $\text{t\_inf}_{i} = 20$, and node j is a neighbour of node i. If $\text{t\_inf}_{j} < 20$ then node j is skipped. Otherwise, a bisection search is carried out to find the earliest contact time, $t$, such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes i and j, and we sample an integer, k, by Equation (\ref{eq:sample}). If $k \geq m$ then we continue, otherwise we add node j to the heap and update $\text{t\_inf}_{j}$. Note that an infectious contact involving node $i$ at time $t$ is only stored if $\text{t\_inf}_{i} > t$.
+At the beginning of the simulation, **t_inf** is set to T (the end time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. When an infected node is processed, it's neighbours are considered in turn. Suppose node i is infected at time $\text{t\_inf}_{i} = 20$, and node j is a neighbour of node i. If $\text{t\_inf}_{j} < 20$ then node j is skipped. Otherwise, a bisection search (an efficient search algorithm for sorted lists) is carried out to find the earliest contact time, $t$, such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes i and j, and we sample an integer, k, by Equation (\ref{eq:sample}). If $k \geq m$ then we continue, otherwise we add node j to the heap and update $\text{t\_inf}_{j}$. If node i is infected a second time at time t, then two possibilities must be considered:
+
+1. If $\text{t\_inf}_{i} \leq t$, then i is already infected and should not be added to the heap twice.
+
+2. If $\text{t\_inf}_{i} > t$, then $\text{t\_inf}_{i}$ is set to $t$ and the position of i in the heap must be updated to restore the min-heap property.
 
 This process is repeated until no more nodes can be infected. The runtime of the event-based algorithm is proportional to the number of nodes in the network, whereas the runtime of the naive algorithm is proportional to the number of contact events. The event-based algorithm is recommended for dense networks with many contacts, where computational efficiency is required.
 
@@ -814,9 +818,9 @@ ggpairs(data)
 
 Looking at the pairwise relationships (shown in Figure 10), the assumptions of linear regression clearly cannot be satisfied. The output variable (plotted in the bottom-right corner) is bimodal and not amenable to common transformations (e.g. log, square root, polynomial etc). Machine Learning and Artifical Intelligence are often used for regression when the distribution of the data is non-standard. We use three machine learning methods - Gradient Boosting Regression, Decision Trees and Polynomial Regression - to predict the likelihood of infection from the six centrality metrics. 
 
-Polynomial Regression is based on a similar concept to linear regression, however it allows for powers greater than one in the regression equation (e.g. $y = \beta_{1}X + \beta_{2}X^{2}$). Closed-form solutions are rarely known, so the coefficients must be "learned" by numerical optimization methods. Decision Trees split the data into progressively smaller subgroups using decision rules (e.g. X > 40), and each group (sometimes called a leaf node) is assigned a predicted value. The prediction for a given observation is then the predicted value of it's respective leaf node, which is determined by the decision rules. At each branch of the tree, the optimal decision rule is found by minimizing a splitting criteria (e.g. Sum of Squared Errors (SSE), Mean Squared Error (MSE) etc). Gradient Boosting Regression takes a weighted average of predictions for many decision trees. This may result in better predictions, especially when the number of predictors is large or the data is very noisy.
+Polynomial Regression is based on a similar concept to linear regression, however it allows for powers greater than one in the regression equation (e.g. $y = \beta_{1}X + \beta_{2}X^{2}$). Closed-form solutions are rarely known, so the coefficients must be "learned" by numerical optimization methods. Decision Trees split the data into progressively smaller subgroups using decision rules (e.g. X > 40), and each group (sometimes called a leaf node) is assigned a predicted value. The prediction for a given observation is then the predicted value of it's respective leaf node, which is determined by the decision rules. At each branch of the tree, the optimal decision rule is found by minimizing a splitting criteria (e.g. Sum of Squared Errors (SSE), Mean Squared Error (MSE) etc). Gradient Boosting Regression takes a weighted average of predictions for many decision trees. This may lead to better predictions, especially for high-dimensional or noisy data.
 
-The data was split into training and test sets, comprising 75% and 25% of the data respectively. Hyper parameters were optimized by cross-validation on the training set and evaluated on the test set. 
+The data was split into training and test sets, comprising 75% and 25% of the data respectively. Hyper parameters were optimized by cross-validation on the training set and evaluated on the test set. For each model, the predictive power (correlation between predictions and observations) was calculated by Pearson and Spearman correlations.
 
 ```{r, echo = FALSE, fig.cap = "Predicted vs Actual values after training Gradient Boosting model and applying to test set.", cache = TRUE, warning = FALSE, message = FALSE}
 library(rsample)
@@ -867,7 +871,7 @@ corXG <- cor(y_pred, yTest, method = "spearman")
 
 SST <- sum((yTest - mean(yTest))^{2})/length(yTest)
 
-rXG <- 1 - mse(y_pred, yTest)/SST
+rXG <- cor(y_pred, yTest, method = "pearson")
 
 df <- data.frame(predicted = y_pred, actual = yTest)
 
@@ -890,7 +894,7 @@ y_pred = predict(decTree, newdata = xTest)
 
 corTree = cor(y_pred, yTest, method = "spearman")
 
-rTree <- 1 - mse(y_pred, yTest)/SST
+rTree <- cor(y_pred, yTest, method = "pearson")
 
 plot(y_pred, test$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Decision Tree.")
 ```
@@ -940,7 +944,7 @@ y_pred = polynomial_predictor(coefs)
 SST <- sum((y - mean(y))^{2})/length(y)
 
 corPoly <- cor(y_pred, y, method = "spearman")
-rPoly <- 1 - mse(y_pred, y)/SST
+rPoly <- cor(y_pred, y, method = "pearson")
 
 plot(y_pred, data$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Polynomial Regression")
 ```
@@ -952,14 +956,14 @@ names = c("Polynomial Regression", "Decision Tree Regression", "XGBoost Regressi
 
 df <- data.frame(type = names, corr = correlations)
 
-df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue") + xlab("Centrality Measure") + ylab("Spearman Correlation")
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue") + xlab("Centrality Measure") + ylab("Predictive Power (Spearman Correlation)")
 ```
 
 ```{r, echo = FALSE, fig.lab = "Pearson correlations between predictions and observations for three machine learning algorithms.", output = FALSE, eval = FALSE}
 
 df$corr <- c(rPoly, rTree, rXG)
 
-df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("R-Squared")
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue") + xlab("Centrality Measure") + ylab("Predictive Power (Pearson Correlation)")
 ```
 
 Figures 11-13 show the predicted values plotted against observed values for the three algorithms. Figures 14 and 15 show the Spearman and Pearson correlations. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank, therefore we subsequently use decision trees for all further modelling.
@@ -972,7 +976,7 @@ If some predictors in a model are unimportant, we risk losing model performance 
 ```{r, echo = FALSE, table.cap = "Feature importance scores of the six features in the decision tree."}
 scores <- decTree$variable.importance
 
-barplot(scores, main = "Variable Importance")
+barplot(scores, col = "blue", main = "Variable Importance")
 ```
 
 Katz centrality, Degree Centrality and Absorption Centrality had significantly higher importance rankings than other predictors. However, correlated predictors (for instance, TP and TPP) may have attenuated importance rankings due to multicollinearity (high correlation between features). For this reason, iterative feature selection methods (i.e. testing many combinations of features systematically) are often used in lieu of feature importance scores.
@@ -1297,7 +1301,7 @@ The null hypothesis was rejected 24 times for all multiple comparison adjustment
 
 ### Goodness-of-fit test
 
-In this section, we test the constant transmission probability assumption by a likelihood ratio test. First, we sum $I_{i}$ over all runs to get the total times infected, $n_{i}$. By doing this for every node, we obtain a contingency table of the form:
+In this section, we test the constant transmission probability assumption by a likelihood ratio test. It should be noted that the hypothesis being tested is slightly different. Whereas we previously tested for pairwise differences in likelihood of infection, the likelihood ratio test checks for an association between the two variables (Node and Algorithm). The likelihood ratio test is numerically equivalent to a test for interaction in a loglinear model. First, we sum $I_{i}$ over all runs to get the total times infected, $n_{i}$. By doing this for every node, we obtain a contingency table of the form:
 
 \begin{table}[hbtp]
   \begin{tabular}{lccccc}
