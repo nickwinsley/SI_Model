@@ -52,7 +52,7 @@ This study aims to address several key research questions:
 
 ## Background
 
-In 2020, the New Zealand Ministry of Health (MoH) commissioned a pilot study of the "CovidCard", a portable device which used bluetooth technology to record contacts between carriers of the device. Adults 19 years of age or older who live in Ngontotahā West and East were recruited to participate in a seven-day study. Additionally, people who live outside these boundaries but work within the Ngontotahā Village were also permitted to take part in the trial. Ngontotahā was chosen because it met several key criteria, namely compactness, geographical isolation, small population size and high sociodemographic diversity. In total, 1,191 people participated in the study. At the end of the trial period, a subset of 158 participants from the main trial were contacted by MoH case investigators to establish contacts that they had over the trial period using a modified version of the MoH case investigation protocol. The study compared the CovidCard to conventional case investigation methods and found a greater rate of reciprocal interactions identified by the CovidCard, indicating that the CovidCard is an effective contact tracing method. We use data obtained via the CovidCard to compare and validate existing centrality metrics, and develop novel alternatives.
+In 2020, the New Zealand Ministry of Health (MoH) commissioned a pilot study of the "CovidCard", a portable device which uses bluetooth technology to record contacts between carriers of the device. Adults 19 years of age or older who live in Ngontotahā West and East were recruited to participate in a seven-day study. Additionally, people who live outside these boundaries but work within the Ngontotahā Village were also permitted to take part in the trial. Ngontotahā was chosen because it met several key criteria, namely compactness, geographical isolation, small population size and high sociodemographic diversity. In total, 1,191 people participated in the study. At the end of the trial period, a subset of 158 participants from the main trial were contacted by MoH case investigators to establish contacts that they had over the trial period using a modified version of the MoH case investigation protocol. The study compared the CovidCard to conventional case investigation methods and found a greater rate of reciprocal interactions identified by the CovidCard, indicating that the CovidCard is an effective contact tracing method. We use data obtained via the CovidCard to compare and validate existing centrality metrics, and develop novel alternatives.
 
 ## Data Description
 
@@ -435,7 +435,7 @@ C_{i,j} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{j, t}
 When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn Equation (\ref{eq:tc}) into a prestige measure, we simply reverse the direction of the paths to get:
 
 $$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\textit{u}, \upsilon)}}}$$
-We will call this the temporal closeness rank, or TPP for notational convenience. The temporal closeness rank can be normalized by dividing by $(|\text{V}| - 1)(j - i)$. 
+We will call this the temporal closeness rank, or TC for notational convenience. The temporal closeness rank can be normalized by dividing by $(|\text{V}| - 1)(j - i)$. 
 
 
 ## Multiplicative Temporal Closeness Rank
@@ -583,7 +583,7 @@ and $s_{i}(t)$ is similarly defined as:
 s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}
 \end{equation}
 
-In practice, p may be estimable from domain-specific knowledge. A value of $p = 0.3$ was arbitrarily chosen for all subsequent calculations.
+In practice, p may be estimable from domain-specific knowledge. A value of $p = 0.3$ was chosen for all subsequent calculations.
 
 <!-- ## Example -->
 
@@ -645,7 +645,7 @@ In practice, p may be estimable from domain-specific knowledge. A value of $p = 
 
 ## Simulation
 
-Stochastic simulations typically follow the standard Markovian framework, in which we assume transmission depends only on the current state of the network. The temporal network is represented by a list of snapshots of the network sorted by time, and it is assumed that during each snapshot, only one "hop" can occur. In other words, if we have two contacts (i, k, t) and (k, j, t), i cannot infect j (via k) at time t. The standard Markovian framework typically employs simplifying assumptions. The Susceptible-Infected-Recovered (SIR) model is a common implementation which assumes that all individuals are susceptible at the beginning, and once infected they remain infectious for a recovery period. Once recovered, individuals cannot be infected again. Other common implementations include the Susceptible-Infected (SI) model and the Susceptible-Infected-Susceptible (SIS) model.
+Epidemic simulations typically follow the standard Markovian framework, in which we assume transmission depends only on the current state of the network. The temporal network is represented by a list of snapshots of the network sorted by time, and it is assumed that during each snapshot, only one "hop" can occur. In other words, if we have two contacts (i, k, t) and (k, j, t), i cannot infect j (via k) at time t. The standard Markovian framework typically employs simplifying assumptions. The Susceptible-Infected-Recovered (SIR) model is a common implementation which assumes that all individuals are susceptible at the beginning, and once infected they remain infectious for a recovery period. Other common implementations include the Susceptible-Infected (SI) model and the Susceptible-Infected-Susceptible (SIS) model. We use the Susceptible-Infected (SI) framework for all simulations, in which infection is a permanent state.
 
 ### Epidemic Simulations for Static Networks
 
@@ -1319,7 +1319,7 @@ colnames(df) <- c("Method", "Number of Rejections", "Proportion of Rejections")
 df %>% gt() %>% tab_header(title = "Table 4: Number of rejections for each method")
 ```
 
-The null hypothesis was rejected 24 times for all multiple comparison adjustments, which suggests that the constant transmission probability assumption is invalid. It is worth noting that the Bonferroni Correction is extremely conservative for 751 comparisons, therefore this result provides strong evidence of a difference between the algorithms. @alger2020scientific promotes the use of multiple experiments to increase the reliability of a conclusion. Accordingly, we use a goodness-of-fit test to support these results.
+The null hypothesis was rejected 24 times for all multiple comparison adjustments, which suggests that the constant transmission probability assumption is invalid. It is worth noting that the Bonferroni Correction is extremely conservative for 751 comparisons, therefore this result provides strong evidence of a difference between the algorithms. @alger2020scientific promotes the use of multiple experiment designs to increase the reliability of a conclusion. Accordingly, we use a goodness-of-fit test to support these results.
 
 ### Goodness-of-fit test
 
@@ -1372,7 +1372,7 @@ options(digits = 4)
 kable(output, caption = "Likelihood Ratio Test Results", digits = 20)
 ```
 
-The likelihood ratio test (Table 2) corroborates the conclusion that the two algorithms produce different outcomes, with $p-value < 1 \times 10^{-16}$. This indicates potential limitations in current research methodologies, and highlights critical gaps regarding ways for researchers to ensure that results of epidemic simulations, without prior knowledge of transmission probabilities, are broadly relevant.
+The likelihood ratio test (Table 2) corroborates the conclusion that the two algorithms produce different outcomes, with $p-value < 1 \times 10^{-16}$. This indicates potential limitations of current research, and highlights critical gaps regarding ways for researchers to ensure that results of epidemic simulations are broadly relevant.
 
 
 # References
