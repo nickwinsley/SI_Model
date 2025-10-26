@@ -271,7 +271,6 @@ Set all entries in dist to n\;
 }
 \end{algorithm}
 
-Presently, the gold standard for calculating betweenness centrality, Brandes' algorithm (@brandes2001faster), has a runtime complexity of $O(V^{2} + VE)$, where $V$ is the number of nodes and $E$ is the number of edges in the network. The novel algorithm we propose has a runtime complexity of $O(V(V - 1)(V - 2)) \approx O(V^{3})$, which can be reduced to approximately $O(VE + V^{2})$ if we only calculate the centrality for a small number of nodes. Conversely, Brandes' algorithm requires $V^{2} + VE$ iterations regardless of the number of nodes we require centrality calculations for. Moreover, this novel approach is accessible and it utilizes simple data structures (e.g. matrix, 2D array, priority queue) which are either natively available in many programming languages, or easy to implement from built-in language features.
 
 ## Katz Centrality
 
@@ -1272,9 +1271,9 @@ Holm's method, proposed by @holm1979simple, is a powerful alternative to the Bon
 
 ### Hochberg Procedure:
 
-The Hochberg procedure is a powerful method that performs well for positively correlated test statistics. The Hochberg procedure is well-suited for epidemiology data, where positive dependency between infection events is likely. The Hochberg Procedure generally provides greater power than Holm's method and the Bonferroni Correction.
+The Hochberg procedure is a powerful method that performs well for positively correlated test statistics. It is well-suited for epidemiology data, where positive dependency between infection events is likely. The Hochberg Procedure generally provides greater power than Holm's method and the Bonferroni Correction.
 
-Pairwise comparisons were carried out with Fisher's Exact Test and p-values were simulated to reduce computation time. The results are shown in table 4.
+Pairwise comparisons were carried out with Fisher's Exact Test and p-values were simulated by a permutation test to reduce computation time. The results are shown in table 4.
 
 ```{r, echo = FALSE}
 suppressPackageStartupMessages(library(gt))
