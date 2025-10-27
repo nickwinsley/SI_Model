@@ -1,5 +1,5 @@
 ---
-title: "TemporalPrestige"
+title: "Network-Based Prediction of Infection Susceptibility from Contact Tracing Data"
 author: "Nicholas Winsley"
 date: "2025-03-19"
 output:
@@ -439,7 +439,7 @@ We will call this the temporal closeness rank, or TC for notational convenience.
 
 ## Multiplicative Temporal Closeness Rank
 
-When each edge is associated with a probability of transmission, as may be the case in epidemiology models, the probability of a path may be of greater interest than the temporal length. In this case, we can generalize existing methods by considering a digraph where the edge weights are the natural log of the probability. Figure 2 shows a graph of this kind.
+When each edge is associated with a probability of transmission, as may be the case in epidemiology models, the probability of a path may be of greater interest than the temporal length. In this case, we can generalize existing methods by considering a digraph where the edge weights are the natural log of the probability. Figure 5 shows a graph of this kind.
 
 ```{r, engine = "tikz", echo = FALSE, fig.cap = "A simple temporal network represented as a digraph"}
 \begin{tikzpicture}
@@ -482,7 +482,7 @@ When each edge is associated with a probability of transmission, as may be the c
 The probability of transmission from an individual to them self is assumed to be one, and hence the natural log becomes 0. Consider a path, P, starting at $\upsilon_{i}$ and ending at $\textit{u}_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P. The probability of path P can be calculated by:
 
 $$e^{\sum_{w \in E}{log(w)}}$$
-All highest-probability paths to $\textit{u}_{i}$ can be calculated in $O(i|V|^{2})$ runtime using a modified version of the Reversed Evolution Network (REN) algorithm proposed by @hanke2017clone. Algorithm 1 shows the psuedocode for this algorithm.
+All highest-probability paths to $\textit{u}_{i}$ can be calculated with $O(i|V|^{2})$ runtime complexity by a modified version of the Reversed Evolution Network (REN) algorithm proposed by @hanke2017clone. Algorithm 2 shows the psuedocode for this algorithm.
 
 
 \begin{algorithm}
@@ -553,7 +553,7 @@ s_{i}(t) = \sum_{j \in N, j \neq i}{s_{ij}(t)}
 $s_{ij}(t)$ represents the probability that at least one contact between i and j at time t is contagious. Now consider the sum:
 
 $$\sum_{j = 1}^{N}{B_{ij}(t)} = B_{ii}(t) + (1 - B_{ii}(t))\sum_{j = 1, j \neq i}^{N}{\frac{s_{ij}(t)}{s_{i}(t)}} = 1$$
-Therefore $\mathbf{B}(t)$ is a transition probability matrix. Denote by $\mathbf{B}^{i}(t)$ the transition matrix obtained by setting all off-diagonal elements of the i'th row of $\mathbf{B}(t)$ to zero, and the diagonal element to one. The walk $\mathbf{B}_{i} = (\mathbf{B}_{i}(1), \mathbf{B}_{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the absorption rank for individual i, at time t. The absorption rank of individual i is (roughly) interpreted as the probability that a random walk passes through i.
+Therefore $\mathbf{B}(t)$ is a transition probability matrix. Denote by $\mathbf{B}^{i}(t)$ the transition matrix obtained by setting all off-diagonal elements of the i'th row of $\mathbf{B}(t)$ to zero, and the diagonal element to one. The walk $\mathbf{B}^{i} = (\mathbf{B}^{i}(1), \mathbf{B}^{i}(2), \cdots, \mathbf{B}_{i}(T))$ is an absorbing random walk, and the product $C_{i}^{A}(t) = \pi\mathbf{B}_{i}(1)\mathbf{B}_{i}(2)\cdots\mathbf{B}_{i}(t)$ will be called the absorption rank for individual i at time t, where $\pi$ is a prior probability distribution. For simplicity, we choose $\pi = (\frac{1}{N}, \frac{1}{N}, \frac{1}{N}, ...)$ for all subsequent calculations. The absorption rank of individual i can be (roughly) interpreted as the probability that a random walk passes through i.
 
 If we assume a constant transmission probability, p, for all contacts, \ref{eq:absorb} reduces to:
 
@@ -672,7 +672,7 @@ This section describes a novel approach to epidemic modelling using static netwo
 \end{tikzpicture}
 ```
 
-In general, contact rate parameters may be estimable from contact tracing data or theoretical values. It should be clear that this method is not a replacement for simulations on contact tracing data, and should only be used as a crude alternative when the dataset is extremely large. Although we demonstrate how this simulation approach can be used, we turn our attention to approaches which are less restrictive in their assumptions.
+In general, contact rate parameters may be estimable from contact tracing data or theoretical values. It should be clear that this method is not a replacement for traditional simulation approaches, and it should only be used when underlying assumptions (contacts follow a poisson process and a constant transmission probability) are verified.
 
 ### Algorithms
 
@@ -708,7 +708,7 @@ Node: A data structure with a unique id and an infection time (**t_inf**) attrib
 
 Heap: A min-heap data structure for storing node id's of infected nodes, ordered by earliest infection time, with $\text{O}(\log(\text{n}))$ "*up-heap*" and "*down-heap*" operations, where $n$ is the number of elements in the heap. A min-heap is conceptually a tree where the root node is the lowest order element for any subtree (including the entire tree), which in this case is the earliest unprocessed infection event. The exact implementation of the heap is unimportant, however the min-heap property must be restored, whenever a node is added or removed, via the *up-heap* and *down-heap* operations.
 
-At the beginning of the simulation, **t_inf** is set to T (the end time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. When an infected node is processed, it's neighbours are considered in turn. Suppose node i is infected at time $\text{t\_inf}_{i} = 20$, and node j is a neighbour of node i. If $\text{t\_inf}_{j} < 20$ then node j is skipped. Otherwise, a bisection search (an efficient search algorithm for sorted lists) is carried out to find the earliest contact time, $t$, such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes i and j, and we sample an integer, k, by Equation (\ref{eq:sample}). If $k \geq m$ then we continue, otherwise we add node j to the heap and update $\text{t\_inf}_{j}$. If node i is infected a second time at time t, then two possibilities must be considered:
+At the beginning of the simulation, **t_inf** is set to T (the end time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. When an infected node is processed, it's neighbours are considered in turn. Suppose node i is infected at time $\text{t\_inf}_{i} = 20$, and node j is a neighbour of node i. If $\text{t\_inf}_{j} < 20$ then node j is skipped. Otherwise, a bisection search (an efficient search algorithm for sorted lists) is carried out to find the earliest contact time, $t$, such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes i and j, and we sample an integer, k, by Equation (\ref{eq:sample}). If $k \geq m$ then we continue, otherwise we add node j to the heap and update $\text{t\_inf}_{j}$. If node i is infected a second time at time t, two possibilities must be considered:
 
 1. If $\text{t\_inf}_{i} \leq t$, then i is already infected and should not be added to the heap twice.
 
@@ -716,7 +716,7 @@ At the beginning of the simulation, **t_inf** is set to T (the end time of the s
 
 This process is repeated until no more nodes can be infected. The runtime of the event-based algorithm is proportional to the number of nodes in the network, whereas the runtime of the naive algorithm is proportional to the number of contact events. The event-based algorithm is recommended for dense networks with many contacts, where computational efficiency is required.
 
-All simulations were carried out by the event-based algorithm, and all contacts were assumed to be symmetric i.e. each snapshot is an undirected network.
+All simulations were carried out by the event-based algorithm, and all contacts were assumed to be symmetric, so each snapshot is an undirected network.
 
 
 # Results
@@ -725,7 +725,7 @@ All simulations were carried out by the event-based algorithm, and all contacts 
 
 Previously, we discussed how epidemics could be simulated by static networks. We use this approach to compare percolation centality and adjusted percolation centrality. The importance of a given node was tested empirically by calculating the difference in average reproductive number (over 100 simulations) between graphs which include and exclude the node in question. A high difference in reproductive numbers indicates that the node is instrumental in the spread of the disease.
 
-The Erdos-Renyi model (@erdos1960evolution) was used to generate random graphs of 40 nodes (four of which are initially infected), and the connectedness property (an underlying assumption of betweenness centrality) was verified for each graph. We start with an edge between every vertex, and each edge is included with a constant probability, p. Figure 3 shows the results for various edge inclusion probabilities. Both variants of percolation centrality showed similar correlations with the empirical measure of centrality, which indicates that our modified version of percolation centrality does not perform better.
+The Erdos-Renyi model (@erdos1960evolution) was used to generate random graphs of 40 nodes (four of which are initially infected), and the connectedness property (an underlying assumption of betweenness centrality) was verified for each graph. We start with an edge between every vertex, and each edge is included with a constant probability, p. Figure 7 shows the results for various edge inclusion probabilities. Both variants of percolation centrality showed similar correlations with the empirical measure of centrality, which indicates that our modified version of percolation centrality does not perform better.
 
 ```{r, echo = FALSE, fig.cap = "Correlation between the difference of reproductive numbers and the two variants of percolation centrality for different edge inclusion probabilities"}
 setwd("C:\\Users\\nickw\\Downloads\\SI_Model")
@@ -825,7 +825,7 @@ qqnorm(residuals)
 qqline(residuals)
 ```
 
-Figure 9 shows the Q-Q plot for a linear regression model predicting the observed likelihood of infection, with the five centrality metrics as predictors. The relationship is clearly non-linear, with a large number of extreme values for the residuals. A transformation of the output variable may satisfy the linearity assumption, particularly if the distribution is skewed.
+Figure 9 shows the Q-Q plot for a linear regression model predicting the observed likelihood of infection, with the five centrality metrics as predictors. The relationship is clearly non-linear, with a large number of extreme values for the residuals. A transformation of the output variable may satisfy the linearity assumption, especially if the distribution is skewed.
 
 ```{r, echo = FALSE, fig.cap = "Pairwise relationships between the centrality metrics and the output variable (likelihood)", message = FALSE}
 library(GGally)
@@ -833,7 +833,7 @@ library(GGally)
 ggpairs(data)
 ```
 
-Looking at the pairwise relationships (shown in Figure 10), the assumptions of linear regression clearly cannot be satisfied. The output variable (plotted in the bottom-right corner) is bimodal and not amenable to common transformations (e.g. log, square root, polynomial etc). Machine Learning and Artifical Intelligence are often used for regression when the distribution of the data is non-standard. We use three machine learning methods - Gradient Boosting Regression, Decision Trees and Polynomial Regression - to predict the likelihood of infection from the six centrality metrics. 
+Looking at the pairwise relationships (shown in Figure 10), the assumptions of linear regression clearly cannot be satisfied. The output variable (plotted in the bottom-right corner) is bimodal and not amenable to common transformations (e.g. log, square root, polynomial). Machine Learning and Artifical Intelligence are often used for regression when the distribution of the data is non-standard. We use three machine learning methods - Gradient Boosting Regression, Decision Trees and Polynomial Regression - to predict the likelihood of infection from the six centrality metrics. 
 
 Polynomial Regression is based on a similar concept to linear regression, however it allows for powers greater than one in the regression equation (e.g. $y = \beta_{1}X + \beta_{2}X^{2}$). Closed-form solutions are rarely known, so the coefficients must be "learned" by numerical optimization methods. Decision Trees split the data into progressively smaller subgroups using decision rules (e.g. X > 40), and each group (sometimes called a leaf node) is assigned a predicted value. The prediction for a given observation is then the predicted value of it's respective leaf node, which is determined by the decision rules. At each branch of the tree, the optimal decision rule is found by minimizing a splitting criteria (e.g. Sum of Squared Errors (SSE), Mean Squared Error (MSE) etc). Gradient Boosting Regression takes a weighted average of predictions for many decision trees. This may lead to better predictions, especially for high-dimensional or noisy data.
 
@@ -892,7 +892,7 @@ rXG <- cor(y_pred, yTest, method = "pearson")
 
 df <- data.frame(predicted = y_pred, actual = yTest)
 
-df %>% ggplot(aes(x = predicted, y = actual)) + geom_point() + geom_smooth(color = "blue")
+## df %>% ggplot(aes(x = predicted, y = actual)) + geom_point() + geom_smooth(color = "blue")
 ```
 
 ```{r, echo = FALSE}
@@ -913,7 +913,7 @@ corTree = cor(y_pred, yTest, method = "spearman")
 
 rTree <- cor(y_pred, yTest, method = "pearson")
 
-plot(y_pred, test$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Decision Tree.")
+## plot(y_pred, test$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Decision Tree.")
 ```
 
 ```{r, echo = FALSE, cache = TRUE}
@@ -963,7 +963,7 @@ SST <- sum((y - mean(y))^{2})/length(y)
 corPoly <- cor(y_pred, y, method = "spearman")
 rPoly <- cor(y_pred, y, method = "pearson")
 
-plot(y_pred, data$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Polynomial Regression")
+## plot(y_pred, data$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Polynomial Regression")
 ```
 
 ```{r, echo = FALSE, fig.lab = "Spearman rank correlations between predictions and observations for three machine learning algorithms."}
@@ -973,17 +973,17 @@ names = c("Polynomial Regression", "Decision Tree Regression", "XGBoost Regressi
 
 df <- data.frame(type = names, corr = correlations)
 
-df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue") + xlab("Centrality Measure") + ylab("Predictive Power (Spearman Correlation)")
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue", fill = "blue") + xlab("Centrality Measure") + ylab("Predictive Power (Spearman Correlation)")
 ```
 
 ```{r, echo = FALSE, fig.lab = "Pearson correlations between predictions and observations for three machine learning algorithms.", output = FALSE, eval = FALSE}
 
 df$corr <- c(rPoly, rTree, rXG)
 
-df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue") + xlab("Centrality Measure") + ylab("Predictive Power (Pearson Correlation)")
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue", fill = "blue") + xlab("Centrality Measure") + ylab("Predictive Power (Pearson Correlation)")
 ```
 
-Figures 11-13 show the predicted values plotted against observed values for the three algorithms. Figures 14 and 15 show the Spearman and Pearson correlations. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank, therefore we subsequently use decision trees for all further modelling.
+Figures 14 and 15 show the Spearman and Pearson correlations. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank, therefore we subsequently use decision trees for all further modelling.
 
 
 ## Feature Selection
@@ -996,7 +996,7 @@ scores <- decTree$variable.importance
 barplot(scores, col = "blue", main = "Variable Importance")
 ```
 
-Katz centrality, Degree Centrality and Absorption Centrality had significantly higher importance rankings than other predictors. However, correlated predictors (for instance, TP and TPP) may have attenuated importance rankings due to multicollinearity (high correlation between features). For this reason, iterative feature selection methods (i.e. testing many combinations of features systematically) are often used in lieu of feature importance scores.
+Katz centrality, Degree Centrality and Absorption Centrality all showed high variable importance scores. However, correlated predictors (for instance, TP and TPP) may have attenuated importance rankings due to multicollinearity (highly correlated features). For this reason, iterative feature selection methods (testing many combinations of features systematically) are often used in lieu of feature importance scores.
 
 We test all possible combinations of two or more features by 5-fold cross validation using decision tree regression. Each model was tested with four different values of the complexity parameter (0.0001, 0.001, 0.006, 0.01), a regularization criterion which limits the complexity of the tree in order to prevent over-fitting. Models were evaluated by the Mean Squared Error (MSE) metric with an estimated standard error, and the five best-performing models are shown in Table 1.
 
@@ -1176,7 +1176,7 @@ colnames(best.models) <- new_names
 pander::pander(best.models, caption = "MSE of five best-performing feature combinations on the holdout set")
 ```
 
-The best-performing model in the cross-validation phase used Absorption Rank, Temporal Katz Centrality and Degree Centrality. The standard deviation of cross-validation MSE scores was calculated for all feature combinations, as well as the MSE on the holdout setd. Table 2 shows the MSE on the holdout set. All models showed lower MSE estimates during cross-validation, which potentially indicates over-fitting. MSE estimates are typically lower during cross-validation for several reasons, including information leakage, wherein the validation set influences hyperparameter choices, leading to bias. It should be clear that the holdout set MSE is not used for ranking models, and it exclusively functions as an unbiased estimate of the MSE. 
+The best-performing model in the cross-validation phase used Absorption Rank, Temporal Katz Centrality and Degree Centrality. The standard deviation of cross-validation MSE scores was calculated for all feature combinations, as well as the MSE on the holdout setd. Table 2 shows the MSE on the holdout set. All models had lower MSE estimates during cross-validation, which potentially indicates over-fitting. MSE estimates are typically decreased during cross-validation for several reasons, including information leakage wherein data in the validation set influences hyperparameter choices, leading to bias. It should be clear that the holdout set MSE is not used for ranking models, and it should be interpreted as an unbiased estimate of the Mean Squared Error. 
 
 The data is split into training and test sets comprising 60% and 40% of the data respectively. Each centrality metric was fitted on the training set by a simple linear regression model with one predictor. A decision tree was fitted on the training set by using the best-performing hyperparameters and feature set chosen during cross-validation. Figure 12 compares the proportion of variance ($R^{2}$) of likelihood of infection explained by each centrality metric and the decision tree when applied to the test set. 
 
@@ -1223,10 +1223,10 @@ rmse_vec <- c(full_rmse, abs_rmse, deg_rmse, katz_rmse, tp_rmse, tpp_rmse, tbc_r
 
 names(rmse_vec) <- c("Tree", "Absorb", "Degree", "TP", "TBC", "TC", "Katz")
 
-barplot(rmse_vec, main = "R squared for final decision tree and six predictors", xlab = "Model", ylab = "R squared", col = "blue")
+barplot(rmse_vec, main = "R squared for the optimized decision tree and six predictors", xlab = "Model", ylab = "R squared", col = "blue")
 ```
 
-The Decision Tree model showed the highest R-squared value, followed closely by Absorption Rank and Degree Centrality. It should be clear that these rankings are only meaningful in the context of prediction. When ranking the relative importance of nodes in a network, other metrics should be given greater importance (e.g. Spearman Rank Correlation).
+The Decision Tree model showed the highest R-squared value, followed closely by Absorption Rank and Degree Centrality. It should be clear that these rankings are only meaningful in the context of prediction, where the size of prediction error is important. When ranking the relative importance of nodes in a network, other metrics should be given more weight (for instance, Spearman Rank Correlation). These results suggest that researchers should include multiple temporal centrality metrics in statistical models for improved results.
 
 ```{r, echo = FALSE, eval = FALSE}
 
@@ -1245,18 +1245,18 @@ barplot(cors, col = "blue", main = "Correlation for final model")
 
 The constant transmission probability assumption is often used to reduce computation time of simulations.
 
-To empirically test the constant transmission probability assumption, we compare the simulated probability of infection for 751 individuals for two different algorithms (run on the same temporal network from the CovidCard dataset). In the first algorithm, the probability of transmission is calculated separately for every contact (see the Estimation of Transmission Probability Section for details). In the second algorithm, we assume that for two nodes i and j, the probability of transmission is a constant value $p_{ij}$, regardless of the duration and proximity of the contact event, and this probability is estimated by averaging the event-specific probabilities $p_{ijt}$ (where t is a time index) over all contacts between i and j. As in the first algorithm, event-specific probabilities are calculated by the same logistic regression model.
+To empirically test the constant transmission probability assumption, the simulated probability of infection for 751 individuals was compared for two different algorithms (run on the CovidCard dataset). In the first algorithm, the probability of transmission is calculated separately for every contact (see the Estimation of Transmission Probability Section for details). In the second algorithm, we assume that for two nodes i and j, the probability of transmission is a constant value $p_{ij}$, regardless of the duration and proximity of the contact event, and this probability is estimated by averaging the event-specific probabilities $p_{ijt}$ (where t is a time index) over all contacts between i and j. As in the first algorithm, event-specific probabilities are calculated by the same logistic regression model.
 
 In total, 1000 simulations were run for each algorithm. For each run, the indicator variable, $I_{i}$, is 1 if node i was infected, and 0 otherwise. The simulated probability of infection for node i is the average of $I_{i}$ over all 1000 runs.
 
 Denote by $\hat{P^{\mathbf{1}}}$ the vector of observed probabilities for algorithm 1 (and likewise for algorithm 2). Thus, $\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}$ is the observed difference between the two algorithms for node i. Suppose we want to test whether this difference is significant. The test statistic is
 
 $$Z = \frac{\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}}{\hat{P_{i}}(1 - \hat{P_{i}})(\frac{1}{1000} + \frac{1}{1000})}$$
-where $\hat{P_{i}}$ is the pooled proportion under the null hypothesis ($P_{i}^{\mathbf{1}} = P_{i}^{\mathbf{2}}$). The test statistic converges to a standard normal distribution if the true proportions are equal, however the normal approximation fails for proportions which are close to zero or one. Consequently, we turn our attention to alternative approaches with less restrictive distributional assumptions.
+where $\hat{P_{i}}$ is the pooled proportion under the null hypothesis ($P_{i}^{\mathbf{1}} = P_{i}^{\mathbf{2}}$). The test statistic converges to a standard normal distribution when the true proportions are equal, however the normal approximation fails for proportions which are close to zero or one. Consequently, we turn our attention to alternative approaches with less restrictive distributional assumptions.
 
-Fisher's exact test is an exact test of association for two-way contingency tables. Combinatorial mathematics can be used to give an exact p-value, although the calculations become intractable for high cell counts. Consequently, we used simulated p-values for all pairwise comparisons. For each individual, we create a 2-by-2 contingency table from the variables algorithm (constant or varying transmission probabilities) and infected (yes or no). In total, 751 pairwise comparisons (one for each individual) were carried out. Due to the large number of tests, multiple comparisons were controlled for to reduce the risk of Type I errors. Several multiple comparison adjustment methods were considered.
+Fisher's exact test is an exact test of association for two-way contingency tables. Combinatorial mathematics can be used to give an exact p-value, although the calculations become intractable for high cell counts. Consequently, are often simulated to reduce computation. For each individual, we create a 2-by-2 contingency table from the variables algorithm (constant or varying transmission probabilities) and infected (yes or no). In total, 751 pairwise comparisons (one for each individual) were carried out. Due to the large number of tests, multiple comparisons were controlled for to reduce the risk of Type I errors. Several multiple comparison adjustment methods were considered.
 
-Power and Type I error rate are two important factors which influence our choice of adjustment. Power is defined as the probability of falsely accepting the null hypothesis, whereas the Type I error rate is the probability of falsely rejecting the null hypothesis. Multiple comparison adjustments aim to reduce the family-wise Type I error rate by controlling the significance level of each individual comparison. We discuss several common adjustment methods and their use cases:
+Power and Type I error rate are two important factors which influence our choice of multiple comparison adjustment. Power is defined as the probability of falsely accepting the null hypothesis, whereas the Type I error rate is the probability of falsely rejecting the null hypothesis. Multiple comparison adjustments aim to reduce the family-wise Type I error rate by controlling the significance level of each individual comparison. We discuss several common adjustment methods and their use cases:
 
 
 ### Bonferroni Correction:
