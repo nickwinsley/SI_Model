@@ -281,7 +281,7 @@ Betweenness and Closeness centrality focus on shortest paths, which potentially 
   C_{K}(i) = \sum_{j = 1}^{n}{(I + \alpha{A} + \alpha^{2}A^{2} + \alpha^{3}A^{3} + ...)_{ij}}
 \end{equation}
 
-where A is the adjacency matrix and $0 <= \alpha < 1$. $A^{n}$ is simply the n-step adjacency matrix for the network, and $\alpha^{n}$ decreases as n grows, therefore longer paths are down weighted. For a technical reason, the infinite sum ($I + \alpha{A} + ...$) converges to $(I - \alpha{A})^{-1}$ when $\alpha <= \frac{1}{\rho(A)}$ where $\rho(A)$ is the spectral radius of A i.e. the largest absolute value of any of it's eigenvalues. If we are only interested in the first n steps, we adjust the formula to get $(I - \alpha^{n + 1}A^{n + 1})(I - \alpha{A})^{-1}$. This result is convenient for temporal networks, where a finite number of steps in each snapshot is often assumed.
+where A is the adjacency matrix and $0 <= \alpha < 1$. $A^{n}$ is the n-step adjacency matrix for the network, and $\alpha^{n}$ decreases as n grows, which means that longer paths are down-weighted. For a technical reason, the infinite sum ($I + \alpha{A} + ...$) converges to $(I - \alpha{A})^{-1}$ when $\alpha <= \frac{1}{\rho(A)}$ where $\rho(A)$ is the spectral radius of A (the largest absolute value of any of it's eigenvalues). If we are only interested in the first n steps, we adjust the formula to get $(I - \alpha^{n + 1}A^{n + 1})(I - \alpha{A})^{-1}$. This formula is convenient for temporal networks, where a finite number of steps in each snapshot is often assumed.
 
 ## Temporal Katz Centrality
 
@@ -411,18 +411,18 @@ Figure 4 shows the temporal network represented as a directed graph.
 Define the distance of the temporal shortest path length over time interval [i, j], denoted by $d_{i,j}(\upsilon, \textit{u})$, as the smallest $d = j - n$, where $i \leq n \leq j$ and there is a path from $\upsilon_{n}$ to $\textit{u}_{j}$. Thus, in Figure 1, the shortest path distance $d_{1,3}(a, b)$ is two, with the temporal shortest path being $a_{1}$-$b_{2}$-$b_{3}$. By representing a temporal network as a high-granularity digraph, we can now generalize conventional measures of centrality to temporal networks.
 
 
-## Temporal Closeness Rank
+## Temporal Closeness Rank and Temporal Proximity Rank
 
-This study is primarily concerned with the likelihood of infection, as estimating transmission requires future contact tracing data, which is usually not known. Likelihood of infection is roughly analogous to the idea of prestige (also known as rank). The terms prestige and rank are used interchangeably throughout this paper. In a directional network, a node with high rank is the object of many ties i.e. has many incoming connections. This is a distinct concept from centrality, which is also concerned with outgoing connections. Many conventional measures of centrality are undefined in directional graphs, as directional graphs may not be strongly-connected. Consequently, we often consider nodes in the influence domain of node i (the set of all nodes from whom $n_{i}$ is reachable). @lin1976foundations proposed the following measure for directional graphs, called the proximity prestige:
+In a directional network, a node with high rank (sometimes called prestige) is the object of many ties i.e. has many incoming connections. Conversely, a node with high centrality has may incoming outgoing connections. Rank may be used, for instance, to estimate the likelihood of an individual becoming infected during an epidemic. Many conventional centrality measures are undefined in directional graphs, as directional graphs may not be strongly-connected. Consequently, we often consider nodes in the influence domain of node $\upsilon$ (all nodes, $\textit{u}$, where $\upsilon$ is reachable from $\textit{v}$). @lin1976foundations proposed the proximity prestige, a metric for directional graphs which is defined as:
 
-$$P_{p}(n_{i}) = \frac{I_{i}/(g - 1)}{\sum{d(n_{j}, n_{i})}/I_{i}}$$
-where $I_{i}$ is the size of the influence domain of node i, and g is the total number of nodes in the network. Proximity prestige is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity prestige is defined to be 0.
+$$P_{p}(\upsilon) = \frac{I_{\upsilon}/(g - 1)}{\sum_{\textit{u} \in I_{\upsilon}}{d(\upsilon, \textit{u})}/I_{i}}$$
+where $I_{\upsilon}$ is the size of the influence domain of $\upsilon$, g is the total number of nodes in the network and $d(\upsilon, \textit{u})$ is the shortest path distance. Proximity prestige is the proportion of the network covered by the influence domain, divided by the average temporal distance over the influence domain. When the influence domain is empty, the proximity prestige is defined to be 0.
 
 For temporal networks, I propose a modified version
 
 $$P_{p}(\textit{u}_{i}) = \sum_{t = 0}^{i - 1}\frac{I_{t, i, \textit{u}}/(g - 1)}{\sum_{\upsilon \in I_{t,i,\textit{u}}}{d_{t, i}(\upsilon, \textit{u})}/I_{t, i, \textit{u}}}$$
 
-where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ over the time interval [t, i]. We will call this the temporal proximity rank, or TP for short. The temporal proximity rank can be normalized by dividing by i.
+where $I_{t,i,\textit{u}}$ is the influence domain of $\textit{u}$ for the time interval [t, i]. We will call this the temporal proximity rank, or TP for short. The temporal proximity rank can be normalized by dividing by i.
 
 Kim and Anderson [2012] proposed temporal closeness, a similar metric which considers all time intervals $[t, i] : t \in [0, i - 1]$.
 
@@ -431,7 +431,7 @@ Kim and Anderson [2012] proposed temporal closeness, a similar metric which cons
 C_{i,j} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{j, t}(\upsilon, \textit{u})}}} \tag{3.}
 \end{equation}
 
-When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn Equation (\ref{eq:tc}) into a prestige measure, we simply reverse the direction of the paths to get:
+When $\textit{u}$ is unreachable from $\upsilon$ over [t, j], $d_{t,j}(\upsilon, \textit{u}) = \infty$. We cover cases where the denominator is infinite by assuming that $\frac{1}{\infty} = 0$. Note that as we are considering a directional graph, $d_{t,j}(\upsilon, \textit{u})$ is not equivalent to $d_{t,j}(\textit{u}, \upsilon)$. To turn Equation (\ref{eq:tc}) into a rank measure, we reverse the direction of the paths to get:
 
 $$C_{i,j}^{P} = \sum_{i \leq t < j}{\sum_{\textit{u} \in \textit{V}}{\frac{1}{d_{t,j}(\textit{u}, \upsilon)}}}$$
 We will call this the temporal closeness rank, or TC for notational convenience. The temporal closeness rank can be normalized by dividing by $(|\text{V}| - 1)(j - i)$. 
@@ -482,7 +482,7 @@ When each edge is associated with a probability of transmission, as may be the c
 The probability of transmission from an individual to them self is assumed to be one, and hence the natural log becomes 0. Consider a path, P, starting at $\upsilon_{i}$ and ending at $\textit{u}_{j}$. The probability of this path is equal to $\prod_{k = i}^{j}{E_{k}}$, where E is the list of transmission probabilities of path P. The probability of path P can be calculated by:
 
 $$e^{\sum_{w \in E}{log(w)}}$$
-All highest-probability paths to $\textit{u}_{i}$ can be calculated in $O(i|V|^{2})$ time using a modified version of the Reversed Evolution Network (REN) algorithm proposed by @hanke2017clone. Algorithm 1 shows the psuedocode for this algorithm.
+All highest-probability paths to $\textit{u}_{i}$ can be calculated in $O(i|V|^{2})$ runtime using a modified version of the Reversed Evolution Network (REN) algorithm proposed by @hanke2017clone. Algorithm 1 shows the psuedocode for this algorithm.
 
 
 \begin{algorithm}
