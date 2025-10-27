@@ -1372,6 +1372,9 @@ kable(output, caption = "Likelihood Ratio Test Results", digits = 20)
 
 The likelihood ratio test (Table 2) corroborates the conclusion that the two algorithms produce different outcomes, with $p-value < 1 \times 10^{-16}$. This indicates potential limitations of current research, and highlights critical gaps regarding ways for researchers to ensure that results of epidemic simulations are broadly relevant.
 
+# Future Research
+
+In this study, the usefulness of temporal centrality measures were demonstrated for the CovidCard dataset. Further research is needed to demonstrate the usefulness of the methods presented for other datasets, and other fields of research (for instance, transportation networks, temporal ecological interactions, computer networks etc.). Simulations were used as a baseline to compare centrality measures. Future research could extend this by comparing centrality metrics directly to simulation methods. This study used a logistic regression to estimate transmission probabilities, however coefficients could not be accurately estimated due to data limitations. A comprehensive methodology for estimating transmission probabilities is needed, with infection data, RSSI indicators and clinical knowledge used to estimate parameters of a statistical model.
 
 # References
 
