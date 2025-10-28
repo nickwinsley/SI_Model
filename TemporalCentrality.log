@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  28 OCT 2025 11:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  28 OCT 2025 15:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1364,45 +1364,44 @@ File: TemporalCentrality_files/figure-latex/unnamed-chunk-17-1.pdf Graphic file
  (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-17-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-17
--1.pdf  used on input line 1174.
+-1.pdf  used on input line 1176.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-
-[31]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf, id=415, 469.755p
+<TemporalCentrality_files/figure-latex/unnamed-chunk-18-1.pdf, id=410, 469.755p
+t x 325.215pt>
+File: TemporalCentrality_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file
+ (type pdf)
+<use TemporalCentrality_files/figure-latex/unnamed-chunk-18-1.pdf>
+Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-18
+-1.pdf  used on input line 1183.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf, id=411, 469.755p
 t x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file
  (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-19
--1.pdf  used on input line 1190.
+-1.pdf  used on input line 1206.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
+
+[31]
 
 [32 <./TemporalCentrality_files/figure-latex/unnamed-chunk-17-1.pdf>]
 
-[33 <./TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf>]
+[33 <./TemporalCentrality_files/figure-latex/unnamed-chunk-18-1.pdf>]
 
-[34]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-25-1.pdf, id=443, 469.755p
-t x 325.215pt>
-File: TemporalCentrality_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file
- (type pdf)
-<use TemporalCentrality_files/figure-latex/unnamed-chunk-25-1.pdf>
-Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-25
--1.pdf  used on input line 1344.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<TemporalCentrality_files/figure-latex/unnamed-chunk-26-1.pdf, id=444, 469.755p
+[34 <./TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf>]
+
+[35]
+<TemporalCentrality_files/figure-latex/unnamed-chunk-26-1.pdf, id=456, 469.755p
 t x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file
  (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-26-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-26
--1.pdf  used on input line 1348.
+-1.pdf  used on input line 1365.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-
-[35 <./TemporalCentrality_files/figure-latex/unnamed-chunk-25-1.pdf>]
 
 [36 <./TemporalCentrality_files/figure-latex/unnamed-chunk-26-1.pdf>]
 
@@ -1411,12 +1410,12 @@ Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-26
 [38]
 
 [39]
-Overfull \hbox (6.70908pt too wide) in paragraph at lines 1540--1541
+Overfull \hbox (6.70908pt too wide) in paragraph at lines 1557--1558
  []\T1/lmr/m/n/12 (-20) parameter
  []
 
 
-Overfull \hbox (6.70908pt too wide) in paragraph at lines 1552--1553
+Overfull \hbox (6.70908pt too wide) in paragraph at lines 1569--1570
  []\T1/lmr/m/n/12 (-20) parameter
  []
 
@@ -1426,15 +1425,17 @@ Overfull \hbox (6.70908pt too wide) in paragraph at lines 1552--1553
 
 [41]
 
-[42] (TemporalCentrality.aux)
+[42]
+
+[43] (TemporalCentrality.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 37094 strings out of 473523
- 844420 string characters out of 5714631
+ 37098 strings out of 473523
+ 844478 string characters out of 5714631
  1347655 words of memory out of 5000000
  59291 multiletter control sequences out of 15000+600000
  646375 words of font info for 190 fonts, out of 8000000 for 9000
@@ -1461,9 +1462,9 @@ ic/lm/lmsy6.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/publi
 c/lm/lmsy8.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public
 /amsfonts/symbols/msam10.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/zapfding/uzdr.pfb>
-Output written on TemporalCentrality.pdf (42 pages, 1099753 bytes).
+Output written on TemporalCentrality.pdf (43 pages, 1088364 bytes).
 PDF statistics:
- 741 PDF objects out of 1000 (max. 8388607)
- 211 named destinations out of 1000 (max. 500000)
+ 749 PDF objects out of 1000 (max. 8388607)
+ 215 named destinations out of 1000 (max. 500000)
  45381 words of extra memory for PDF output out of 51595 (max. 10000000)
 

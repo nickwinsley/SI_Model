@@ -781,7 +781,7 @@ names <- c("Katz Centrality", "Degree Centrality", "Absorption Centrality", "Tem
 
 df <- data.frame(type = names, corr = correlations)
 
-df %>% ggplot(aes(x = type, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Spearman Rank Correlation") + scale_x_discrete(labels = c("Absorption", "Degree", "Katz", "TBC", "TC", "TP"))
+df %>% ggplot(aes(x = type, y = corr)) + geom_bar(stat = "identity", color = "blue", fill = "blue") + xlab("Centrality Measure") + ylab("Spearman Rank Correlation") + scale_x_discrete(labels = c("Absorption", "Degree", "Katz", "TBC", "TC", "TP"))
 ```
 ```{r, echo = FALSE, fig.cap = "Pearson correlations between centrality measures and observed likelihood of infection."}
 corKatz = cor(probs, katz$Centrality)
@@ -795,7 +795,7 @@ correlations = c(corKatz, corDeg, corAbs, corTp, corTpp, corTbc)
 
 df <- data.frame(type = names, corr = correlations)
 
-df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity") + xlab("Centrality Measure") + ylab("Pearson Correlation") + scale_x_discrete(labels = c("Absorption", "Degree", "Katz", "TBC", "TC", "TP"))
+df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue", fill = "blue") + xlab("Centrality Measure") + ylab("Pearson Correlation") + scale_x_discrete(labels = c("Absorption", "Degree", "Katz", "TBC", "TC", "TP"))
 ```
 
 The Spearman Correlations are generally large, with Absorption Rank showing a larger correlation ($\rho \approx 0.8$) compared to other metrics. Conversely, the metrics generally showed lower Pearson correlations, especially Katz centrality. This suggests that the metrics should not be used for prediction, rather they should be used for ranking the relative importance of individuals within the same network. TC and TP performed similarly in terms of ranking individuals, however TP outperformed TC in terms of Pearson Correlation.
@@ -835,7 +835,7 @@ ggpairs(data)
 
 Looking at the pairwise relationships (shown in Figure 10), the assumptions of linear regression clearly cannot be satisfied. The output variable (plotted in the bottom-right corner) is bimodal and not amenable to common transformations (e.g. log, square root, polynomial). Machine Learning and Artifical Intelligence are often used for regression when the distribution of the data is non-standard. We use three machine learning methods - Gradient Boosting Regression, Decision Trees and Polynomial Regression - to predict the likelihood of infection from the six centrality metrics. 
 
-Polynomial Regression is based on a similar concept to linear regression, however it allows for powers greater than one in the regression equation (e.g. $y = \beta_{1}X + \beta_{2}X^{2}$). Closed-form solutions are rarely known, so the coefficients must be "learned" by numerical optimization methods. Decision Trees split the data into progressively smaller subgroups using decision rules (e.g. X > 40), and each group (sometimes called a leaf node) is assigned a predicted value. The prediction for a given observation is then the predicted value of it's respective leaf node, which is determined by the decision rules. At each branch of the tree, the optimal decision rule is found by minimizing a splitting criteria (e.g. Sum of Squared Errors (SSE), Mean Squared Error (MSE) etc). Gradient Boosting Regression takes a weighted average of predictions for many decision trees. This may lead to better predictions, especially for high-dimensional or noisy data.
+Polynomial Regression is based on a similar concept to linear regression, however it allows for powers greater than one in the regression equation (e.g. $y = \beta_{1}X + \beta_{2}X^{2}$). Closed-form solutions are rarely known, so the coefficients must be "learned" by numerical optimization methods. Decision Trees split the data into progressively smaller subgroups using decision rules (e.g. X > 40), and each group (sometimes called a leaf node) is assigned a predicted value. The prediction for a given observation is then the predicted value of it's respective leaf node, which is determined by the decision rules. At each branch of the tree, the optimal decision rule is found by minimizing a splitting criteria (e.g. Sum of Squared Errors (SSE), Mean Squared Error (MSE)). Gradient Boosting Regression takes a weighted average of predictions for many decision trees. This may lead to better predictions, especially for high-dimensional or noisy data.
 
 The data was split into training and test sets, comprising 75% and 25% of the data respectively. Hyper parameters were optimized by cross-validation on the training set and evaluated on the test set. For each model, the predictive power (correlation between predictions and observations) was calculated by Pearson and Spearman correlations.
 
@@ -966,7 +966,7 @@ rPoly <- cor(y_pred, y, method = "pearson")
 ## plot(y_pred, data$likelihood, xlab = "Predicted Values", ylab = "Observed Values", main = "Predicting likelihood of infection with Polynomial Regression")
 ```
 
-```{r, echo = FALSE, fig.lab = "Spearman rank correlations between predictions and observations for three machine learning algorithms."}
+```{r, echo = FALSE, fig.cap = "Spearman rank correlations between predictions and observations for three machine learning algorithms."}
 correlations = c(corPoly, corTree, corXG)
 
 names = c("Polynomial Regression", "Decision Tree Regression", "XGBoost Regression")
@@ -976,27 +976,27 @@ df <- data.frame(type = names, corr = correlations)
 df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue", fill = "blue") + xlab("Centrality Measure") + ylab("Predictive Power (Spearman Correlation)")
 ```
 
-```{r, echo = FALSE, fig.lab = "Pearson correlations between predictions and observations for three machine learning algorithms.", output = FALSE, eval = FALSE}
+```{r, echo = FALSE, fig.cap = "Pearson correlations between predictions and observations for three machine learning algorithms.", output = FALSE}
 
 df$corr <- c(rPoly, rTree, rXG)
 
 df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue", fill = "blue") + xlab("Centrality Measure") + ylab("Predictive Power (Pearson Correlation)")
 ```
 
-Figures 14 and 15 show the Spearman and Pearson correlations. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank, therefore we subsequently use decision trees for all further modelling.
+Figures 14 and 15 show the predictive power. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank, therefore we subsequently use decision trees for all further modelling.
 
 
 ## Feature Selection
 
-If some predictors in a model are unimportant, we risk losing model performance due to the "Curse of Dimensionality". Large numbers of unimportant predictors may result in increased over fitting and difficulty with finding meaningful patterns in the data. The process of selecting a good set of predictors is called feature selection.
+If some predictors in a model are unimportant, we risk losing model performance due to the "Curse of Dimensionality". Many unimportant predictors may result in increased over fitting and difficulty with finding meaningful patterns in the data. Feature selection methods are used to identify and remove unimportant predictors in order to increase simplicity and performance of models. The feature importance scores were calculated for a decision tree of all six predictors
 
-```{r, echo = FALSE, table.cap = "Feature importance scores of the six features in the decision tree."}
+```{r, echo = FALSE, fig.cap = "Feature importance scores of the six features in the decision tree."}
 scores <- decTree$variable.importance
 
 barplot(scores, col = "blue", main = "Variable Importance")
 ```
 
-Katz centrality, Degree Centrality and Absorption Centrality all showed high variable importance scores. However, correlated predictors (for instance, TP and TPP) may have attenuated importance rankings due to multicollinearity (highly correlated features). For this reason, iterative feature selection methods (testing many combinations of features systematically) are often used in lieu of feature importance scores.
+Katz centrality, Degree Centrality and Absorption Centrality all showed high variable importance scores. However, highly correlated predictors (for instance, TP and TPP) may have attenuated importance rankings due to multicollinearity. For this reason, iterative feature selection methods (testing many combinations of features systematically) are often used in lieu of feature importance scores.
 
 We test all possible combinations of two or more features by 5-fold cross validation using decision tree regression. Each model was tested with four different values of the complexity parameter (0.0001, 0.001, 0.006, 0.01), a regularization criterion which limits the complexity of the tree in order to prevent over-fitting. Models were evaluated by the Mean Squared Error (MSE) metric with an estimated standard error, and the five best-performing models are shown in Table 1.
 
@@ -1176,9 +1176,9 @@ colnames(best.models) <- new_names
 pander::pander(best.models, caption = "MSE of five best-performing feature combinations on the holdout set")
 ```
 
-The best-performing model in the cross-validation phase used Absorption Rank, Temporal Katz Centrality and Degree Centrality. The standard deviation of cross-validation MSE scores was calculated for all feature combinations, as well as the MSE on the holdout setd. Table 2 shows the MSE on the holdout set. All models had lower MSE estimates during cross-validation, which potentially indicates over-fitting. MSE estimates are typically decreased during cross-validation for several reasons, including information leakage wherein data in the validation set influences hyperparameter choices, leading to bias. It should be clear that the holdout set MSE is not used for ranking models, and it should be interpreted as an unbiased estimate of the Mean Squared Error. 
+The best-performing model in the cross-validation phase used Absorption Rank, Temporal Katz Centrality, Temporal Betweenness Centrality and Temporal Closeness Rank. The standard deviation of cross-validation MSE scores was calculated for all feature combinations, as well as the MSE on the holdout set (shown in Table 2). All models had lower MSE estimates during cross-validation, which potentially indicates over-fitting. MSE estimates are typically decreased during cross-validation for several reasons, including information leakage wherein data in the validation set influences hyperparameter choices, leading to bias. It should be clear that the holdout set MSE is not used for ranking models, and it should be interpreted as an unbiased estimate of the Mean Squared Error. 
 
-The data is split into training and test sets comprising 60% and 40% of the data respectively. Each centrality metric was fitted on the training set by a simple linear regression model with one predictor. A decision tree was fitted on the training set by using the best-performing hyperparameters and feature set chosen during cross-validation. Figure 12 compares the proportion of variance ($R^{2}$) of likelihood of infection explained by each centrality metric and the decision tree when applied to the test set. 
+The data was split into training and test sets comprising 60% and 40% of the data respectively. Each centrality metric was fitted on the training set by a simple linear regression model with one predictor. A decision tree was fitted on the training set by using the best-performing hyperparameters and feature set chosen during cross-validation. Figure 12 compares the proportion of variance ($R^{2}$) of likelihood of infection explained by each centrality metric and the decision tree when applied to the test set. 
 
 ```{r, echo = FALSE, message = FALSE, cache = TRUE, fig.lab = "Predicted values vs Observed values for the decision tree", warnings = FALSE, output = FALSE}
 library(ggplot2)
@@ -1201,7 +1201,7 @@ predictions <- predict(tree, newdata = xTest)
 
 df <- data.frame(x = predictions, y = yTest)
 
-df %>% ggplot(aes(x = x, y = y)) + geom_point() + xlab("Predicted Values") + ylab("Observed Values") + ggtitle("Comparison of predictions from best model against observed values")
+## df %>% ggplot(aes(x = x, y = y)) + geom_point() + xlab("Predicted Values") + ylab("Observed Values") + ggtitle("Comparison of predictions from best model against observed values")
 ```
 
 ```{r, echo = FALSE, fig.cap = "Comparison of RMSE for final decision tree and individual predictors", warning = FALSE}
@@ -1237,7 +1237,7 @@ cors <- c(corPear, corSpear)
 
 names(cors) <- c("Pearson Correlation", "Spearman Correlation")
 
-barplot(cors, col = "blue", main = "Correlation for final model")
+barplot(cors, col = "blue", main = "Predictive Power for final decision tree")
 ```
 
 
@@ -1374,7 +1374,7 @@ The likelihood ratio test (Table 2) corroborates the conclusion that the two alg
 
 # Future Research
 
-In this study, the usefulness of temporal centrality measures were demonstrated for the CovidCard dataset. Further research is needed to demonstrate the usefulness of the methods presented for other datasets, and other fields of research (for instance, transportation networks, temporal ecological interactions, computer networks etc.). Simulations were used as a baseline to compare centrality measures. Future research could extend this by comparing centrality metrics directly to simulation methods. This study used a logistic regression to estimate transmission probabilities, however coefficients could not be accurately estimated due to data limitations. A comprehensive methodology for estimating transmission probabilities is needed, with infection data, RSSI indicators and clinical knowledge used to estimate parameters of a statistical model.
+In this study, the usefulness of temporal centrality measures were demonstrated for the CovidCard dataset. Further research is needed to demonstrate the usefulness of the methods presented for other datasets, and other fields of research (for instance, transportation networks, temporal ecological interactions, computer networks etc.). Simulations were used as a baseline to compare centrality measures. Future research could extend this by comparing centrality metrics directly to simulation methods. This study used a logistic regression model to estimate transmission probabilities, however coefficients could not be accurately estimated due to data limitations. A comprehensive methodology for estimating transmission probabilities is needed, with infection data, RSSI indicators and clinical knowledge used to estimate parameters of a statistical model.
 
 # References
 
