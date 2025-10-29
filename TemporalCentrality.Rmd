@@ -708,11 +708,11 @@ Node: A data structure with a unique id and an infection time (**t_inf**) attrib
 
 Heap: A min-heap data structure for storing node id's of infected nodes, ordered by earliest infection time, with $\text{O}(\log(\text{n}))$ "*up-heap*" and "*down-heap*" operations, where $n$ is the number of elements in the heap. A min-heap is conceptually a tree where the root node is the lowest order element for any subtree (including the entire tree), which in this case is the earliest unprocessed infection event. The exact implementation of the heap is unimportant, however the min-heap property must be restored, whenever a node is added or removed, via the *up-heap* and *down-heap* operations.
 
-At the beginning of the simulation, **t_inf** is set to T (the end time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. When an infected node is processed, it's neighbours are considered in turn. Suppose node i is infected at time $\text{t\_inf}_{i} = 20$, and node j is a neighbour of node i. If $\text{t\_inf}_{j} < 20$ then node j is skipped. Otherwise, a bisection search (an efficient search algorithm for sorted lists) is carried out to find the earliest contact time, $t$, such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes i and j, and we sample an integer, k, by Equation (\ref{eq:sample}). If $k \geq m$ then we continue, otherwise we add node j to the heap and update $\text{t\_inf}_{j}$. If node i is infected a second time at time t, two possibilities must be considered:
+At the beginning of the simulation, **t_inf** is set to T (the end time of the simulation) for all nodes. All start nodes are added to the heap and their infection times (**t_inf**) are set to 0. At each step, the earliest infection event is removed from the heap and processed. When an infected node is processed, it's neighbours are considered in turn. Suppose node i is infected at time $\text{t\_inf}_{i} = 20$, and node j is a neighbour of node i. If $\text{t\_inf}_{j} < 20$ then node j is skipped. Otherwise, a bisection search (an efficient search algorithm for sorted lists) is carried out to find the earliest contact time, $t$, such that $t \geq 20$. Suppose there are $m$ possible infectious contacts between nodes i and j, and we sample an integer, k, by Equation (\ref{eq:sample}). If $k \geq m$ then we continue, otherwise we add node j to the heap and update $\text{t\_inf}_{j}$. If j is infected a second time at time t, two possibilities must be considered:
 
-1. If $\text{t\_inf}_{i} \leq t$, then i is already infected and should not be added to the heap twice.
+1. If $\text{t\_inf}_{j} \leq t$, then j is already infected and should not be added to the heap twice.
 
-2. If $\text{t\_inf}_{i} > t$, then $\text{t\_inf}_{i}$ is set to $t$ and the position of i in the heap must be updated to restore the min-heap property.
+2. If $\text{t\_inf}_{j} > t$, then $\text{t\_inf}_{j}$ is set to $t$ and the position of j in the heap must be updated to restore the min-heap property.
 
 This process is repeated until no more nodes can be infected. The runtime of the event-based algorithm is proportional to the number of nodes in the network, whereas the runtime of the naive algorithm is proportional to the number of contact events. The event-based algorithm is recommended for dense networks with many contacts, where computational efficiency is required.
 
@@ -810,7 +810,7 @@ corr <- cor(data)
 ggcorrplot(corr, lab = TRUE)
 ```
 
-Figure 8 shows the Pearson correlations between the five metrics. Except for Temporal Closeness Rank and Temporal Proximity Rank, the metrics are mostly independent, with many weak or negative correlations. This suggests that the metrics are tapping into different effects, and our rankings could be improved by combining many metrics as predictors in a regression model.
+Figure 8 shows the Pearson correlations between the six metrics. Except for Temporal Closeness Rank and Temporal Proximity Rank, the metrics are mostly independent, with many weak or negative correlations. This suggests that the metrics are tapping into different effects, and our rankings could be improved by combining many metrics as predictors in a regression model.
 
 ## Model Selection
 
@@ -983,12 +983,12 @@ df$corr <- c(rPoly, rTree, rXG)
 df %>% ggplot(aes(x = names, y = corr)) + geom_bar(stat = "identity", color = "blue", fill = "blue") + xlab("Centrality Measure") + ylab("Predictive Power (Pearson Correlation)")
 ```
 
-Figures 14 and 15 show the predictive power. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank, therefore we subsequently use decision trees for all further modelling.
+Figures 11 and 12 show the predictive power. All algorithms performed worse than Absortion Rank on both metrics. XGBoost and polynomial regression both performed poorly, whereas the decision tree performed similarly to Absorption Rank, therefore we subsequently use decision trees for all further modelling.
 
 
 ## Feature Selection
 
-If some predictors in a model are unimportant, we risk losing model performance due to the "Curse of Dimensionality". Many unimportant predictors may result in increased over fitting and difficulty with finding meaningful patterns in the data. Feature selection methods are used to identify and remove unimportant predictors in order to increase simplicity and performance of models. The feature importance scores were calculated for a decision tree of all six predictors
+If some predictors in a model are unimportant, we risk losing model performance due to the "Curse of Dimensionality". Many unimportant predictors may result in increased over fitting and difficulty with finding meaningful patterns in the data. Feature selection methods are used to identify and remove unimportant predictors in order to increase simplicity and performance of models. The feature importance scores were calculated for a decision tree with all six predictors.
 
 ```{r, echo = FALSE, fig.cap = "Feature importance scores of the six features in the decision tree."}
 scores <- decTree$variable.importance
@@ -1178,7 +1178,7 @@ pander::pander(best.models, caption = "MSE of five best-performing feature combi
 
 The best-performing model in the cross-validation phase used Absorption Rank, Temporal Katz Centrality, Temporal Betweenness Centrality and Temporal Closeness Rank. The standard deviation of cross-validation MSE scores was calculated for all feature combinations, as well as the MSE on the holdout set (shown in Table 2). All models had lower MSE estimates during cross-validation, which potentially indicates over-fitting. MSE estimates are typically decreased during cross-validation for several reasons, including information leakage wherein data in the validation set influences hyperparameter choices, leading to bias. It should be clear that the holdout set MSE is not used for ranking models, and it should be interpreted as an unbiased estimate of the Mean Squared Error. 
 
-The data was split into training and test sets comprising 60% and 40% of the data respectively. Each centrality metric was fitted on the training set by a simple linear regression model with one predictor. A decision tree was fitted on the training set by using the best-performing hyperparameters and feature set chosen during cross-validation. Figure 12 compares the proportion of variance ($R^{2}$) of likelihood of infection explained by each centrality metric and the decision tree when applied to the test set. 
+The data was split into training and test sets comprising 60% and 40% of the data respectively. Each centrality metric was fitted on the training set by a simple linear regression model with one predictor. A decision tree was fitted on the training set by using the best-performing hyperparameters and feature set chosen during cross-validation. Figure 14 compares the proportion of variance ($R^{2}$) explained by each centrality metric and the decision tree when applied to the test set. 
 
 ```{r, echo = FALSE, message = FALSE, cache = TRUE, fig.lab = "Predicted values vs Observed values for the decision tree", warnings = FALSE, output = FALSE}
 library(ggplot2)
@@ -1254,7 +1254,7 @@ Denote by $\hat{P^{\mathbf{1}}}$ the vector of observed probabilities for algori
 $$Z = \frac{\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}}{\hat{P_{i}}(1 - \hat{P_{i}})(\frac{1}{1000} + \frac{1}{1000})}$$
 where $\hat{P_{i}}$ is the pooled proportion under the null hypothesis ($P_{i}^{\mathbf{1}} = P_{i}^{\mathbf{2}}$). The test statistic converges to a standard normal distribution when the true proportions are equal, however the normal approximation fails for proportions which are close to zero or one. Consequently, we turn our attention to alternative approaches with less restrictive distributional assumptions.
 
-Fisher's exact test is an exact test of association for two-way contingency tables. Combinatorial mathematics can be used to give an exact p-value, although the calculations become intractable for high cell counts. Consequently, are often simulated to reduce computation. For each individual, we create a 2-by-2 contingency table from the variables algorithm (constant or varying transmission probabilities) and infected (yes or no). In total, 751 pairwise comparisons (one for each individual) were carried out. Due to the large number of tests, multiple comparisons were controlled for to reduce the risk of Type I errors. Several multiple comparison adjustment methods were considered.
+Fisher's exact test is an exact test of association for two-way contingency tables. Combinatorial mathematics can be used to give an exact p-value, although the calculations become intractable for high cell counts. Consequently, p-values are often simulated to reduce computation. For each individual, we create a 2-by-2 contingency table from the variables algorithm (constant or varying transmission probabilities) and infected (yes or no). In total, 751 pairwise comparisons (one for each individual) were carried out. Due to the large number of tests, multiple comparisons were controlled for to reduce the risk of Type I errors. Several multiple comparison adjustment methods were considered.
 
 Power and Type I error rate are two important factors which influence our choice of multiple comparison adjustment. Power is defined as the probability of falsely accepting the null hypothesis, whereas the Type I error rate is the probability of falsely rejecting the null hypothesis. Multiple comparison adjustments aim to reduce the family-wise Type I error rate by controlling the significance level of each individual comparison. We discuss several common adjustment methods and their use cases:
 
@@ -1266,14 +1266,14 @@ The Bonferroni correction, proposed by @dunn1961multiple, is a basic method whic
 
 ### Holm's Method:
 
-Holm's method, proposed by @holm1979simple, is a powerful alternative to the Bonferroni correction. Holm's method tests the hypotheses iteratively, updating the significance level at each step. First, the p-values of pairwise tests are sorted in increasing order, and the sequential tests begin from the lowest p-value. The algorithm starts with a significance level of $\frac{\alpha}{N}$. If the first result is non-significant, the second result is tested with a significance level of $\frac{\alpha}{N - 1}$. In general, the i'th test statistic is tested with a significance level of $\frac{\alpha}{N - i + 1}$. Holm's method makes no assumptions about dependency between pairwise tests, and guarantees a family-wise Type I error rate less than $\alpha$. Holm's method generally provides greater power than the Bonferroni correction.
+Holm's method, proposed by @holm1979simple, is a powerful alternative to the Bonferroni correction. Holm's method tests the hypotheses iteratively, updating the significance level at each step. First, the p-values of pairwise tests are sorted in increasing order, and the sequential tests begin from the lowest p-value. The algorithm starts with a significance level of $\frac{\alpha}{N}$. If the first result is non-significant, the second result is tested with a significance level of $\frac{\alpha}{N - 1}$. In general, the i'th test statistic is evaluated with a significance level of $\frac{\alpha}{N - i + 1}$. Holm's method makes no assumptions about dependency between pairwise tests, and guarantees a family-wise Type I error rate less than $\alpha$. Holm's method generally provides greater power than the Bonferroni correction.
 
 
 ### Hochberg Procedure:
 
 The Hochberg procedure is a powerful method that performs well for positively correlated test statistics. It is well-suited for epidemiology data, where positive dependency between infection events is likely. The Hochberg Procedure generally provides greater power than Holm's method and the Bonferroni Correction.
 
-Pairwise comparisons were carried out with Fisher's Exact Test and p-values were simulated by a permutation test to reduce computation time. The results are shown in table 4.
+Pairwise comparisons were carried out with Fisher's Exact Test and p-values were simulated by a permutation test to reduce computation time. The results are shown in table 3.
 
 ```{r, echo = FALSE}
 suppressPackageStartupMessages(library(gt))
@@ -1314,7 +1314,7 @@ df <- as.data.frame(t(rbind(colnames(df), df)))
 
 colnames(df) <- c("Method", "Number of Rejections", "Proportion of Rejections")
 
-df %>% gt() %>% tab_header(title = "Table 4: Number of rejections for each method")
+df %>% gt() %>% tab_header(title = "Table 3: Number of rejections for each method")
 ```
 
 The null hypothesis was rejected 24 times for all multiple comparison adjustments, which suggests that the constant transmission probability assumption is invalid. It is worth noting that the Bonferroni Correction is extremely conservative for 751 comparisons, therefore this result provides strong evidence of a difference between the algorithms. @alger2020scientific promotes the use of multiple experiment designs to increase the reliability of a conclusion. Consequently, we use a goodness-of-fit test to support these results.
@@ -1367,10 +1367,10 @@ result <- GTest(table)
 output <- tidy(result) %>% mutate(p.value = ifelse(p.value == 0, "<1e-16", formatC(p.value, format = "e", digits = 4)), statistic = round(statistic, 4))
 options(digits = 4) 
 
-kable(output, caption = "Likelihood Ratio Test Results", digits = 20)
+kable(output, caption = "Likelihood Ratio Test Results", label = "likeRatio", digits = 20)
 ```
 
-The likelihood ratio test (Table 2) corroborates the conclusion that the two algorithms produce different outcomes, with $p-value < 1 \times 10^{-16}$. This indicates potential limitations of current research, and highlights critical gaps regarding ways for researchers to ensure that results of epidemic simulations are broadly relevant.
+The likelihood ratio test (Table \@ref(likeRatio)) corroborates the conclusion that the two algorithms produce different outcomes, with $p-value < 1 \times 10^{-16}$. This indicates potential limitations of current research, and highlights critical gaps regarding ways for researchers to ensure that results of epidemic simulations are broadly relevant.
 
 # Future Research
 

@@ -367,13 +367,10 @@ for (i in 1:3) {
   p[i] = diffcor.dep(corrAdj[i], corrRaw[i], corrBoth, 36, alternative = "one.sided")$p
 }
 
-print(corrAdj)
+df <- data.frame(corr = c(corrRaw, corrAdj), prob = rep(c(0.4, 0.45, 0.5), 2), type = rep(c("Percolation Centrality, Adjusted Percolation Centrality"), each = 3))
+df$prob <- as.factor(df$prob)
 
-print(corrRaw)
-
-print(z)
-
-print(p)
+ggplot(df, aes(x = prob, y = corr, group = type, fill = type)) + geom_bar(position = "dodge") + labs(xlab = "Edge-inclusion probability", ylab = "Correlation with difference of reproductive numbers") + theme_minimal()
 
 
 

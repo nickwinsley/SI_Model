@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  28 OCT 2025 15:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  30 OCT 2025 09:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1410,12 +1410,12 @@ Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-26
 [38]
 
 [39]
-Overfull \hbox (6.70908pt too wide) in paragraph at lines 1557--1558
+Overfull \hbox (6.70908pt too wide) in paragraph at lines 1559--1560
  []\T1/lmr/m/n/12 (-20) parameter
  []
 
 
-Overfull \hbox (6.70908pt too wide) in paragraph at lines 1569--1570
+Overfull \hbox (6.70908pt too wide) in paragraph at lines 1571--1572
  []\T1/lmr/m/n/12 (-20) parameter
  []
 
@@ -1462,7 +1462,7 @@ ic/lm/lmsy6.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/publi
 c/lm/lmsy8.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public
 /amsfonts/symbols/msam10.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/zapfding/uzdr.pfb>
-Output written on TemporalCentrality.pdf (43 pages, 1088364 bytes).
+Output written on TemporalCentrality.pdf (43 pages, 1088728 bytes).
 PDF statistics:
  749 PDF objects out of 1000 (max. 8388607)
  215 named destinations out of 1000 (max. 500000)
