@@ -1,0 +1,17 @@
+dplyr
+ggplot2
+ggcorrplot
+GGally
+rsample
+Matrix
+xgboost
+rpart
+rpart.plot
+mltools
+lattice
+caret
+foreach
+iterators
+doParallel
+pander
+Metrics
