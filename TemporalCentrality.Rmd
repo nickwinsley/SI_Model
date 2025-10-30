@@ -497,7 +497,7 @@ contacts <- List of contact times sorted in increasing order. Each contact time 
   Read line\;
   Add line to contacts using bisection search\;
 }
-tcp <- Multiplicative closeness rank\;
+mcr <- Multiplicative closeness rank\;
 reachable <- Set of reachable nodes\;
 Add target node to reachable\;
 sums <- Map of node id to log of the highest probability path (obtained by summing edge weights)\;
@@ -518,7 +518,7 @@ back <- Pointer to final contact time in contacts list\;
   }
   Decrement back pointer\;
 }
-Return tcp\;
+Return mcr\;
 \caption{Modified version of the REN algorithm.}
 \end{algorithm}
 
@@ -988,7 +988,7 @@ Figures 11 and 12 show the predictive power. All algorithms performed worse than
 
 ## Feature Selection
 
-If some predictors in a model are unimportant, we risk losing model performance due to the "Curse of Dimensionality". Many unimportant predictors may result in increased over fitting and difficulty with finding meaningful patterns in the data. Feature selection methods are used to identify and remove unimportant predictors in order to increase simplicity and performance of models. The feature importance scores were calculated for a decision tree with all six predictors.
+If some predictors in a model are unimportant, we risk losing model performance due to the "Curse of Dimensionality". Many unimportant predictors may result in increased over-fitting and decreased generalization to unseen data. Feature selection methods are used to identify and remove unimportant predictors in order to decrease model complexity and potentially increase model performance. The feature importance scores were calculated for a decision tree with all six predictors.
 
 ```{r, echo = FALSE, fig.cap = "Feature importance scores of the six features in the decision tree."}
 scores <- decTree$variable.importance
@@ -1228,6 +1228,11 @@ barplot(rmse_vec, main = "R squared for the optimized decision tree and six pred
 
 The Decision Tree model showed the highest R-squared value, followed closely by Absorption Rank and Degree Centrality. It should be clear that these rankings are only meaningful in the context of prediction, where the size of prediction error is important. When ranking the relative importance of nodes in a network, other metrics should be given more weight (for instance, Spearman Rank Correlation). These results suggest that researchers should include multiple temporal centrality metrics in statistical models for improved results.
 
+```{r, echo = FALSE}
+library(rpart.plot)
+rpart.plot(tree, main = "Visualization of the optimized decision tree")
+```
+
 ```{r, echo = FALSE, eval = FALSE}
 
 corPear <- cor(predictions, yTest, method = "spearman")
@@ -1254,7 +1259,7 @@ Denote by $\hat{P^{\mathbf{1}}}$ the vector of observed probabilities for algori
 $$Z = \frac{\hat{P_{i}^{\mathbf{1}}} - \hat{P_{i}^{\mathbf{2}}}}{\hat{P_{i}}(1 - \hat{P_{i}})(\frac{1}{1000} + \frac{1}{1000})}$$
 where $\hat{P_{i}}$ is the pooled proportion under the null hypothesis ($P_{i}^{\mathbf{1}} = P_{i}^{\mathbf{2}}$). The test statistic converges to a standard normal distribution when the true proportions are equal, however the normal approximation fails for proportions which are close to zero or one. Consequently, we turn our attention to alternative approaches with less restrictive distributional assumptions.
 
-Fisher's exact test is an exact test of association for two-way contingency tables. Combinatorial mathematics can be used to give an exact p-value, although the calculations become intractable for high cell counts. Consequently, p-values are often simulated to reduce computation. For each individual, we create a 2-by-2 contingency table from the variables algorithm (constant or varying transmission probabilities) and infected (yes or no). In total, 751 pairwise comparisons (one for each individual) were carried out. Due to the large number of tests, multiple comparisons were controlled for to reduce the risk of Type I errors. Several multiple comparison adjustment methods were considered.
+Fisher's exact test is an exact test of association for two-way contingency tables. Combinatorial mathematics can be used to give an exact p-value, although the calculations become intractable for high cell counts. Consequently, p-values are often simulated to reduce computation. For each individual, a 2-by-2 contingency table was created from the variables algorithm (constant or varying transmission probabilities) and infected (yes or no). In total, 751 pairwise comparisons (one for each individual) were carried out. Due to the large number of tests, multiple comparisons were controlled for to reduce the risk of Type I errors. Several multiple comparison adjustment methods were considered.
 
 Power and Type I error rate are two important factors which influence our choice of multiple comparison adjustment. Power is defined as the probability of falsely accepting the null hypothesis, whereas the Type I error rate is the probability of falsely rejecting the null hypothesis. Multiple comparison adjustments aim to reduce the family-wise Type I error rate by controlling the significance level of each individual comparison. We discuss several common adjustment methods and their use cases:
 
@@ -1271,7 +1276,7 @@ Holm's method, proposed by @holm1979simple, is a powerful alternative to the Bon
 
 ### Hochberg Procedure:
 
-The Hochberg procedure is a powerful method that performs well for positively correlated test statistics. It is well-suited for epidemiology data, where positive dependency between infection events is likely. The Hochberg Procedure generally provides greater power than Holm's method and the Bonferroni Correction.
+The Hochberg procedure (@benjamini1995controlling) is a powerful method that performs well for positively correlated test statistics. It is well-suited for epidemiology data, where positive dependency between infection events is likely. The Hochberg Procedure generally provides greater power than Holm's method and the Bonferroni Correction.
 
 Pairwise comparisons were carried out with Fisher's Exact Test and p-values were simulated by a permutation test to reduce computation time. The results are shown in table 3.
 
