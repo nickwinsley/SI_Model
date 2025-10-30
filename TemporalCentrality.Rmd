@@ -25,6 +25,13 @@ header-includes:
 knitr::opts_knit$set(root.dir = getwd())
 ```
 
+# Abstract
+
+The recent COVID-19 pandemic highlighted the importance of data in informing policies and containing an epidemic. With the increasing importance of data in epidemiology, the need for contact tracing and data collection methods is ever-growing, and so too is the need for effective statistical methods to analyse contact tracing data. Recently, a 7-day trial of the CovidCard, a Bluetooth device for detecting personal contacts between carriers, was successfully commissioned by the New Zealand Ministry of Health. The CovidCard was shown to be an effective contact tracing method, performing better than traditional methods (@admiraal2022case).
+
+Social Network Analysis (SNA) is used to study individuals and their relationship with each other. A wide array of SNA methods have been proposed for the analysis of contact tracing data, however many methods remain largely theoretical, and there is a lack of evidence-based consensus on which methods are most effective for the study of epidemiology. This study aims to develop a comprehensive methodology for identifying the most susceptible individuals during an epidemic, based on contact tracing data. A comparison of several existing SNA metrics, as well as a novel metric we propose (Absorption Rank), showed that predictions can be improved by considering many metrics. Additionally, common epidemic simulation assumptions were tested, demonstrating limitations in the external validity of popular simulation approaches.
+
+
 # Introduction
 
 The recent Covid-19 pandemic highlighted the importance of effective methods for combating the spread of disease. With the emergence of automated contact tracing technology, prophylactic identification and isolation of high-risk individuals could be practicable in the future. This study investigates methods for the identification of high-risk individuals in a temporal network.
@@ -1357,7 +1364,7 @@ G = 2\sum_{ij}{n_{ij} \log \left(\frac{n_{ij}}{E_{ij}} \right)}
 
 asymptotically converges to a $\chi^{2}$ distribution with $(I - 1)(J - 1)$ degrees of freedom, where I and J are the number of rows and columns respectively in the contingency table.
 
-```{r, echo = FALSE, messages = FALSE}
+```{r likeRatio, echo = FALSE, messages = FALSE}
 suppressPackageStartupMessages(library(broom))
 library(knitr)
 
@@ -1372,10 +1379,10 @@ result <- GTest(table)
 output <- tidy(result) %>% mutate(p.value = ifelse(p.value == 0, "<1e-16", formatC(p.value, format = "e", digits = 4)), statistic = round(statistic, 4))
 options(digits = 4) 
 
-kable(output, caption = "Likelihood Ratio Test Results", label = "likeRatio", digits = 20)
+kable(output, caption = "Likelihood Ratio Test Results", digits = 20)
 ```
 
-The likelihood ratio test (Table \@ref(likeRatio)) corroborates the conclusion that the two algorithms produce different outcomes, with $p-value < 1 \times 10^{-16}$. This indicates potential limitations of current research, and highlights critical gaps regarding ways for researchers to ensure that results of epidemic simulations are broadly relevant.
+The likelihood ratio test (Table 3) supports the conclusion that the two algorithms produce different outcomes, with $p-value < 1 \times 10^{-16}$. This indicates potential limitations of current research, and highlights critical gaps regarding ways for researchers to ensure that results of epidemic simulations are broadly relevant.
 
 # Future Research
 

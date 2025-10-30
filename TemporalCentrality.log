@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  30 OCT 2025 12:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex 2025.4.7)  30 OCT 2025 20:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1144,11 +1144,11 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 ) (TemporalCentrality.toc
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 3.
+(Font)              <12> on input line 4.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 3.
+(Font)              <8> on input line 4.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 3.
+(Font)              <6> on input line 4.
 
 
 [1
@@ -1170,284 +1170,286 @@ w/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}])
 c}{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.en
 c}{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}]
 
-[6{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.en
-c}]
+[6]
 
-[7]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-1-1.pdf, id=113, 134.3158p
+[7{C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.en
+c}]
+<TemporalCentrality_files/figure-latex/unnamed-chunk-1-1.pdf, id=111, 134.3158p
 t x 247.72751pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-1-1.pdf Graphic file 
 (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-1-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-1-
-1.pdf  used on input line 395.
+1.pdf  used on input line 421.
 (pdftex.def)             Requested size: 134.3175pt x 247.73065pt.
 
 
-[8 <./TemporalCentrality_files/figure-latex/unnamed-chunk-1-1.pdf>]
+[8]
 
-[9]
+[9 <./TemporalCentrality_files/figure-latex/unnamed-chunk-1-1.pdf>]
 
 [10]
 
-[11
+[11]
+
+[12
 
 ]
 
-[12]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-2-1.pdf, id=187, 75.54724p
+[13]
+<TemporalCentrality_files/figure-latex/unnamed-chunk-2-1.pdf, id=194, 75.54724p
 t x 74.412pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-2-1.pdf Graphic file 
 (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-2-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-2-
-1.pdf  used on input line 635.
+1.pdf  used on input line 661.
 (pdftex.def)             Requested size: 75.54704pt x 74.41182pt.
-<TemporalCentrality_files/figure-latex/unnamed-chunk-3-1.pdf, id=188, 75.54724p
+<TemporalCentrality_files/figure-latex/unnamed-chunk-3-1.pdf, id=195, 75.54724p
 t x 74.412pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file 
 (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-3-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-3-
-1.pdf  used on input line 641.
+1.pdf  used on input line 667.
 (pdftex.def)             Requested size: 75.54704pt x 74.41182pt.
-<TemporalCentrality_files/figure-latex/unnamed-chunk-4-1.pdf, id=189, 143.81027
+<TemporalCentrality_files/figure-latex/unnamed-chunk-4-1.pdf, id=196, 143.81027
 pt x 291.28223pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file 
 (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-4-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-4-
-1.pdf  used on input line 649.
+1.pdf  used on input line 675.
 (pdftex.def)             Requested size: 143.8099pt x 291.2815pt.
 
 
-[13 <./TemporalCentrality_files/figure-latex/unnamed-chunk-2-1.pdf> <./Temporal
+[14 <./TemporalCentrality_files/figure-latex/unnamed-chunk-2-1.pdf> <./Temporal
 Centrality_files/figure-latex/unnamed-chunk-3-1.pdf>]
 
-[14 <./TemporalCentrality_files/figure-latex/unnamed-chunk-4-1.pdf>]
+[15 <./TemporalCentrality_files/figure-latex/unnamed-chunk-4-1.pdf>]
 
-[15]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-5-1.pdf, id=237, 143.81027
+[16]
+<TemporalCentrality_files/figure-latex/unnamed-chunk-5-1.pdf, id=243, 143.81027
 pt x 177.47205pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file 
 (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-5-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-5-
-1.pdf  used on input line 729.
+1.pdf  used on input line 755.
 (pdftex.def)             Requested size: 143.81209pt x 177.4743pt.
 
 
-[16 <./TemporalCentrality_files/figure-latex/unnamed-chunk-5-1.pdf>]
-
-[17]
-pdfTeX warning (ext4): destination with the same identifier (name{equation.9}) 
-has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.799 \begin{equation}
-                      
-pdfTeX warning (ext4): destination with the same identifier (name{equation.9}) 
-has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.799 \begin{equation}
-                      
-pdfTeX warning (ext4): destination with the same identifier (name{equation.9}) 
-has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.799 \begin{equation}
-                      
-pdfTeX warning (ext4): destination with the same identifier (name{equation.9}) 
-has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.799 \begin{equation}
-                      
+[17 <./TemporalCentrality_files/figure-latex/unnamed-chunk-5-1.pdf>]
 
 [18]
+pdfTeX warning (ext4): destination with the same identifier (name{equation.9}) 
+has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.825 \begin{equation}
+                      
+pdfTeX warning (ext4): destination with the same identifier (name{equation.9}) 
+has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.825 \begin{equation}
+                      
+pdfTeX warning (ext4): destination with the same identifier (name{equation.9}) 
+has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.825 \begin{equation}
+                      
+pdfTeX warning (ext4): destination with the same identifier (name{equation.9}) 
+has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.825 \begin{equation}
+                      
 
 [19]
 
 [20]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-6-1.pdf, id=309, 209.7145p
+
+[21]
+<TemporalCentrality_files/figure-latex/unnamed-chunk-6-1.pdf, id=315, 209.7145p
 t x 261.03725pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-6-1.pdf Graphic file 
 (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-6-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-6-
-1.pdf  used on input line 931.
+1.pdf  used on input line 957.
 (pdftex.def)             Requested size: 209.71715pt x 261.04057pt.
 
 
-[21 <./TemporalCentrality_files/figure-latex/unnamed-chunk-6-1.pdf>]
-
-[22]
+[22 <./TemporalCentrality_files/figure-latex/unnamed-chunk-6-1.pdf>]
 
 [23]
-<AdjCentrality.png, id=342, 522.753pt x 308.352pt>
+
+[24]
+<AdjCentrality.png, id=348, 522.753pt x 308.352pt>
 File: AdjCentrality.png Graphic file (type png)
 <use AdjCentrality.png>
-Package pdftex.def Info: AdjCentrality.png  used on input line 1067.
+Package pdftex.def Info: AdjCentrality.png  used on input line 1093.
 (pdftex.def)             Requested size: 522.75969pt x 308.35594pt.
 
-Overfull \hbox (53.00467pt too wide) in paragraph at lines 1067--1067
+Overfull \hbox (53.00467pt too wide) in paragraph at lines 1093--1093
 [][] 
  []
 
 
 
-[24]
+[25]
 
-[25 <./AdjCentrality.png>]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-8-1.pdf, id=354, 469.755pt
+[26 <./AdjCentrality.png>]
+<TemporalCentrality_files/figure-latex/unnamed-chunk-8-1.pdf, id=360, 469.755pt
  x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file 
 (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-8-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-8-
-1.pdf  used on input line 1094.
+1.pdf  used on input line 1120.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<TemporalCentrality_files/figure-latex/unnamed-chunk-9-1.pdf, id=355, 469.755pt
+<TemporalCentrality_files/figure-latex/unnamed-chunk-9-1.pdf, id=361, 469.755pt
  x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file 
 (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-9-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-9-
-1.pdf  used on input line 1095.
+1.pdf  used on input line 1121.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1094--1096
+Underfull \hbox (badness 10000) in paragraph at lines 1120--1122
 [][]
  []
 
 
 
-[26 <./TemporalCentrality_files/figure-latex/unnamed-chunk-8-1.pdf>]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-10-1.pdf, id=365, 469.755p
+[27 <./TemporalCentrality_files/figure-latex/unnamed-chunk-8-1.pdf>]
+<TemporalCentrality_files/figure-latex/unnamed-chunk-10-1.pdf, id=371, 469.755p
 t x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file
  (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-10-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-10
--1.pdf  used on input line 1108.
+-1.pdf  used on input line 1134.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<TemporalCentrality_files/figure-latex/unnamed-chunk-11-1.pdf, id=366, 469.755p
+<TemporalCentrality_files/figure-latex/unnamed-chunk-11-1.pdf, id=372, 469.755p
 t x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file
  (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-11-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-11
--1.pdf  used on input line 1123.
+-1.pdf  used on input line 1149.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[27 <./TemporalCentrality_files/figure-latex/unnamed-chunk-9-1.pdf>]
+[28 <./TemporalCentrality_files/figure-latex/unnamed-chunk-9-1.pdf>]
 
-[28 <./TemporalCentrality_files/figure-latex/unnamed-chunk-10-1.pdf>]
+[29 <./TemporalCentrality_files/figure-latex/unnamed-chunk-10-1.pdf>]
 
-[29 <./TemporalCentrality_files/figure-latex/unnamed-chunk-11-1.pdf>]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-12-1.pdf, id=398, 469.755p
+[30 <./TemporalCentrality_files/figure-latex/unnamed-chunk-11-1.pdf>]
+<TemporalCentrality_files/figure-latex/unnamed-chunk-12-1.pdf, id=404, 469.755p
 t x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file
  (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-12
--1.pdf  used on input line 1137.
+-1.pdf  used on input line 1163.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[30 <./TemporalCentrality_files/figure-latex/unnamed-chunk-12-1.pdf>]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-17-1.pdf, id=409, 469.755p
+[31 <./TemporalCentrality_files/figure-latex/unnamed-chunk-12-1.pdf>]
+<TemporalCentrality_files/figure-latex/unnamed-chunk-17-1.pdf, id=416, 469.755p
 t x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-17-1.pdf Graphic file
  (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-17-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-17
--1.pdf  used on input line 1176.
+-1.pdf  used on input line 1202.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<TemporalCentrality_files/figure-latex/unnamed-chunk-18-1.pdf, id=410, 469.755p
+<TemporalCentrality_files/figure-latex/unnamed-chunk-18-1.pdf, id=417, 469.755p
 t x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file
  (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-18-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-18
--1.pdf  used on input line 1183.
+-1.pdf  used on input line 1209.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf, id=411, 469.755p
+<TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf, id=418, 469.755p
 t x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file
  (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-19
--1.pdf  used on input line 1207.
+-1.pdf  used on input line 1233.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[31]
+[32]
 
-[32 <./TemporalCentrality_files/figure-latex/unnamed-chunk-17-1.pdf>]
+[33 <./TemporalCentrality_files/figure-latex/unnamed-chunk-17-1.pdf>]
 
-[33 <./TemporalCentrality_files/figure-latex/unnamed-chunk-18-1.pdf>]
+[34 <./TemporalCentrality_files/figure-latex/unnamed-chunk-18-1.pdf>]
 
-[34 <./TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf>]
+[35 <./TemporalCentrality_files/figure-latex/unnamed-chunk-19-1.pdf>]
 
-[35]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-26-1.pdf, id=456, 469.755p
+[36]
+<TemporalCentrality_files/figure-latex/unnamed-chunk-26-1.pdf, id=462, 469.755p
 t x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file
  (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-26-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-26
--1.pdf  used on input line 1366.
+-1.pdf  used on input line 1392.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[36 <./TemporalCentrality_files/figure-latex/unnamed-chunk-26-1.pdf>]
-<TemporalCentrality_files/figure-latex/unnamed-chunk-27-1.pdf, id=468, 469.755p
+[37 <./TemporalCentrality_files/figure-latex/unnamed-chunk-26-1.pdf>]
+<TemporalCentrality_files/figure-latex/unnamed-chunk-27-1.pdf, id=475, 469.755p
 t x 325.215pt>
 File: TemporalCentrality_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file
  (type pdf)
 <use TemporalCentrality_files/figure-latex/unnamed-chunk-27-1.pdf>
 Package pdftex.def Info: TemporalCentrality_files/figure-latex/unnamed-chunk-27
--1.pdf  used on input line 1380.
+-1.pdf  used on input line 1406.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 
-[37 <./TemporalCentrality_files/figure-latex/unnamed-chunk-27-1.pdf>]
-
-[38]
+[38 <./TemporalCentrality_files/figure-latex/unnamed-chunk-27-1.pdf>]
 
 [39]
 
 [40]
-Overfull \hbox (6.70908pt too wide) in paragraph at lines 1562--1563
- []\T1/lmr/m/n/12 (-20) parameter
- []
-
-
-Overfull \hbox (6.70908pt too wide) in paragraph at lines 1574--1575
- []\T1/lmr/m/n/12 (-20) parameter
- []
-
-
 
 [41]
+Overfull \hbox (6.70908pt too wide) in paragraph at lines 1588--1589
+ []\T1/lmr/m/n/12 (-20) parameter
+ []
+
+
+Overfull \hbox (6.70908pt too wide) in paragraph at lines 1600--1601
+ []\T1/lmr/m/n/12 (-20) parameter
+ []
+
+
 
 [42]
 
-[43] (TemporalCentrality.aux)
+[43]
+
+[44] (TemporalCentrality.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 37109 strings out of 473523
- 845057 string characters out of 5714631
- 1347705 words of memory out of 5000000
- 59299 multiletter control sequences out of 15000+600000
- 646504 words of font info for 191 fonts, out of 8000000 for 9000
+ 37111 strings out of 473523
+ 845069 string characters out of 5714631
+ 1347739 words of memory out of 5000000
+ 59301 multiletter control sequences out of 15000+600000
+ 646417 words of font info for 190 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,21n,93p,1017b,679s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
@@ -1471,9 +1473,9 @@ ic/lm/lmsy6.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/publi
 c/lm/lmsy8.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/fonts/type1/public
 /amsfonts/symbols/msam10.pfb><C:/Users/nickw/AppData/Local/Programs/MiKTeX/font
 s/type1/urw/zapfding/uzdr.pfb>
-Output written on TemporalCentrality.pdf (43 pages, 1099976 bytes).
+Output written on TemporalCentrality.pdf (44 pages, 1103131 bytes).
 PDF statistics:
- 758 PDF objects out of 1000 (max. 8388607)
- 216 named destinations out of 1000 (max. 500000)
- 45386 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 771 PDF objects out of 1000 (max. 8388607)
+ 218 named destinations out of 1000 (max. 500000)
+ 45394 words of extra memory for PDF output out of 51595 (max. 10000000)
 
